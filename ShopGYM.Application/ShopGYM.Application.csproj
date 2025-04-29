@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.3.0" />
+	  <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.9.0" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.9.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+    <ProjectReference Include="..\ShopGYM.Data\ShopGYM.Data.csproj" />
+    <ProjectReference Include="..\ShopGYM.Utilities\ShopGYM.Utilities.csproj" />
+    <ProjectReference Include="..\ShopGYM.ViewModels\ShopGYM.ViewModels.csproj" />
+  </ItemGroup> 
+
+</Project>
