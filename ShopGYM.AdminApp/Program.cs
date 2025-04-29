@@ -3,6 +3,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Add Razor runtime compilation for development environment
+#if DEBUG
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+}
+#endif
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
