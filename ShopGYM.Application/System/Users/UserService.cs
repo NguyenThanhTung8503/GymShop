@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ShopGYM.Data.Entities;
+using ShopGYM.ViewModels.Common;
 using ShopGYM.ViewModels.System.Users;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -59,6 +61,33 @@ namespace ShopGYM.Application.System.Users
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        public async Task<PagedResult<UserVM>> GetUsersPaging(GetUserPagingRequest request)
+        {
+            var query = _userManager.Users;
+            if(!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.UserName.Contains(request.Keyword) || x.PhoneNumber.Contains(request.Keyword) || x.Email.Contains(request.Keyword));
+            }
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new UserVM()
+                {
+                    Id = x.Id,
+                    UserName = x.UserName,
+                    Email = x.Email,
+                    PhoneNumber = x.PhoneNumber,
+                    Dob = x.Dob,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName
+                }).ToListAsync();
+            var pagedResult = new PagedResult<UserVM>()
+            {
+                TotalRecords = totalRow,
+                Items = data
+            };
+            return pagedResult;
+        }
 
         public async Task<bool> Register(RegisterRequest request)
         {

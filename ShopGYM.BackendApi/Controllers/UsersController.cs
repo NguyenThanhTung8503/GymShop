@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShopGYM.Application.System.Users;
+using ShopGYM.ViewModels.Catalog.SanPham;
 using ShopGYM.ViewModels.System.Users;
 
 namespace ShopGYM.BackendApi.Controllers
@@ -34,7 +35,7 @@ namespace ShopGYM.BackendApi.Controllers
         }
 
 
-        [HttpPost("register")]
+        [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
@@ -47,6 +48,13 @@ namespace ShopGYM.BackendApi.Controllers
                 return BadRequest("Dang ki khong thanh cong");
             }
             return Ok();
+        }
+
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllPaging([FromQuery] GetUserPagingRequest request)
+        {
+            var users = await _userService.GetUsersPaging(request);
+            return Ok(users);
         }
     }
 }

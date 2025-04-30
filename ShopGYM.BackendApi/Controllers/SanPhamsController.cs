@@ -13,19 +13,17 @@ namespace ShopGYM.BackendApi.Controllers
     [ApiController]
     public class SanPhamsController : ControllerBase
     {
-        private readonly IPublicSanPhamService _publicSanPhamService;
-        private readonly IManageSanPhamService _manageSanPhamService;
-        public SanPhamsController(IPublicSanPhamService publicSanPhamService, IManageSanPhamService manageSanPhamService)
+        private readonly ISanPhamService _SanPhamService;
+        public SanPhamsController(ISanPhamService SanPhamService)
         {
-            _publicSanPhamService = publicSanPhamService;
-            _manageSanPhamService = manageSanPhamService;
+            _SanPhamService = SanPhamService;
         }
         //San pham
         //http://localhost:port/SanPham/public-paging
         [HttpGet("public-paging")]
         public async Task<IActionResult> GetAllPaging([FromQuery]GetPublicSanPhamPagingRequest request)
         {
-            var sanpham = await _publicSanPhamService.GetAllByMaDanhMuc(request);
+            var sanpham = await _SanPhamService.GetAllByMaDanhMuc(request);
             return Ok(sanpham);
         }
         //http://localhost:port/SanPham/1
@@ -33,7 +31,7 @@ namespace ShopGYM.BackendApi.Controllers
         [Authorize]
         public async Task<IActionResult> GetById(int IdSanPham)
         {
-            var sanpham = await _manageSanPhamService.GetById(IdSanPham);
+            var sanpham = await _SanPhamService.GetById(IdSanPham);
             if(sanpham == null)
                 return BadRequest("Khong tim thay san pham");
 
@@ -47,11 +45,11 @@ namespace ShopGYM.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var Idsanpham = await _manageSanPhamService.Create(request);
+            var Idsanpham = await _SanPhamService.Create(request);
             if (Idsanpham == 0)
                 return BadRequest();
 
-            var sanpham = await _manageSanPhamService.GetById(Idsanpham);
+            var sanpham = await _SanPhamService.GetById(Idsanpham);
 
             return CreatedAtAction(nameof(GetById), new {  id = Idsanpham}, sanpham);
         }
@@ -63,8 +61,8 @@ namespace ShopGYM.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var Idsanpham = await _manageSanPhamService.Update(request);
-            var affectedResult = await _manageSanPhamService.Update(request);
+            var Idsanpham = await _SanPhamService.Update(request);
+            var affectedResult = await _SanPhamService.Update(request);
             if (affectedResult == 0)
                 return BadRequest();
             return Ok();
@@ -77,7 +75,7 @@ namespace ShopGYM.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var Issuccessful = await _manageSanPhamService.UpdatePrice(IdSanPham, GiaMoi);
+            var Issuccessful = await _SanPhamService.UpdatePrice(IdSanPham, GiaMoi);
             if (Issuccessful)
                 return Ok();
             return BadRequest();
@@ -87,7 +85,7 @@ namespace ShopGYM.BackendApi.Controllers
         [HttpDelete("{IdSanPham}")]
         public async Task<IActionResult> Delete(int IdSanPham)
         {
-            var affectedresult = await _manageSanPhamService.Delete(IdSanPham);
+            var affectedresult = await _SanPhamService.Delete(IdSanPham);
             if (affectedresult == 0)
                 return BadRequest();
 
@@ -104,11 +102,11 @@ namespace ShopGYM.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var IdHinhAnh = await _manageSanPhamService.AddImage(IdSanPham, request);
+            var IdHinhAnh = await _SanPhamService.AddImage(IdSanPham, request);
             if (IdHinhAnh == 0)
                 return BadRequest();
 
-            var HinhAnh = await _manageSanPhamService.GetImageById(IdHinhAnh);
+            var HinhAnh = await _SanPhamService.GetImageById(IdHinhAnh);
 
             return CreatedAtAction(nameof(GetListImageByIdSanPham), new { id = IdSanPham }, HinhAnh);
         }
@@ -120,7 +118,7 @@ namespace ShopGYM.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _manageSanPhamService.UpdateImage(IdHinhAnh, request);
+            var result = await _SanPhamService.UpdateImage(IdHinhAnh, request);
             if (result == 0)
                 return BadRequest();
 
@@ -134,7 +132,7 @@ namespace ShopGYM.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _manageSanPhamService.RemoveImage(IdHinhAnh);
+            var result = await _SanPhamService.RemoveImage(IdHinhAnh);
             if (result == 0)
                 return BadRequest();
 
@@ -144,7 +142,7 @@ namespace ShopGYM.BackendApi.Controllers
         [HttpGet("{IdSanPham}/HinhAnh")]
         public async Task<IActionResult> GetListImageByIdSanPham(int IdSanPham)
         {
-            var HinhAnh = await _manageSanPhamService.GetListImages(IdSanPham);
+            var HinhAnh = await _SanPhamService.GetListImages(IdSanPham);
             if (HinhAnh == null)
                 return BadRequest("Khong the tim thay san pham");
             return Ok(HinhAnh);

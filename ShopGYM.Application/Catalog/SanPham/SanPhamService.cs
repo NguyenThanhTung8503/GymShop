@@ -12,11 +12,11 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace ShopGYM.Application.Catalog.SanPham
 {
-    public class ManageSanPhamService : IManageSanPhamService
+    public class SanPhamService : ISanPhamService
     {
         private readonly ShopGYMDbContext _context;
         private readonly IStorageService _storageService;
-        public ManageSanPhamService(ShopGYMDbContext context, IStorageService storageService)
+        public SanPhamService(ShopGYMDbContext context, IStorageService storageService)
 
         {
             _context = context;
@@ -179,6 +179,54 @@ namespace ShopGYM.Application.Catalog.SanPham
                 PageSize = request.PageSize
             };
         }
+
+        public async Task<PagedResult<SanPhamViewModel>> GetAllByMaDanhMuc(GetPublicSanPhamPagingRequest request)
+        {
+            // Tạo truy vấn
+            var query = from sp in _context.SanPhams
+                        join dm in _context.DanhMucs on sp.MaDanhMuc equals dm.MaDanhMuc
+                        join ha in _context.HinhAnhs on sp.MaSanPham equals ha.MaSanPham into hinhAnhs
+                        from ha in hinhAnhs.DefaultIfEmpty() // Kết nối trái cho hình ảnh
+                        where ha == null || ha.ThuTu == (from h in _context.HinhAnhs
+                                                         where h.MaSanPham == sp.MaSanPham
+                                                         orderby h.ThuTu
+                                                         select h.ThuTu).FirstOrDefault() // Lấy hình đầu tiên
+                        select new { sp, dm, ha };
+
+            // Áp dụng bộ lọc
+            if (request.IdDanhMuc.HasValue)
+            {
+                query = query.Where(x => x.sp.MaDanhMuc == request.IdDanhMuc.Value);
+            }
+
+            // Tính tổng số bản ghi (TotalRecords)
+            int totalRecords = await query.CountAsync();
+
+            var items = await query
+                .Skip((request.PageIndex - 1) * request.PageSize) // Bỏ qua (PageIndex - 1) * PageSize bản ghi
+                .Take(request.PageSize) // Lấy số bản ghi bằng PageSize
+                .Select(x => new SanPhamViewModel
+                {
+                    MaSanPham = x.sp.MaSanPham,
+                    TenSanPham = x.sp.TenSanPham,
+                    TenDanhMuc = x.dm.TenDanhMuc,
+                    Gia = x.sp.Gia,
+                    MoTa = x.sp.MoTa,
+                    KichThuoc = x.sp.KichThuoc,
+                    MauSac = x.sp.MauSac,
+                    SoLuongTon = x.sp.SoLuongTon,
+                    HinhAnhChinh = x.ha != null ? x.ha.DuongDan : null
+                })
+                .ToListAsync(); // Thực thi truy vấn và trả về danh sách SanPhamViewModel
+
+            // Trả về kết quả phân trang
+            return new PagedResult<SanPhamViewModel>
+            {
+                TotalRecords = totalRecords,
+                Items = items
+            };
+        }
+    
 
         public async Task<bool> UpdatePrice(int IdSanPham, decimal GiaMoi)
         {

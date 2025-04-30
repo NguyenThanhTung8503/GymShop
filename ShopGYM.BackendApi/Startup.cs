@@ -40,8 +40,7 @@ namespace ShopGYM.BackendApi
                 .AddDefaultTokenProviders();
 
             //Declare DI
-            services.AddTransient<IPublicSanPhamService, PublicSanPhamService>();
-            services.AddTransient<IManageSanPhamService, ManageSanPhamService>();
+            services.AddTransient<ISanPhamService, SanPhamService>();
             services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();

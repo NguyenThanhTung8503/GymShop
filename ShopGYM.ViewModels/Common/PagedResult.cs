@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace ShopGYM.ViewModels.Common
 {
-    public class PagedResult<T>
+    public class PagedResult<T> : PagedResultBase
     {
         public List<T> Items { get; set; }
-        public int TotalRecords { get; set; } // Tổng số bản ghi
-        public int PageIndex { get; set; }
-        public int PageSize { get; set; }
     }
 }
