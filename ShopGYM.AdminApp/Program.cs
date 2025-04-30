@@ -1,3 +1,8 @@
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using ShopGYM.AdminApp.Services;
+using ShopGYM.ViewModels.System.Users;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -11,6 +16,20 @@ if (builder.Environment.IsDevelopment())
 }
 #endif
 
+builder.Services.AddHttpClient();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/User/Login";
+        options.AccessDeniedPath = "/User/Forbidden/";
+        options.ExpireTimeSpan = TimeSpan.FromHours(2);
+    });
+builder.Services.AddControllersWithViews()
+         .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
+builder.Services.AddTransient<IUserApiClient, UserApiClient>();
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,9 +40,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseAuthentication();
 app.UseRouting();
 
 app.UseAuthorization();
