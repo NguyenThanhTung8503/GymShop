@@ -9,6 +9,7 @@ namespace ShopGYM.BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -31,6 +32,7 @@ namespace ShopGYM.BackendApi.Controllers
             {
                 return BadRequest("Tai khoan hoac mat khau khong dung");
             }
+            
             return Ok(resultToken);
         }
 
@@ -51,7 +53,7 @@ namespace ShopGYM.BackendApi.Controllers
         }
 
         [HttpGet("paging")]
-        public async Task<IActionResult> GetAllPaging([FromQuery] GetUserPagingRequest request)
+        public async Task<IActionResult> GetUserPaging([FromQuery] GetUserPagingRequest request)
         {
             var users = await _userService.GetUsersPaging(request);
             return Ok(users);

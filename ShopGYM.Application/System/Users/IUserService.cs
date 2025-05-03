@@ -1,4 +1,5 @@
-﻿using ShopGYM.ViewModels.Common;
+﻿
+using ShopGYM.ViewModels.Common;
 using ShopGYM.ViewModels.System.Users;
 using System;
 using System.Collections.Generic;

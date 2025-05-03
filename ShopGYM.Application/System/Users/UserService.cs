@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,9 +19,9 @@ namespace ShopGYM.Application.System.Users
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IConfiguration _config;
-        public  UserService(UserManager<AppUser> userManager, 
-            SignInManager<AppUser> signInManager, 
-            RoleManager<AppRole> roleManager, 
+        public UserService(UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+            RoleManager<AppRole> roleManager,
             IConfiguration config)
         {
             _userManager = userManager;
@@ -35,7 +36,7 @@ namespace ShopGYM.Application.System.Users
             if (user == null) return null;
 
             var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 return null;
             }
@@ -64,7 +65,7 @@ namespace ShopGYM.Application.System.Users
         public async Task<PagedResult<UserVM>> GetUsersPaging(GetUserPagingRequest request)
         {
             var query = _userManager.Users;
-            if(!string.IsNullOrEmpty(request.Keyword))
+            if (!string.IsNullOrEmpty(request.Keyword))
             {
                 query = query.Where(x => x.UserName.Contains(request.Keyword) || x.PhoneNumber.Contains(request.Keyword) || x.Email.Contains(request.Keyword));
             }

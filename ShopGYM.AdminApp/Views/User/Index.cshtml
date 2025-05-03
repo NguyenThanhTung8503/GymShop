@@ -1,0 +1,46 @@
+﻿@using ShopGYM.ViewModels.Common
+@model PagedResult<ShopGYM.ViewModels.System.Users.UserVM>
+
+@{
+    ViewData["Title"] = "Danh sách người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mt-4">Danh sách người dùng</h1>
+
+<p>
+    <a asp-controller="User" asp-action="Create" class="btn btn-primary">Thêm mới</a>
+</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Họ</th>
+            <th>Tên</th>
+            <th>Email</th>
+            <th>Tên người dùng</th>
+            <th>Điện thoại</th>
+            <th>Ngày sinh</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+			<tr>
+				<td>@item.Id</td>
+				<td>@item.FirstName</td>
+				<td>@item.LastName</td>
+				<td>@item.Email</td>
+				<td>@item.UserName</td>
+				<td>@item.PhoneNumber</td>
+				<td>@item.Dob</td>
+					<td>
+						<a asp-controller="User" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Sửa</a>
+						<a asp-controller="User" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Xóa</a>
+					</td>
+		</tr>
+		}
+	</tbody>
+</table>
