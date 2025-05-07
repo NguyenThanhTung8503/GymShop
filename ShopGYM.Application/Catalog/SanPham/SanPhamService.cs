@@ -111,44 +111,6 @@ namespace ShopGYM.Application.Catalog.SanPham
                 query = query.Where(x => x.sp.MaDanhMuc == request.MaDanhMuc.Value);
             }
 
-            if (!string.IsNullOrEmpty(request.Keyword))
-            {
-                query = query.Where(x => x.sp.TenSanPham.Contains(request.Keyword) ||
-                                        x.sp.MoTa != null && x.sp.MoTa.Contains(request.Keyword));
-            }
-
-            if (request.MinPrice.HasValue)
-            {
-                query = query.Where(x => x.sp.Gia >= request.MinPrice.Value);
-            }
-
-            if (request.MaxPrice.HasValue)
-            {
-                query = query.Where(x => x.sp.Gia <= request.MaxPrice.Value);
-            }
-
-            if (request.InStock.HasValue && request.InStock.Value)
-            {
-                query = query.Where(x => x.sp.SoLuongTon > 0);
-            }
-
-            // Sắp xếp
-            switch (request.SortBy?.ToLower())
-            {
-                case "name":
-                    query = query.OrderBy(x => x.sp.TenSanPham);
-                    break;
-                case "price_asc":
-                    query = query.OrderBy(x => x.sp.Gia);
-                    break;
-                case "price_desc":
-                    query = query.OrderByDescending(x => x.sp.Gia);
-                    break;
-                default:
-                    query = query.OrderBy(x => x.sp.MaSanPham); // Mặc định
-                    break;
-            }
-
             // Tính tổng số bản ghi (TotalRecords)
             int totalRecords = await query.CountAsync();
 
@@ -223,6 +185,8 @@ namespace ShopGYM.Application.Catalog.SanPham
             return new PagedResult<SanPhamViewModel>
             {
                 TotalRecords = totalRecords,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
                 Items = items
             };
         }

@@ -1,71 +1,143 @@
-﻿using Braintree;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Tokens;
 using ShopGYM.AdminApp.Services;
-using ShopGYM.Utilities.Constants;
+using ShopGYM.ViewModels.Common;
 using ShopGYM.ViewModels.System.Users;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace ShopGYM.AdminApp.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IUserApiClient _userApiClient;
         private readonly IConfiguration _configuration;
+        private readonly IRoleApiClient _roleApiClient;
 
-        public UserController(IUserApiClient userApiClient, IConfiguration configuration)
+        public UserController(IUserApiClient userApiClient,
+            IConfiguration configuration,
+            IRoleApiClient roleApiClient)
         {
             _userApiClient = userApiClient;
             _configuration = configuration;
+            _roleApiClient = roleApiClient;
         }
-        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize =10)
-        
+        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10)
         {
-            var session = HttpContext.Session.GetString("Token");
             var request = new GetUserPagingRequest()
             {
-                BearerToken = session,
                 Keyword = keyword,
                 PageIndex = pageIndex,
                 PageSize = pageSize
             };
             var data = await _userApiClient.GetUsersPagings(request);
-            return View(data);
+            ViewBag.Keyword = keyword;
+            if (TempData["result"] != null)
+            {
+                ViewBag.SuccessMsg = TempData["result"];
+            }
+            return View(data.ResultObj);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Login() 
+        public IActionResult Create()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginRequest request)
+        public async Task<IActionResult> Create(RegisterRequest request)
         {
             if (!ModelState.IsValid)
-                return View(ModelState);
+                return View();
 
-            var token = await _userApiClient.Authenticate(request);
-            var userPrincipal = this.ValidateToken(token);
-            var authProperties = new AuthenticationProperties()
+            var result = await _userApiClient.RegisterUser(request);
+            if (result.IsSuccessed)
             {
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                IsPersistent = true
-            };
-            HttpContext.Session.SetString("Token", token);
+                TempData["result"] = "Thêm mới thành công";
+                return RedirectToAction("Index");
 
-            await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        userPrincipal,
-                        authProperties);
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
 
-            return RedirectToAction("Index", "Home");
+        [HttpGet]
+        public async Task<IActionResult> Update(Guid id)
+        {
+            var result = await _userApiClient.GetById(id);
+            if (result.IsSuccessed)
+            {
+                var user = result.ResultObj;
+                var updateRequest = new UserUpdateRequest()
+                {
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Dob = user.Dob,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName
+                };
+                return View(updateRequest);
+            }
+            return RedirectToAction("Error", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(UserUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _userApiClient.UpdateUser(request.Id, request);
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = "Sửa thành công";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _userApiClient.GetById(id);
+            if (result.IsSuccessed)
+            {
+                var user = result.ResultObj;
+                var updateRequest = new UserDeleteRequest()
+                {
+                    Id = id,
+                    UserName = user.UserName
+                };
+                return View(updateRequest);
+            }
+            return RedirectToAction("Error", "Home");
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(UserDeleteRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _userApiClient.Delete(request.Id);
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = "Xóa thành công";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Detail(Guid id)
+        {
+            var result = await _userApiClient.GetById(id);
+            return View(result.ResultObj);
         }
 
         [HttpPost]
@@ -73,25 +145,52 @@ namespace ShopGYM.AdminApp.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Remove("Token");
-            return RedirectToAction("Login", "User");
+            return RedirectToAction("Index", "Login");
         }
 
-        private ClaimsPrincipal ValidateToken(string jwtToken)
+        [HttpGet]
+        public async Task<IActionResult> RoleAssign(Guid id)
         {
-            IdentityModelEventSource.ShowPII = true;
+            var roleAssignRequet = await GetRoleAssignRequet(id);
+            return View(roleAssignRequet);
+        }
 
-            SecurityToken validatedToken;
-            TokenValidationParameters validationParameters = new TokenValidationParameters();
+        [HttpPost]
+        public async Task<IActionResult> RoleAssign(RoleAssignRequets request)
+        {
+            if (!ModelState.IsValid)
+                return View();
 
-            validationParameters.ValidateLifetime = true;
+            var result = await _userApiClient.RoleAssign(request.Id, request);
 
-            validationParameters.ValidAudience = _configuration["Tokens:Issuer"];
-            validationParameters.ValidIssuer = _configuration["Tokens:Issuer"];
-            validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
 
-            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out validatedToken);
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = "Cập nhật quyền thành công";
+                return RedirectToAction("Index");
+            }
 
-            return principal;
+            ModelState.AddModelError("", result.Message);
+            var roleAssignRequet = await GetRoleAssignRequet(request.Id);
+            return View(roleAssignRequet);
+        }
+
+        private async Task<RoleAssignRequets> GetRoleAssignRequet(Guid id)
+        {
+            var userObj = await _userApiClient.GetById(id);
+            var rolesObj = await _roleApiClient.GetAll();
+            var roleAssignRequet = new RoleAssignRequets();
+            foreach (var role in rolesObj.ResultObj)
+            {
+                roleAssignRequet.Roles.Add(new SelectItem()
+                {
+                    Id = role.Id.ToString(),
+                    Name = role.Name,
+                    Selected = userObj.ResultObj.Roles.Contains(role.Name)
+                });
+            }
+            return roleAssignRequet;
+
         }
     }
 }

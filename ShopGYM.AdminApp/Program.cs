@@ -20,19 +20,26 @@ builder.Services.AddHttpClient();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/User/Login";
+        options.LoginPath = "/Login/Index";
         options.AccessDeniedPath = "/User/Forbidden/";
-        options.ExpireTimeSpan = TimeSpan.FromHours(2);
+        options.ExpireTimeSpan = TimeSpan.FromHours(3);
     });
 builder.Services.AddControllersWithViews()
          .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
-builder.Services.AddTransient<IUserApiClient, UserApiClient>();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromHours(5);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true; // Make the session cookie essential
 });
+
+
+builder.Services.AddTransient<IUserApiClient, UserApiClient>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddTransient<IRoleApiClient, RoleApiClient>();
+
+
 
 
 var app = builder.Build();

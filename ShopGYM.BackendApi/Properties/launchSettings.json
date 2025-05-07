@@ -18,7 +18,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "https": {
+    "ShopGYM.BackendApi": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,

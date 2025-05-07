@@ -2,45 +2,87 @@
 @model PagedResult<ShopGYM.ViewModels.System.Users.UserVM>
 
 @{
-    ViewData["Title"] = "Danh sách người dùng";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Danh sách người dùng";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="mt-4">Danh sách người dùng</h1>
+@section Scripts {
+	<script>
+		setTimeout(function () {
+			$('#msgAlert').fadeOut('slow');
+		}, 2000);
+	</script>
+}
 
-<p>
-    <a asp-controller="User" asp-action="Create" class="btn btn-primary">Thêm mới</a>
-</p>
+<div class="container-fluid">
+	<h1 class="mt-4">Danh sách người dùng</h1>
+	<ol class="breadcrumb mb-4">
+		<li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+		<li class="breadcrumb-item active">Danh sách người dùng</li>
+	</ol>
+	<div class="card mb-12">
+		<div class="card-header">
+			<div class="row">
+				<div class="col-md-6 col-xs-12">
+					<a class="btn btn-success" asp-action="Create" asp-controller="User">Tạo mới</a>
+				</div>
+				<div class="col-md-6 col-xs-12">
+					<form asp-action="Index" method="get">
+						<div class="row">
+							<div class="col-md-9">
+								<input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+							</div>
+							<div class="cold-md-3">
+								<button type="submit" class="btn btn-primary">Tìm</button>
+								<button type="button" onclick="window.location.href='/User/Index'" class="btn btn-dark">Reset</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Họ</th>
-            <th>Tên</th>
-            <th>Email</th>
-            <th>Tên người dùng</th>
-            <th>Điện thoại</th>
-            <th>Ngày sinh</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Items)
-        {
-			<tr>
-				<td>@item.Id</td>
-				<td>@item.FirstName</td>
-				<td>@item.LastName</td>
-				<td>@item.Email</td>
-				<td>@item.UserName</td>
-				<td>@item.PhoneNumber</td>
-				<td>@item.Dob</td>
-					<td>
-						<a asp-controller="User" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Sửa</a>
-						<a asp-controller="User" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Xóa</a>
-					</td>
-		</tr>
-		}
-	</tbody>
-</table>
+		<div class="card-body">
+			<div class="row">
+				@if (ViewBag.SuccessMsg != null)
+				{
+					<div id="msgAlert" class="alert alert-success" role="alert">
+						@ViewBag.SuccessMsg
+					</div>
+				}
+			</div>
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Họ</th>
+						<th>Tên</th>
+						<th>Email</th>
+						<th>Tên người dùng</th>
+						<th>Điện thoại</th>
+						<th>Ngày sinh</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var item in Model.Items)
+					{
+						<tr>
+							<td>@item.FirstName</td>
+							<td>@item.LastName</td>
+							<td>@item.Email</td>
+							<td>@item.UserName</td>
+							<td>@item.PhoneNumber</td>
+							<td>@item.Dob</td>
+							<td>
+								<a asp-controller="User" asp-action="Update" asp-route-id="@item.Id" class="btn btn-primary">Sửa</a>
+								<a asp-controller="User" asp-action="detail" asp-route-id="@item.Id" class="btn btn-warning">Chi tiết</a>
+								<a asp-controller="User" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Xóa</a>
+								<a asp-controller="User" asp-action="RoleAssign" asp-route-id="@item.Id" class="btn btn-primary">Gán quyền</a>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+			@await Component.InvokeAsync("Pager", Model)
+		</div>
+	</div>
+</div>

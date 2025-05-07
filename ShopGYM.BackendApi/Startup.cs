@@ -10,10 +10,12 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ShopGYM.Application.Catalog.SanPham;
 using ShopGYM.Application.Common;
+using ShopGYM.Application.System.Role;
 using ShopGYM.Application.System.Users;
 using ShopGYM.Data.EF;
 using ShopGYM.Data.Entities;
 using ShopGYM.Utilities.Constants;
+using ShopGYM.ViewModels.System.Role;
 using ShopGYM.ViewModels.System.Users;
 using System.Reflection;
 using LoginRequest = ShopGYM.ViewModels.System.Users.LoginRequest;
@@ -46,6 +48,7 @@ namespace ShopGYM.BackendApi
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
+            services.AddTransient<IRoleService, RoleService>();
 
 
             services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());

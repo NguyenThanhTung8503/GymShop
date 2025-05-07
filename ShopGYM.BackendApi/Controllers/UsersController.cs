@@ -27,15 +27,43 @@ namespace ShopGYM.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var resultToken = await _userService.Authencate(request);
-            if(string.IsNullOrEmpty(resultToken))
+            var result = await _userService.Authencate(request);
+
+            if (string.IsNullOrEmpty(result.ResultObj))
             {
-                return BadRequest("Tai khoan hoac mat khau khong dung");
+                return BadRequest(result);
             }
-            
-            return Ok(resultToken);
+            return Ok(result);
         }
 
+        //PUT: http://localhost/api/users/id
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody]UserUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _userService.Update(id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPut("{id}/roles")]
+        public async Task<IActionResult> RoleAssign(Guid id, [FromBody] RoleAssignRequets request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _userService.RoleAssign(id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
 
         [HttpPost]
         [AllowAnonymous]
@@ -45,11 +73,11 @@ namespace ShopGYM.BackendApi.Controllers
                 return BadRequest(ModelState);
 
             var result= await _userService.Register(request);
-            if (!result)
+            if (!result.IsSuccessed)
             {
-                return BadRequest("Dang ki khong thanh cong");
+                return BadRequest(result);
             }
-            return Ok();
+            return Ok(result);
         }
 
         [HttpGet("paging")]
@@ -57,6 +85,20 @@ namespace ShopGYM.BackendApi.Controllers
         {
             var users = await _userService.GetUsersPaging(request);
             return Ok(users);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var users = await _userService.GetById(id);
+            return Ok(users);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _userService.Delete(id);
+            return Ok(result);
         }
     }
 }

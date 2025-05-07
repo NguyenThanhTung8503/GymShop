@@ -1,0 +1,45 @@
+﻿@model ShopGYM.ViewModels.System.Users.UserDeleteRequest
+
+@{
+    ViewData["Title"] = "Xóa người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mt-4">Xóa người dùng</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Delete" method="post">
+            <div class="container-fluid px-4">
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a asp-controller="User" asp-action="Index">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Xóa</li>
+                </ol>
+                <p>
+                    <a asp-controller="User" asp-action="Index" class="btn btn-primary">Về danh sách</a>
+                </p>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Xác nhận xóa người dùng</h4>
+                        <p class="text-danger">Bạn có chắc chắn muốn xóa người dùng này không? Hành động này không thể hoàn tác.</p>
+
+                        <!-- Hiển thị thông tin người dùng -->
+                        <div class="form-group">
+                            <label asp-for="Id"></label>
+                            <input asp-for="Id" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UserName"></label>
+                            <input asp-for="UserName" class="form-control" readonly />
+                        </div>
+                        <!-- Nút xác nhận xóa -->
+                        <div class="form-group mt-3">
+                            <input type="submit" value="Xóa" class="btn btn-danger" />
+                            <a asp-controller="User" asp-action="Index" class="btn btn-secondary">Hủy</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

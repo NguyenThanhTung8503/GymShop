@@ -11,8 +11,13 @@ namespace ShopGYM.Application.System.Users
 {
     public interface IUserService
     {
-        Task<string> Authencate(LoginRequest request);
-        Task<bool> Register(RegisterRequest request);
-        Task<PagedResult<UserVM>> GetUsersPaging(GetUserPagingRequest request);
+        Task<ApiResult<string>> Authencate(LoginRequest request);
+        Task<ApiResult<bool>> Register(RegisterRequest request);
+        Task<ApiResult<PagedResult<UserVM>>> GetUsersPaging(GetUserPagingRequest request);
+        Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request);
+        Task<ApiResult<UserVM>> GetById(Guid Id);
+        Task<ApiResult<bool>> Delete(Guid Id);
+        Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequets request);
+
     }
 }
