@@ -6,19 +6,20 @@ using System.Text;
 
 namespace ShopGYM.AdminApp.Services
 {
-    public class UserApiClient : IUserApiClient
+    public class UserApiClient : BaseApiClient, IUserApiClient
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public UserApiClient(IHttpClientFactory httpClientFactory,
             IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor) 
+            : base(httpClientFactory, configuration, httpContextAccessor)
         {
-            _httpClientFactory = httpClientFactory;
-            _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+            _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<ApiResult<string>> Authenticate(LoginRequest request)

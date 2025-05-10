@@ -9,20 +9,21 @@ using System.Net.Http.Headers;
 using ShopGYM.Application.Common;
 using ShopGYM.ViewModels.Catalog.HinhAnh;
 using static System.Net.Mime.MediaTypeNames;
+using Microsoft.AspNetCore.Identity;
 
 namespace ShopGYM.Application.Catalog.SanPham
 {
-    public class SanPhamService : ISanPhamService
+    public class ProductService : IProductService
     {
         private readonly ShopGYMDbContext _context;
         private readonly IStorageService _storageService;
-        public SanPhamService(ShopGYMDbContext context, IStorageService storageService)
+        public ProductService(ShopGYMDbContext context, IStorageService storageService)
 
         {
             _context = context;
             _storageService = storageService;
         }
-        public async Task<int> Create(SanPhamCreateRequest request)
+        public async Task<int> Create(ProductCreateRequest request)
         {
             var sanpham = new Data.Entities.SanPham()
             {
@@ -53,10 +54,10 @@ namespace ShopGYM.Application.Catalog.SanPham
             await _context.SaveChangesAsync();
             return sanpham.MaSanPham;
         }
-        public async Task<int> Update(SanPhamUpdateRequest request)
+        public async Task<int> Edit(ProductUpdateRequets request)
         {
-            var sanpham = await _context.SanPhams.FindAsync(request.IdSanPham);
-            if (sanpham == null) throw new ShopGYMException($"Khong the tim thay san pham voi id: {request.IdSanPham}");
+            var sanpham = await _context.SanPhams.FindAsync(request.Id);
+            if (sanpham == null) throw new ShopGYMException($"Khong the tim thay san pham voi id: {request.Id}");
             sanpham.TenSanPham = request.TenSanPham;
             sanpham.MoTa = request.MoTa;
             sanpham.MauSac = request.MauSac;
@@ -65,7 +66,7 @@ namespace ShopGYM.Application.Catalog.SanPham
             //Save Images
             if (request.ThumbnailImage != null)
             {
-                var thumbNailImage = await _context.HinhAnhs.FirstOrDefaultAsync(i => i.MaSanPham == request.IdSanPham);
+                var thumbNailImage = await _context.HinhAnhs.FirstOrDefaultAsync(i => i.MaSanPham == request.Id);
                 if (thumbNailImage != null)
                 {
                     thumbNailImage.DuongDan = await SaveFile(request.ThumbnailImage);
@@ -92,11 +93,12 @@ namespace ShopGYM.Application.Catalog.SanPham
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<PagedResult<SanPhamViewModel>> GetAllPaging(GetManageSanPhamPagingRequest request)
+        public async Task<PagedResult<ProductVM>> GetAllPaging(GetManageProductPagingRequest request)
         {
             // Tạo truy vấn
             var query = from sp in _context.SanPhams
-                        join dm in _context.DanhMucs on sp.MaDanhMuc equals dm.MaDanhMuc
+                        join dm in _context.DanhMucs on sp.MaDanhMuc equals dm.MaDanhMuc into danhMucs
+                        from dm in danhMucs.DefaultIfEmpty() // Kết nối trái cho danh mục
                         join ha in _context.HinhAnhs on sp.MaSanPham equals ha.MaSanPham into hinhAnhs
                         from ha in hinhAnhs.DefaultIfEmpty() // Kết nối trái cho hình ảnh
                         where ha == null || ha.ThuTu == (from h in _context.HinhAnhs
@@ -106,26 +108,29 @@ namespace ShopGYM.Application.Catalog.SanPham
                         select new { sp, dm, ha };
 
             // Áp dụng bộ lọc
-            if (request.MaDanhMuc.HasValue)
+            if (request.MaDanhMuc != null && request.MaDanhMuc != 0)
             {
-                query = query.Where(x => x.sp.MaDanhMuc == request.MaDanhMuc.Value);
+                query = query.Where(x => x.sp.MaDanhMuc == request.MaDanhMuc);
             }
-
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.sp.TenSanPham.Contains(request.Keyword) ||
+                                        x.sp.MoTa != null && x.sp.MoTa.Contains(request.Keyword));
+            }
             // Tính tổng số bản ghi (TotalRecords)
             int totalRecords = await query.CountAsync();
 
             var items = await query
                 .Skip((request.PageIndex - 1) * request.PageSize) // Bỏ qua (PageIndex - 1) * PageSize bản ghi
                 .Take(request.PageSize) // Lấy số bản ghi bằng PageSize
-                .Select(x => new SanPhamViewModel
+                .Select(x => new ProductVM
                 {
                     MaSanPham = x.sp.MaSanPham,
                     TenSanPham = x.sp.TenSanPham,
-                    TenDanhMuc = x.dm.TenDanhMuc.ToString(),
+                    TenDanhMuc = x.dm.TenDanhMuc,
                     Gia = x.sp.Gia,
                     MoTa = x.sp.MoTa,
-                    // Chuyển enum KichThuoc sang chuỗi để hiển thị (ví dụ: "S", "M")
-                    KichThuoc = x.sp.KichThuoc.ToString(),
+                    KichThuoc = x.sp.KichThuoc,
                     MauSac = x.sp.MauSac,
                     SoLuongTon = x.sp.SoLuongTon,
                     HinhAnhChinh = x.ha != null ? x.ha.DuongDan : null
@@ -133,7 +138,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                 .ToListAsync(); // Thực thi truy vấn và trả về danh sách SanPhamViewModel
 
             // Trả về kết quả phân trang
-            return new PagedResult<SanPhamViewModel>
+            return new PagedResult<ProductVM>
             {
                 Items = items,
                 TotalRecords = totalRecords,
@@ -142,7 +147,7 @@ namespace ShopGYM.Application.Catalog.SanPham
             };
         }
 
-        public async Task<PagedResult<SanPhamViewModel>> GetAllByMaDanhMuc(GetPublicSanPhamPagingRequest request)
+        public async Task<PagedResult<ProductVM>> GetAllByMaDanhMuc(GetPublicProductPagingRequest request)
         {
             // Tạo truy vấn
             var query = from sp in _context.SanPhams
@@ -167,7 +172,7 @@ namespace ShopGYM.Application.Catalog.SanPham
             var items = await query
                 .Skip((request.PageIndex - 1) * request.PageSize) // Bỏ qua (PageIndex - 1) * PageSize bản ghi
                 .Take(request.PageSize) // Lấy số bản ghi bằng PageSize
-                .Select(x => new SanPhamViewModel
+                .Select(x => new ProductVM
                 {
                     MaSanPham = x.sp.MaSanPham,
                     TenSanPham = x.sp.TenSanPham,
@@ -182,7 +187,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                 .ToListAsync(); // Thực thi truy vấn và trả về danh sách SanPhamViewModel
 
             // Trả về kết quả phân trang
-            return new PagedResult<SanPhamViewModel>
+            return new PagedResult<ProductVM>
             {
                 TotalRecords = totalRecords,
                 PageIndex = request.PageIndex,
@@ -258,23 +263,22 @@ namespace ShopGYM.Application.Catalog.SanPham
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<SanPhamViewModel> GetById(int IdHinhAnh)
+        public async Task<ProductVM> GetById(int IdHinhAnh)
         {
             var sanpham = await _context.SanPhams.FindAsync(IdHinhAnh);
             if (sanpham == null)
                 return null;
-            var danhmuc = await _context.DanhMucs
-                        .Where(dm => dm.MaDanhMuc == sanpham.MaDanhMuc)
+            var danhmucs = await _context.DanhMucs
                         .Select(dm => dm.TenDanhMuc)
-                        .FirstOrDefaultAsync();
+                        .ToListAsync();
 
             var hinhanh = await _context.HinhAnhs.Where(x => x.MaSanPham == IdHinhAnh).FirstOrDefaultAsync();
 
-            var sanphamtViewModel = new SanPhamViewModel()
+            var sanphamtViewModel = new ProductVM()
             {
                 MaSanPham = sanpham.MaSanPham,
                 TenSanPham = sanpham.TenSanPham,
-                TenDanhMuc = danhmuc,
+                Categories = danhmucs,
                 Gia = sanpham.Gia,
                 MoTa = sanpham.MoTa,
                 KichThuoc = sanpham.KichThuoc,
@@ -316,6 +320,47 @@ namespace ShopGYM.Application.Catalog.SanPham
                     MaSanPham = i.MaSanPham,
                     ThuTu = i.ThuTu
                 }).ToListAsync();
+        }
+
+        public async Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
+        {
+            var product = await _context.SanPhams.FindAsync(id);
+            if (product == null)
+            {
+                return new ApiErrorResult<bool>($"Sản phẩm với id {id} không tồn tại");
+            }
+
+            // Xử lý danh mục bị xóa (Selected = false)
+            var removedCategories = request.Categories
+                .Where(x => x.Selected == false)
+                .Select(x => x.Id)
+                .ToList();
+
+            foreach (var categoryId in removedCategories)
+            {
+                if (product.MaDanhMuc == int.Parse(categoryId))
+                {
+                    product.MaDanhMuc = null; // Xóa danh mục bằng cách đặt CategoryId về null
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            // Xử lý danh mục được thêm (Selected = true)
+            var addedCategories = request.Categories
+                .Where(x => x.Selected)
+                .Select(x => x.Id)
+                .ToList();
+
+            foreach (var categoryId in addedCategories)
+            {
+                if (product.MaDanhMuc != int.Parse(categoryId)) // Chỉ gán nếu chưa có danh mục này
+                {
+                    product.MaDanhMuc = int.Parse(categoryId); // Gán danh mục mới
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            return new ApiSuccessResult<bool>();
         }
     }
 

@@ -5,64 +5,80 @@ using Microsoft.AspNetCore.Mvc;
 using ShopGYM.Application.Catalog.SanPham;
 using ShopGYM.ViewModels.Catalog.HinhAnh;
 using ShopGYM.ViewModels.Catalog.SanPham;
+using ShopGYM.ViewModels.System.Users;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace ShopGYM.BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SanPhamsController : ControllerBase
+    public class ProductsController : ControllerBase
     {
-        private readonly ISanPhamService _SanPhamService;
-        public SanPhamsController(ISanPhamService SanPhamService)
+        private readonly IProductService _productService;
+        public ProductsController(IProductService productService)
         {
-            _SanPhamService = SanPhamService;
+            _productService = productService;
         }
         //San pham
-        //http://localhost:port/SanPham/public-paging
-        [HttpGet("public-paging")]
-        public async Task<IActionResult> GetAllPaging([FromQuery]GetPublicSanPhamPagingRequest request)
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllPaging([FromQuery]GetManageProductPagingRequest request)
         {
-            var sanpham = await _SanPhamService.GetAllByMaDanhMuc(request);
+            var sanpham = await _productService.GetAllPaging(request);
             return Ok(sanpham);
         }
-        //http://localhost:port/SanPham/1
+        
+
         [HttpGet("{IdSanPham}")]
-        [Authorize]
         public async Task<IActionResult> GetById(int IdSanPham)
         {
-            var sanpham = await _SanPhamService.GetById(IdSanPham);
+            var sanpham = await _productService.GetById(IdSanPham);
             if(sanpham == null)
-                return BadRequest("Khong tim thay san pham");
+                return BadRequest("Không thể tìm thấy sản phẩm");
 
             return Ok(sanpham);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] SanPhamCreateRequest request)
+        [Consumes("multipart/form-data")]
+        [Authorize]
+        public async Task<IActionResult> Create([FromForm] ProductCreateRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var Idsanpham = await _SanPhamService.Create(request);
+            var Idsanpham = await _productService.Create(request);
             if (Idsanpham == 0)
                 return BadRequest();
 
-            var sanpham = await _SanPhamService.GetById(Idsanpham);
+            var sanpham = await _productService.GetById(Idsanpham);
 
             return CreatedAtAction(nameof(GetById), new {  id = Idsanpham}, sanpham);
         }
-        
+
+        [HttpPut("{id}/categories")]
+        public async Task<IActionResult> CategoryAssign(int id, [FromBody] CategoryAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _productService.CategoryAssign(id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
         [HttpPut]
-        public async Task<IActionResult> Update([FromForm] SanPhamUpdateRequest request)
+        public async Task<IActionResult> Edit([FromRoute] int IdSanpham, ProductUpdateRequets request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var Idsanpham = await _SanPhamService.Update(request);
-            var affectedResult = await _SanPhamService.Update(request);
+            request.Id = IdSanpham;
+            var affectedResult = await _productService.Edit(request);
             if (affectedResult == 0)
                 return BadRequest();
             return Ok();
@@ -75,7 +91,7 @@ namespace ShopGYM.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var Issuccessful = await _SanPhamService.UpdatePrice(IdSanPham, GiaMoi);
+            var Issuccessful = await _productService.UpdatePrice(IdSanPham, GiaMoi);
             if (Issuccessful)
                 return Ok();
             return BadRequest();
@@ -85,7 +101,7 @@ namespace ShopGYM.BackendApi.Controllers
         [HttpDelete("{IdSanPham}")]
         public async Task<IActionResult> Delete(int IdSanPham)
         {
-            var affectedresult = await _SanPhamService.Delete(IdSanPham);
+            var affectedresult = await _productService.Delete(IdSanPham);
             if (affectedresult == 0)
                 return BadRequest();
 
@@ -102,11 +118,11 @@ namespace ShopGYM.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var IdHinhAnh = await _SanPhamService.AddImage(IdSanPham, request);
+            var IdHinhAnh = await _productService.AddImage(IdSanPham, request);
             if (IdHinhAnh == 0)
                 return BadRequest();
 
-            var HinhAnh = await _SanPhamService.GetImageById(IdHinhAnh);
+            var HinhAnh = await _productService.GetImageById(IdHinhAnh);
 
             return CreatedAtAction(nameof(GetListImageByIdSanPham), new { id = IdSanPham }, HinhAnh);
         }
@@ -118,7 +134,7 @@ namespace ShopGYM.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _SanPhamService.UpdateImage(IdHinhAnh, request);
+            var result = await _productService.UpdateImage(IdHinhAnh, request);
             if (result == 0)
                 return BadRequest();
 
@@ -132,7 +148,7 @@ namespace ShopGYM.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _SanPhamService.RemoveImage(IdHinhAnh);
+            var result = await _productService.RemoveImage(IdHinhAnh);
             if (result == 0)
                 return BadRequest();
 
@@ -142,9 +158,9 @@ namespace ShopGYM.BackendApi.Controllers
         [HttpGet("{IdSanPham}/HinhAnh")]
         public async Task<IActionResult> GetListImageByIdSanPham(int IdSanPham)
         {
-            var HinhAnh = await _SanPhamService.GetListImages(IdSanPham);
+            var HinhAnh = await _productService.GetListImages(IdSanPham);
             if (HinhAnh == null)
-                return BadRequest("Khong the tim thay san pham");
+                return BadRequest("Không thể tìm thấy sản phẩm");
             return Ok(HinhAnh);
         }
 

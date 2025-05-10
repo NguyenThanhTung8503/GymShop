@@ -38,8 +38,8 @@ builder.Services.AddSession(options =>
 builder.Services.AddTransient<IUserApiClient, UserApiClient>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<IRoleApiClient, RoleApiClient>();
-
-
+builder.Services.AddTransient<IProductApiClient, ProductApiClient>();
+builder.Services.AddTransient<ICategoryApiClient, CategoryApiClient>();
 
 
 var app = builder.Build();

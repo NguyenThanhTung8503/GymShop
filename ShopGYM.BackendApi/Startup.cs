@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ShopGYM.Application.Catalog.DanhMuc;
 using ShopGYM.Application.Catalog.SanPham;
 using ShopGYM.Application.Common;
 using ShopGYM.Application.System.Role;
@@ -42,13 +43,14 @@ namespace ShopGYM.BackendApi
                 .AddDefaultTokenProviders();
 
             //Declare DI
-            services.AddTransient<ISanPhamService, SanPhamService>();
+            services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<ICategoryService, CategoryService>();
 
 
             services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
