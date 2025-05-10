@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ShopGYM.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class createdatabase : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -155,6 +157,24 @@ namespace ShopGYM.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SanPham",
+                columns: table => new
+                {
+                    MaSanPham = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TenSanPham = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Gia = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
+                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    KichThuoc = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    MauSac = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    SoLuongTon = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SanPham", x => x.MaSanPham);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DonHang",
                 columns: table => new
                 {
@@ -179,31 +199,6 @@ namespace ShopGYM.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SanPham",
-                columns: table => new
-                {
-                    MaSanPham = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TenSanPham = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    MaDanhMuc = table.Column<int>(type: "int", nullable: false),
-                    Gia = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
-                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    KichThuoc = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    MauSac = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    SoLuongTon = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SanPham", x => x.MaSanPham);
-                    table.ForeignKey(
-                        name: "FK_SanPham_DanhMuc_MaDanhMuc",
-                        column: x => x.MaDanhMuc,
-                        principalTable: "DanhMuc",
-                        principalColumn: "MaDanhMuc",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "NhapHang",
                 columns: table => new
                 {
@@ -222,58 +217,6 @@ namespace ShopGYM.Data.Migrations
                         column: x => x.MaNhaCungCap,
                         principalTable: "NhaCungCap",
                         principalColumn: "MaNhaCungCap",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GiaoDich",
-                columns: table => new
-                {
-                    MaGiaoDich = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MaDonHang = table.Column<int>(type: "int", nullable: false),
-                    MaGiaoDichCuaCong = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    SoTien = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
-                    TrangThai = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    NgayGiaoDich = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CongThanhToan = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GiaoDich", x => x.MaGiaoDich);
-                    table.ForeignKey(
-                        name: "FK_GiaoDich_DonHang_MaDonHang",
-                        column: x => x.MaDonHang,
-                        principalTable: "DonHang",
-                        principalColumn: "MaDonHang",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ChiTietDonHang",
-                columns: table => new
-                {
-                    MaChiTietDonHang = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MaDonHang = table.Column<int>(type: "int", nullable: false),
-                    MaSanPham = table.Column<int>(type: "int", nullable: false),
-                    SoLuong = table.Column<int>(type: "int", nullable: false),
-                    GiaBan = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ChiTietDonHang", x => x.MaChiTietDonHang);
-                    table.ForeignKey(
-                        name: "FK_ChiTietDonHang_DonHang_MaDonHang",
-                        column: x => x.MaDonHang,
-                        principalTable: "DonHang",
-                        principalColumn: "MaDonHang",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ChiTietDonHang_SanPham_MaSanPham",
-                        column: x => x.MaSanPham,
-                        principalTable: "SanPham",
-                        principalColumn: "MaSanPham",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -333,6 +276,82 @@ namespace ShopGYM.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductInCategory",
+                columns: table => new
+                {
+                    MaSanPham = table.Column<int>(type: "int", nullable: false),
+                    MaDanhMuc = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductInCategory", x => new { x.MaDanhMuc, x.MaSanPham });
+                    table.ForeignKey(
+                        name: "FK_ProductInCategory_DanhMuc_MaDanhMuc",
+                        column: x => x.MaDanhMuc,
+                        principalTable: "DanhMuc",
+                        principalColumn: "MaDanhMuc",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductInCategory_SanPham_MaSanPham",
+                        column: x => x.MaSanPham,
+                        principalTable: "SanPham",
+                        principalColumn: "MaSanPham",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChiTietDonHang",
+                columns: table => new
+                {
+                    MaChiTietDonHang = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MaDonHang = table.Column<int>(type: "int", nullable: false),
+                    MaSanPham = table.Column<int>(type: "int", nullable: false),
+                    SoLuong = table.Column<int>(type: "int", nullable: false),
+                    GiaBan = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChiTietDonHang", x => x.MaChiTietDonHang);
+                    table.ForeignKey(
+                        name: "FK_ChiTietDonHang_DonHang_MaDonHang",
+                        column: x => x.MaDonHang,
+                        principalTable: "DonHang",
+                        principalColumn: "MaDonHang",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ChiTietDonHang_SanPham_MaSanPham",
+                        column: x => x.MaSanPham,
+                        principalTable: "SanPham",
+                        principalColumn: "MaSanPham",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GiaoDich",
+                columns: table => new
+                {
+                    MaGiaoDich = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MaDonHang = table.Column<int>(type: "int", nullable: false),
+                    MaGiaoDichCuaCong = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    SoTien = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
+                    TrangThai = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    NgayGiaoDich = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CongThanhToan = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GiaoDich", x => x.MaGiaoDich);
+                    table.ForeignKey(
+                        name: "FK_GiaoDich_DonHang_MaDonHang",
+                        column: x => x.MaDonHang,
+                        principalTable: "DonHang",
+                        principalColumn: "MaDonHang",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ChiTietNhapHang",
                 columns: table => new
                 {
@@ -386,6 +405,101 @@ namespace ShopGYM.Data.Migrations
                         column: x => x.MaSanPham,
                         principalTable: "SanPham",
                         principalColumn: "MaSanPham");
+                });
+
+            migrationBuilder.InsertData(
+                table: "AppRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "MoTa", "Name", "NormalizedName" },
+                values: new object[] { new Guid("8e15262e-8583-4c49-86be-cef2bf4345d1"), null, "Quan Tri", "admin", "admin" });
+
+            migrationBuilder.InsertData(
+                table: "AppUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { new Guid("8e15262e-8583-4c49-86be-cef2bf4345d1"), new Guid("90b411be-a570-4839-8f59-492edcc9520d") });
+
+            migrationBuilder.InsertData(
+                table: "AppUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Dob", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { new Guid("90b411be-a570-4839-8f59-492edcc9520d"), 0, "1f2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d", new DateTime(2003, 5, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyenthanhutung0168I@gmail.com", true, "Nguyen", "Tung", false, null, "Nguyenthanhutung0168I@gmail.com", "admin", "AQAAAAIAAYagAAAAEM46oTWgZoplJc03cruZtbZl0U+oFphoPy/WIUKRg7ddeIhiiLck/8cFrJw6UnM+MQ==", null, false, "", false, "admin" });
+
+            migrationBuilder.InsertData(
+                table: "DanhMuc",
+                columns: new[] { "MaDanhMuc", "MoTa", "TenDanhMuc" },
+                values: new object[,]
+                {
+                    { 1, "Quần các loại", "Quan" },
+                    { 2, "Áo thời trang", "Ao" },
+                    { 3, "Giày thể thao và thời trang", "Giay" },
+                    { 4, "Phụ kiện thời trang", "PhuKien" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "NhaCungCap",
+                columns: new[] { "MaNhaCungCap", "DiaChi", "Email", "SoDienThoai", "TenNhaCungCap" },
+                values: new object[,]
+                {
+                    { 1, "123 Factory St, Hanoi", "abc@company.com", "0901234560", "Công ty TNHH May Mặc ABC" },
+                    { 2, "456 Factory St, HCMC", "xyz@company.com", "0901234561", "Công ty Giày XYZ" },
+                    { 3, "789 Factory St, Danang", "123@company.com", "0901234562", "Công ty Phụ Kiện 123" },
+                    { 4, "321 Factory St, Hanoi", "def@company.com", "0901234563", "Công ty Thời Trang DEF" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SanPham",
+                columns: new[] { "MaSanPham", "Gia", "KichThuoc", "MauSac", "MoTa", "SoLuongTon", "TenSanPham" },
+                values: new object[,]
+                {
+                    { 1, 350000m, "M", "Xanh đậm", "Quần jeans nam phong cách", 50, "Quần Jeans Nam" },
+                    { 2, 280000m, "S", "Beige", "Quần kaki nữ thời trang", 40, "Quần Kaki Nữ" },
+                    { 3, 150000m, "L", "Trắng", "Áo thun nam cotton", 100, "Áo Thun Nam" },
+                    { 4, 250000m, "M", "Xanh nhạt", "Áo sơ mi nữ công sở", 30, "Áo Sơ Mi Nữ" },
+                    { 5, 650000m, "L", "Đen", "Giày sneaker nam thời trang", 25, "Giày Sneaker Nam" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "HinhAnh",
+                columns: new[] { "MaHinhAnh", "DuongDan", "MaDanhGia", "MaSanPham", "Mota", "NgayTao", "ThuTu" },
+                values: new object[,]
+                {
+                    { 1, "/images/jeans.jpg", null, 1, "Hình quần jeans nam", new DateTime(2025, 3, 26, 8, 0, 0, 0, DateTimeKind.Unspecified), 1 },
+                    { 2, "/images/kaki.jpg", null, 2, "Hình quần kaki nữ", new DateTime(2025, 3, 26, 8, 0, 0, 0, DateTimeKind.Unspecified), 1 },
+                    { 3, "/images/tshirt.jpg", null, 3, "Hình áo thun nam", new DateTime(2025, 3, 26, 8, 0, 0, 0, DateTimeKind.Unspecified), 1 },
+                    { 4, "/images/shirt.jpg", null, 4, "Hình áo sơ mi nữ", new DateTime(2025, 3, 26, 8, 0, 0, 0, DateTimeKind.Unspecified), 1 },
+                    { 5, "/images/sneaker.jpg", null, 5, "Hình giày sneaker nam", new DateTime(2025, 3, 26, 8, 0, 0, 0, DateTimeKind.Unspecified), 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "NhapHang",
+                columns: new[] { "MaNhapHang", "GhiChu", "MaNhaCungCap", "NgayNhap", "TongTien" },
+                values: new object[,]
+                {
+                    { 1, "Nhập lô quần jeans", 1, new DateTime(2025, 4, 5, 8, 0, 0, 0, DateTimeKind.Unspecified), 5000000m },
+                    { 2, "Nhập lô giày sneaker", 2, new DateTime(2025, 4, 10, 9, 0, 0, 0, DateTimeKind.Unspecified), 8000000m },
+                    { 3, "Nhập lô phụ kiện", 3, new DateTime(2025, 4, 15, 10, 0, 0, 0, DateTimeKind.Unspecified), 2000000m },
+                    { 4, "Nhập lô áo thun", 4, new DateTime(2025, 4, 20, 11, 0, 0, 0, DateTimeKind.Unspecified), 6000000m }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProductInCategory",
+                columns: new[] { "MaDanhMuc", "MaSanPham" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 2, 3 },
+                    { 2, 4 },
+                    { 3, 5 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ChiTietNhapHang",
+                columns: new[] { "MaChiTietNhapHang", "GiaNhap", "MaNhapHang", "MaSanPham", "SoLuong" },
+                values: new object[,]
+                {
+                    { 1, 200000m, 1, 1, 50 },
+                    { 2, 400000m, 2, 5, 30 },
+                    { 3, 80000m, 3, 4, 100 },
+                    { 4, 100000m, 4, 3, 150 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -454,9 +568,9 @@ namespace ShopGYM.Data.Migrations
                 column: "MaNhaCungCap");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SanPham_MaDanhMuc",
-                table: "SanPham",
-                column: "MaDanhMuc");
+                name: "IX_ProductInCategory_MaSanPham",
+                table: "ProductInCategory",
+                column: "MaSanPham");
         }
 
         /// <inheritdoc />
@@ -496,6 +610,9 @@ namespace ShopGYM.Data.Migrations
                 name: "HinhAnh");
 
             migrationBuilder.DropTable(
+                name: "ProductInCategory");
+
+            migrationBuilder.DropTable(
                 name: "NhapHang");
 
             migrationBuilder.DropTable(
@@ -505,6 +622,9 @@ namespace ShopGYM.Data.Migrations
                 name: "DanhGia");
 
             migrationBuilder.DropTable(
+                name: "DanhMuc");
+
+            migrationBuilder.DropTable(
                 name: "NhaCungCap");
 
             migrationBuilder.DropTable(
@@ -512,9 +632,6 @@ namespace ShopGYM.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "SanPham");
-
-            migrationBuilder.DropTable(
-                name: "DanhMuc");
         }
     }
 }

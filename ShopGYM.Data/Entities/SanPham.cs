@@ -11,7 +11,6 @@ namespace ShopGYM.Data.Entities
     {
         public int MaSanPham { get; set; }
         public string TenSanPham { get; set; }
-        public int? MaDanhMuc { get; set; }
         public decimal Gia { get; set; }
         public string? MoTa { get; set; }
         public string? KichThuoc { get; set; }
@@ -22,6 +21,6 @@ namespace ShopGYM.Data.Entities
         public ICollection<GioHang> GioHangs { get; set; }
         public ICollection<DanhGia> DanhGias { get; set; }
         public ICollection<ChiTietNhapHang> ChiTietNhapHangs { get; set; }
-        public DanhMuc DanhMuc { get; set; }
+        public List<ProductInCategory> ProductInCategories { get; set; }
     }
 }

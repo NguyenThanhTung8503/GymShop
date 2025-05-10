@@ -13,6 +13,6 @@ namespace ShopGYM.Data.Entities
         public string TenDanhMuc { get; set; } 
         public string MoTa { get; set; }
 
-        public ICollection<SanPham> SanPhams { get; set; }
+        public List<ProductInCategory> ProductInCategories { get; set; }
     }
 }

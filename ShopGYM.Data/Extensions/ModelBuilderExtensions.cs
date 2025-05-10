@@ -32,8 +32,8 @@ namespace ShopGYM.Data.Extensions
                 Id = adminId,
                 UserName = "admin",
                 NormalizedUserName = "admin",
-                Email = "Nguyenthanhutng0168I@gmail.com",
-                NormalizedEmail = "Nguyenthanhutng0168I@gmail.com",
+                Email = "Nguyenthanhutung0168I@gmail.com",
+                NormalizedEmail = "Nguyenthanhutung0168I@gmail.com",
                 EmailConfirmed = true,
                 PasswordHash = "AQAAAAIAAYagAAAAEM46oTWgZoplJc03cruZtbZl0U+oFphoPy/WIUKRg7ddeIhiiLck/8cFrJw6UnM+MQ==",//do lỗi seeding nên để pass băm sẵn pass là Tung1234,
                 ConcurrencyStamp = "1f2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d", // Giá trị cố định
@@ -58,14 +58,23 @@ namespace ShopGYM.Data.Extensions
                 new DanhMuc { MaDanhMuc = 3, TenDanhMuc = "Giay", MoTa = "Giày thể thao và thời trang" },
                 new DanhMuc { MaDanhMuc = 4, TenDanhMuc = "PhuKien", MoTa = "Phụ kiện thời trang" }
             );
+            // Seed ProductInCategory
+            modelBuilder.Entity<ProductInCategory>().HasData(
+                new ProductInCategory { MaSanPham = 1, MaDanhMuc = 1},
+                new ProductInCategory { MaSanPham = 2, MaDanhMuc = 1 },
+                new ProductInCategory { MaSanPham = 3, MaDanhMuc = 2 },
+                new ProductInCategory { MaSanPham = 4, MaDanhMuc = 2 },
+                new ProductInCategory { MaSanPham = 5, MaDanhMuc = 3 }
+
+            );
 
             // Seed SanPham
             modelBuilder.Entity<SanPham>().HasData(
-                new SanPham { MaSanPham = 1, TenSanPham = "Quần Jeans Nam", MaDanhMuc = 1, Gia = 350000, MoTa = "Quần jeans nam phong cách", KichThuoc = "M", MauSac = "Xanh đậm", SoLuongTon = 50 },
-                new SanPham { MaSanPham = 2, TenSanPham = "Quần Kaki Nữ", MaDanhMuc = 1, Gia = 280000, MoTa = "Quần kaki nữ thời trang", KichThuoc = "S", MauSac = "Beige", SoLuongTon = 40 },
-                new SanPham { MaSanPham = 3, TenSanPham = "Áo Thun Nam", MaDanhMuc = 2, Gia = 150000, MoTa = "Áo thun nam cotton", KichThuoc = "L", MauSac = "Trắng", SoLuongTon = 100 },
-                new SanPham { MaSanPham = 4, TenSanPham = "Áo Sơ Mi Nữ", MaDanhMuc = 2, Gia = 250000, MoTa = "Áo sơ mi nữ công sở", KichThuoc = "M", MauSac = "Xanh nhạt", SoLuongTon = 30 },
-                new SanPham { MaSanPham = 5, TenSanPham = "Giày Sneaker Nam", MaDanhMuc = 3, Gia = 650000, MoTa = "Giày sneaker nam thời trang", KichThuoc = "L", MauSac = "Đen", SoLuongTon = 25 }
+                new SanPham { MaSanPham = 1, TenSanPham = "Quần Jeans Nam", Gia = 350000, MoTa = "Quần jeans nam phong cách", KichThuoc = "M", MauSac = "Xanh đậm", SoLuongTon = 50 },
+                new SanPham { MaSanPham = 2, TenSanPham = "Quần Kaki Nữ", Gia = 280000, MoTa = "Quần kaki nữ thời trang", KichThuoc = "S", MauSac = "Beige", SoLuongTon = 40 },
+                new SanPham { MaSanPham = 3, TenSanPham = "Áo Thun Nam", Gia = 150000, MoTa = "Áo thun nam cotton", KichThuoc = "L", MauSac = "Trắng", SoLuongTon = 100 },
+                new SanPham { MaSanPham = 4, TenSanPham = "Áo Sơ Mi Nữ", Gia = 250000, MoTa = "Áo sơ mi nữ công sở", KichThuoc = "M", MauSac = "Xanh nhạt", SoLuongTon = 30 },
+                new SanPham { MaSanPham = 5, TenSanPham = "Giày Sneaker Nam", Gia = 650000, MoTa = "Giày sneaker nam thời trang", KichThuoc = "L", MauSac = "Đen", SoLuongTon = 25 }
            
             );
 

@@ -28,6 +28,7 @@ namespace ShopGYM.Data.EF
             modelBuilder.ApplyConfiguration(new HinhAnhConfiguration());
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
             modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductInCategoryConfiguration());
 
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
             modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new { x.UserId, x.RoleId });
@@ -37,7 +38,7 @@ namespace ShopGYM.Data.EF
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
 
             //Seeding data
-           modelBuilder.Seed();
+            modelBuilder.Seed();
 
         }
         public DbSet<DanhMuc> DanhMucs { get; set; }
@@ -51,6 +52,7 @@ namespace ShopGYM.Data.EF
         public DbSet<NhapHang> NhapHangs { get; set; }
         public DbSet<ChiTietNhapHang> ChiTietNhapHangs { get; set; }
         public DbSet<HinhAnh> HinhAnhs { get; set; }
+        public DbSet<ProductInCategory> ProductInCategories { get; set; }
 
     }
 }

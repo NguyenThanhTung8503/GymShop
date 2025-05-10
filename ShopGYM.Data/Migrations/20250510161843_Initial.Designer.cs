@@ -12,8 +12,8 @@ using ShopGYM.Data.EF;
 namespace ShopGYM.Data.Migrations
 {
     [DbContext(typeof(ShopGYMDbContext))]
-    [Migration("20250428103938_createdatabase")]
-    partial class createdatabase
+    [Migration("20250510161843_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -102,6 +102,13 @@ namespace ShopGYM.Data.Migrations
                     b.HasKey("UserId", "RoleId");
 
                     b.ToTable("AppUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("90b411be-a570-4839-8f59-492edcc9520d"),
+                            RoleId = new Guid("8e15262e-8583-4c49-86be-cef2bf4345d1")
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -149,6 +156,15 @@ namespace ShopGYM.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("8e15262e-8583-4c49-86be-cef2bf4345d1"),
+                            MoTa = "Quan Tri",
+                            Name = "admin",
+                            NormalizedName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("ShopGYM.Data.Entities.AppUser", b =>
@@ -215,6 +231,27 @@ namespace ShopGYM.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("90b411be-a570-4839-8f59-492edcc9520d"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "1f2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+                            Dob = new DateTime(2003, 5, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "Nguyenthanhutung0168I@gmail.com",
+                            EmailConfirmed = true,
+                            FirstName = "Nguyen",
+                            LastName = "Tung",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "Nguyenthanhutung0168I@gmail.com",
+                            NormalizedUserName = "admin",
+                            PasswordHash = "AQAAAAIAAYagAAAAEM46oTWgZoplJc03cruZtbZl0U+oFphoPy/WIUKRg7ddeIhiiLck/8cFrJw6UnM+MQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("ShopGYM.Data.Entities.ChiTietDonHang", b =>
@@ -273,6 +310,40 @@ namespace ShopGYM.Data.Migrations
                     b.HasIndex("MaSanPham");
 
                     b.ToTable("ChiTietNhapHang", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            MaChiTietNhapHang = 1,
+                            GiaNhap = 200000m,
+                            MaNhapHang = 1,
+                            MaSanPham = 1,
+                            SoLuong = 50
+                        },
+                        new
+                        {
+                            MaChiTietNhapHang = 2,
+                            GiaNhap = 400000m,
+                            MaNhapHang = 2,
+                            MaSanPham = 5,
+                            SoLuong = 30
+                        },
+                        new
+                        {
+                            MaChiTietNhapHang = 3,
+                            GiaNhap = 80000m,
+                            MaNhapHang = 3,
+                            MaSanPham = 4,
+                            SoLuong = 100
+                        },
+                        new
+                        {
+                            MaChiTietNhapHang = 4,
+                            GiaNhap = 100000m,
+                            MaNhapHang = 4,
+                            MaSanPham = 3,
+                            SoLuong = 150
+                        });
                 });
 
             modelBuilder.Entity("ShopGYM.Data.Entities.DanhGia", b =>
@@ -326,6 +397,32 @@ namespace ShopGYM.Data.Migrations
                     b.HasKey("MaDanhMuc");
 
                     b.ToTable("DanhMuc", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            MaDanhMuc = 1,
+                            MoTa = "Quần các loại",
+                            TenDanhMuc = "Quan"
+                        },
+                        new
+                        {
+                            MaDanhMuc = 2,
+                            MoTa = "Áo thời trang",
+                            TenDanhMuc = "Ao"
+                        },
+                        new
+                        {
+                            MaDanhMuc = 3,
+                            MoTa = "Giày thể thao và thời trang",
+                            TenDanhMuc = "Giay"
+                        },
+                        new
+                        {
+                            MaDanhMuc = 4,
+                            MoTa = "Phụ kiện thời trang",
+                            TenDanhMuc = "PhuKien"
+                        });
                 });
 
             modelBuilder.Entity("ShopGYM.Data.Entities.DonHang", b =>
@@ -471,6 +568,53 @@ namespace ShopGYM.Data.Migrations
                     b.HasIndex("MaSanPham");
 
                     b.ToTable("HinhAnh", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            MaHinhAnh = 1,
+                            DuongDan = "/images/jeans.jpg",
+                            MaSanPham = 1,
+                            Mota = "Hình quần jeans nam",
+                            NgayTao = new DateTime(2025, 3, 26, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            ThuTu = 1
+                        },
+                        new
+                        {
+                            MaHinhAnh = 2,
+                            DuongDan = "/images/kaki.jpg",
+                            MaSanPham = 2,
+                            Mota = "Hình quần kaki nữ",
+                            NgayTao = new DateTime(2025, 3, 26, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            ThuTu = 1
+                        },
+                        new
+                        {
+                            MaHinhAnh = 3,
+                            DuongDan = "/images/tshirt.jpg",
+                            MaSanPham = 3,
+                            Mota = "Hình áo thun nam",
+                            NgayTao = new DateTime(2025, 3, 26, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            ThuTu = 1
+                        },
+                        new
+                        {
+                            MaHinhAnh = 4,
+                            DuongDan = "/images/shirt.jpg",
+                            MaSanPham = 4,
+                            Mota = "Hình áo sơ mi nữ",
+                            NgayTao = new DateTime(2025, 3, 26, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            ThuTu = 1
+                        },
+                        new
+                        {
+                            MaHinhAnh = 5,
+                            DuongDan = "/images/sneaker.jpg",
+                            MaSanPham = 5,
+                            Mota = "Hình giày sneaker nam",
+                            NgayTao = new DateTime(2025, 3, 26, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            ThuTu = 1
+                        });
                 });
 
             modelBuilder.Entity("ShopGYM.Data.Entities.NhaCungCap", b =>
@@ -503,6 +647,40 @@ namespace ShopGYM.Data.Migrations
                     b.HasKey("MaNhaCungCap");
 
                     b.ToTable("NhaCungCap", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            MaNhaCungCap = 1,
+                            DiaChi = "123 Factory St, Hanoi",
+                            Email = "abc@company.com",
+                            SoDienThoai = "0901234560",
+                            TenNhaCungCap = "Công ty TNHH May Mặc ABC"
+                        },
+                        new
+                        {
+                            MaNhaCungCap = 2,
+                            DiaChi = "456 Factory St, HCMC",
+                            Email = "xyz@company.com",
+                            SoDienThoai = "0901234561",
+                            TenNhaCungCap = "Công ty Giày XYZ"
+                        },
+                        new
+                        {
+                            MaNhaCungCap = 3,
+                            DiaChi = "789 Factory St, Danang",
+                            Email = "123@company.com",
+                            SoDienThoai = "0901234562",
+                            TenNhaCungCap = "Công ty Phụ Kiện 123"
+                        },
+                        new
+                        {
+                            MaNhaCungCap = 4,
+                            DiaChi = "321 Factory St, Hanoi",
+                            Email = "def@company.com",
+                            SoDienThoai = "0901234563",
+                            TenNhaCungCap = "Công ty Thời Trang DEF"
+                        });
                 });
 
             modelBuilder.Entity("ShopGYM.Data.Entities.NhapHang", b =>
@@ -531,6 +709,82 @@ namespace ShopGYM.Data.Migrations
                     b.HasIndex("MaNhaCungCap");
 
                     b.ToTable("NhapHang", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            MaNhapHang = 1,
+                            GhiChu = "Nhập lô quần jeans",
+                            MaNhaCungCap = 1,
+                            NgayNhap = new DateTime(2025, 4, 5, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            TongTien = 5000000m
+                        },
+                        new
+                        {
+                            MaNhapHang = 2,
+                            GhiChu = "Nhập lô giày sneaker",
+                            MaNhaCungCap = 2,
+                            NgayNhap = new DateTime(2025, 4, 10, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            TongTien = 8000000m
+                        },
+                        new
+                        {
+                            MaNhapHang = 3,
+                            GhiChu = "Nhập lô phụ kiện",
+                            MaNhaCungCap = 3,
+                            NgayNhap = new DateTime(2025, 4, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            TongTien = 2000000m
+                        },
+                        new
+                        {
+                            MaNhapHang = 4,
+                            GhiChu = "Nhập lô áo thun",
+                            MaNhaCungCap = 4,
+                            NgayNhap = new DateTime(2025, 4, 20, 11, 0, 0, 0, DateTimeKind.Unspecified),
+                            TongTien = 6000000m
+                        });
+                });
+
+            modelBuilder.Entity("ShopGYM.Data.Entities.ProductInCategory", b =>
+                {
+                    b.Property<int>("MaDanhMuc")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaSanPham")
+                        .HasColumnType("int");
+
+                    b.HasKey("MaDanhMuc", "MaSanPham");
+
+                    b.HasIndex("MaSanPham");
+
+                    b.ToTable("ProductInCategory", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            MaDanhMuc = 1,
+                            MaSanPham = 1
+                        },
+                        new
+                        {
+                            MaDanhMuc = 1,
+                            MaSanPham = 2
+                        },
+                        new
+                        {
+                            MaDanhMuc = 2,
+                            MaSanPham = 3
+                        },
+                        new
+                        {
+                            MaDanhMuc = 2,
+                            MaSanPham = 4
+                        },
+                        new
+                        {
+                            MaDanhMuc = 3,
+                            MaSanPham = 5
+                        });
                 });
 
             modelBuilder.Entity("ShopGYM.Data.Entities.SanPham", b =>
@@ -545,20 +799,14 @@ namespace ShopGYM.Data.Migrations
                         .HasColumnType("DECIMAL(18,2)");
 
                     b.Property<string>("KichThuoc")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("MaDanhMuc")
-                        .HasColumnType("int");
-
                     b.Property<string>("MauSac")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("MoTa")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SoLuongTon")
@@ -571,9 +819,59 @@ namespace ShopGYM.Data.Migrations
 
                     b.HasKey("MaSanPham");
 
-                    b.HasIndex("MaDanhMuc");
-
                     b.ToTable("SanPham", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            MaSanPham = 1,
+                            Gia = 350000m,
+                            KichThuoc = "M",
+                            MauSac = "Xanh đậm",
+                            MoTa = "Quần jeans nam phong cách",
+                            SoLuongTon = 50,
+                            TenSanPham = "Quần Jeans Nam"
+                        },
+                        new
+                        {
+                            MaSanPham = 2,
+                            Gia = 280000m,
+                            KichThuoc = "S",
+                            MauSac = "Beige",
+                            MoTa = "Quần kaki nữ thời trang",
+                            SoLuongTon = 40,
+                            TenSanPham = "Quần Kaki Nữ"
+                        },
+                        new
+                        {
+                            MaSanPham = 3,
+                            Gia = 150000m,
+                            KichThuoc = "L",
+                            MauSac = "Trắng",
+                            MoTa = "Áo thun nam cotton",
+                            SoLuongTon = 100,
+                            TenSanPham = "Áo Thun Nam"
+                        },
+                        new
+                        {
+                            MaSanPham = 4,
+                            Gia = 250000m,
+                            KichThuoc = "M",
+                            MauSac = "Xanh nhạt",
+                            MoTa = "Áo sơ mi nữ công sở",
+                            SoLuongTon = 30,
+                            TenSanPham = "Áo Sơ Mi Nữ"
+                        },
+                        new
+                        {
+                            MaSanPham = 5,
+                            Gia = 650000m,
+                            KichThuoc = "L",
+                            MauSac = "Đen",
+                            MoTa = "Giày sneaker nam thời trang",
+                            SoLuongTon = 25,
+                            TenSanPham = "Giày Sneaker Nam"
+                        });
                 });
 
             modelBuilder.Entity("ShopGYM.Data.Entities.ChiTietDonHang", b =>
@@ -703,15 +1001,23 @@ namespace ShopGYM.Data.Migrations
                     b.Navigation("NhaCungCap");
                 });
 
-            modelBuilder.Entity("ShopGYM.Data.Entities.SanPham", b =>
+            modelBuilder.Entity("ShopGYM.Data.Entities.ProductInCategory", b =>
                 {
                     b.HasOne("ShopGYM.Data.Entities.DanhMuc", "DanhMuc")
-                        .WithMany("SanPhams")
+                        .WithMany("ProductInCategories")
                         .HasForeignKey("MaDanhMuc")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ShopGYM.Data.Entities.SanPham", "SanPham")
+                        .WithMany("ProductInCategories")
+                        .HasForeignKey("MaSanPham")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("DanhMuc");
+
+                    b.Navigation("SanPham");
                 });
 
             modelBuilder.Entity("ShopGYM.Data.Entities.AppUser", b =>
@@ -730,7 +1036,7 @@ namespace ShopGYM.Data.Migrations
 
             modelBuilder.Entity("ShopGYM.Data.Entities.DanhMuc", b =>
                 {
-                    b.Navigation("SanPhams");
+                    b.Navigation("ProductInCategories");
                 });
 
             modelBuilder.Entity("ShopGYM.Data.Entities.DonHang", b =>
@@ -761,6 +1067,8 @@ namespace ShopGYM.Data.Migrations
                     b.Navigation("GioHangs");
 
                     b.Navigation("HinhAnhs");
+
+                    b.Navigation("ProductInCategories");
                 });
 #pragma warning restore 612, 618
         }
