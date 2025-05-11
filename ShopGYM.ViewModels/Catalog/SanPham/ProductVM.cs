@@ -11,7 +11,7 @@
         public string MauSac { get; set; }
         public int SoLuongTon { get; set; }
         public string HinhAnhChinh { get; set; } // Hình ảnh chính (hình đầu tiên từ HinhAnhs)
-        public IList<string> HinhAnhs { get; set; } = new List<string>(); // Danh sách hình ảnh
-        public IList<string> Categories { get; set; } =new List<string>(); // Danh sách danh mục
+        public List<string> HinhAnhs { get; set; } = new List<string>(); // Danh sách hình ảnh
+        public List<string> Category { get; set; } = new List<string>(); // Danh sách danh mục
     }
 }

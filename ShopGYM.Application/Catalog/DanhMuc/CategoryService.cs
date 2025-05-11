@@ -30,5 +30,19 @@ namespace ShopGYM.Application.Catalog.DanhMuc
                  }).ToListAsync();
             return category;
         }
+
+        public async Task<CategoryVm> GetById(int id)
+        {
+            var category = await _context.DanhMucs
+                .Where(c => c.MaDanhMuc == id)
+                .Select(c => new CategoryVm()
+                {
+                    Id = c.MaDanhMuc,
+                    TenDanhMuc = c.TenDanhMuc
+                })
+                .FirstOrDefaultAsync();
+
+            return category;
+        }
     }
 }

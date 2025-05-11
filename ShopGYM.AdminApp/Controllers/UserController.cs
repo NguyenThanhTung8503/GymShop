@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using ShopGYM.AdminApp.Services;
+using ShopGYM.ApiIntegration;
 using ShopGYM.ViewModels.Common;
 using ShopGYM.ViewModels.System.Users;
 

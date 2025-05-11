@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using ShopGYM.AdminApp.Services;
 using ShopGYM.ViewModels.System.Users;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ShopGYM.ApiIntegration;
 
 namespace ShopGYM.AdminApp.Controllers
 {

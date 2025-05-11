@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ShopGYM.AdminApp.Services;
+using ShopGYM.ApiIntegration;
 using ShopGYM.ViewModels.Catalog.DanhMuc;
 using ShopGYM.ViewModels.Catalog.SanPham;
 using ShopGYM.ViewModels.Common;
@@ -110,7 +110,7 @@ namespace ShopGYM.AdminApp.Controllers
                 {
                     Id = role.Id.ToString(),
                     Name = role.TenDanhMuc,
-                    Selected = productObj.Categories.Contains(role.TenDanhMuc)
+                    Selected = productObj.Category.Contains(role.TenDanhMuc)
                 });
             }
             return categoryAssignRequet;

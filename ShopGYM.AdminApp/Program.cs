@@ -1,6 +1,6 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using ShopGYM.AdminApp.Services;
+using ShopGYM.ApiIntegration;
 using ShopGYM.ViewModels.System.Users;
 
 var builder = WebApplication.CreateBuilder(args);

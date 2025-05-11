@@ -93,24 +93,26 @@ namespace ShopGYM.Application.Catalog.SanPham
             return await _context.SaveChangesAsync();
         }
 
-       /* public async Task<PagedResult<ProductVM>> GetAllPaging(GetManageProductPagingRequest request)
+        public async Task<PagedResult<ProductVM>> GetAllPaging(GetManageProductPagingRequest request)
         {
             // Tạo truy vấn
             var query = from sp in _context.SanPhams
-                        join pic in _context.ProductInCategory on sp.MaDanhMuc equals dm.MaDanhMuc into danhMucs
-                        from dm in danhMucs.DefaultIfEmpty() // Kết nối trái cho danh mục
-                        join ha in _context.HinhAnhs on sp.MaSanPham equals ha.MaSanPham into hinhAnhs
-                        from ha in hinhAnhs.DefaultIfEmpty() // Kết nối trái cho hình ảnh
+                        join pic in _context.ProductInCategories on sp.MaSanPham equals pic.MaSanPham into sppic
+                        from pic in sppic.DefaultIfEmpty()
+                        join dm in _context.DanhMucs on pic.MaDanhMuc equals dm.MaDanhMuc into dmsp
+                        from dm in dmsp.DefaultIfEmpty()
+                        join ha in _context.HinhAnhs on sp.MaSanPham equals ha.MaSanPham into spha
+                        from ha in spha.DefaultIfEmpty() // Kết nối trái cho hình ảnh
                         where ha == null || ha.ThuTu == (from h in _context.HinhAnhs
                                                          where h.MaSanPham == sp.MaSanPham
                                                          orderby h.ThuTu
                                                          select h.ThuTu).FirstOrDefault() // Lấy hình đầu tiên
-                        //select new { sp, dm, ha };
+                        select new { sp, pic, ha, dm };
 
             // Áp dụng bộ lọc
             if (request.MaDanhMuc != null && request.MaDanhMuc != 0)
             {
-                query = query.Where(x => x.sp.MaDanhMuc == request.MaDanhMuc);
+                query = query.Where(x => x.pic.MaDanhMuc == request.MaDanhMuc);
             }
             if (!string.IsNullOrEmpty(request.Keyword))
             {
@@ -145,25 +147,26 @@ namespace ShopGYM.Application.Catalog.SanPham
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize
             };
-        }*/
+        }
 
-       /* public async Task<PagedResult<ProductVM>> GetAllByMaDanhMuc(GetPublicProductPagingRequest request)
+        public async Task<PagedResult<ProductVM>> GetAllByMaDanhMuc(GetPublicProductPagingRequest request)
         {
             // Tạo truy vấn
             var query = from sp in _context.SanPhams
-                        join dm in _context.DanhMucs on sp.MaDanhMuc equals dm.MaDanhMuc
+                        join pic in _context.ProductInCategories on sp.MaSanPham equals pic.MaSanPham 
+                        join dm in _context.DanhMucs on pic.MaDanhMuc equals dm.MaDanhMuc
                         join ha in _context.HinhAnhs on sp.MaSanPham equals ha.MaSanPham into hinhAnhs
                         from ha in hinhAnhs.DefaultIfEmpty() // Kết nối trái cho hình ảnh
                         where ha == null || ha.ThuTu == (from h in _context.HinhAnhs
                                                          where h.MaSanPham == sp.MaSanPham
                                                          orderby h.ThuTu
                                                          select h.ThuTu).FirstOrDefault() // Lấy hình đầu tiên
-                        select new { sp, dm, ha };
+                        select new { sp, pic, ha, dm };
 
             // Áp dụng bộ lọc
-            if (request.IdDanhMuc.HasValue)
+            if (request.IdDanhMuc.HasValue && request.IdDanhMuc > 0)
             {
-                query = query.Where(x => x.sp.MaDanhMuc == request.IdDanhMuc.Value);
+                query = query.Where(x => x.pic.MaDanhMuc == request.IdDanhMuc.Value);
             }
 
             // Tính tổng số bản ghi (TotalRecords)
@@ -194,7 +197,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                 PageSize = request.PageSize,
                 Items = items
             };
-        }*/
+        }
     
 
         public async Task<bool> UpdatePrice(int IdSanPham, decimal GiaMoi)
@@ -263,22 +266,23 @@ namespace ShopGYM.Application.Catalog.SanPham
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<ProductVM> GetById(int IdHinhAnh)
+        public async Task<ProductVM> GetById(int IdSanPham)
         {
-            var sanpham = await _context.SanPhams.FindAsync(IdHinhAnh);
+            var sanpham = await _context.SanPhams.FindAsync(IdSanPham);
             if (sanpham == null)
                 return null;
-            var danhmucs = await _context.DanhMucs
-                        .Select(dm => dm.TenDanhMuc)
-                        .ToListAsync();
+            var danhmucs = await (from dm in _context.DanhMucs
+                                  join pic in _context.ProductInCategories on dm.MaDanhMuc equals pic.MaDanhMuc
+                                  where pic.MaSanPham == IdSanPham
+                                  select dm.TenDanhMuc).ToListAsync();
 
-            var hinhanh = await _context.HinhAnhs.Where(x => x.MaSanPham == IdHinhAnh).FirstOrDefaultAsync();
+            var hinhanh = await _context.HinhAnhs.Where(x => x.MaSanPham == IdSanPham).FirstOrDefaultAsync();
 
             var sanphamtViewModel = new ProductVM()
             {
                 MaSanPham = sanpham.MaSanPham,
                 TenSanPham = sanpham.TenSanPham,
-                Categories = danhmucs,
+                Category = danhmucs,
                 Gia = sanpham.Gia,
                 MoTa = sanpham.MoTa,
                 KichThuoc = sanpham.KichThuoc,
@@ -322,22 +326,8 @@ namespace ShopGYM.Application.Catalog.SanPham
                 }).ToListAsync();
         }
 
-        public Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<PagedResult<ProductVM>> GetAllByMaDanhMuc(GetPublicProductPagingRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PagedResult<ProductVM>> GetAllPaging(GetManageProductPagingRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        /* public async Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
+         public async Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
          {
              var product = await _context.SanPhams.FindAsync(id);
              if (product == null)
@@ -345,38 +335,27 @@ namespace ShopGYM.Application.Catalog.SanPham
                  return new ApiErrorResult<bool>($"Sản phẩm với id {id} không tồn tại");
              }
 
-             // Xử lý danh mục bị xóa (Selected = false)
-             var removedCategories = request.Categories
-                 .Where(x => x.Selected == false)
-                 .Select(x => x.Id)
-                 .ToList();
-
-             foreach (var categoryId in removedCategories)
-             {
-                 if (product.MaDanhMuc == int.Parse(categoryId))
-                 {
-                     product.MaDanhMuc = null; // Xóa danh mục bằng cách đặt CategoryId về null
-                     await _context.SaveChangesAsync();
-                 }
-             }
-
-             // Xử lý danh mục được thêm (Selected = true)
-             var addedCategories = request.Categories
-                 .Where(x => x.Selected)
-                 .Select(x => x.Id)
-                 .ToList();
-
-             foreach (var categoryId in addedCategories)
-             {
-                 if (product.MaDanhMuc != int.Parse(categoryId)) // Chỉ gán nếu chưa có danh mục này
-                 {
-                     product.MaDanhMuc = int.Parse(categoryId); // Gán danh mục mới
-                     await _context.SaveChangesAsync();
-                 }
-             }
-
-             return new ApiSuccessResult<bool>();
-         }*/
+            foreach (var category in request.Categories)
+            {
+                var productInCategory = await _context.ProductInCategories
+                    .FirstOrDefaultAsync(x => x.MaDanhMuc == int.Parse(category.Id)
+                    && x.MaSanPham == id);
+                if (productInCategory != null && category.Selected == false)
+                {
+                    _context.ProductInCategories.Remove(productInCategory);
+                }
+                else if (productInCategory == null && category.Selected)
+                {
+                    await _context.ProductInCategories.AddAsync(new ProductInCategory()
+                    {
+                        MaDanhMuc = int.Parse(category.Id),
+                        MaSanPham = id
+                    });
+                }
+            }
+            await _context.SaveChangesAsync();
+            return new ApiSuccessResult<bool>();
+        }
     }
 
 

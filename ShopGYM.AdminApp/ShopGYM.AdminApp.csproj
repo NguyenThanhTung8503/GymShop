@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ShopGYM.ApiIntegration\ShopGYM.ApiIntegration.csproj" />
     <ProjectReference Include="..\ShopGYM.Utilities\ShopGYM.Utilities.csproj" />
     <ProjectReference Include="..\ShopGYM.ViewModels\ShopGYM.ViewModels.csproj" />
   </ItemGroup>
