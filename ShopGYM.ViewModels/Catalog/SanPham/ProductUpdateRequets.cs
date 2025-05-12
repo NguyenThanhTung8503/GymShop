@@ -12,9 +12,6 @@ namespace ShopGYM.ViewModels.Catalog.SanPham
         [Required(ErrorMessage = "Bạn phải nhập tên sản phẩm")]
         public string TenSanPham { get; set; }
 
-        [Display(Name = "Danh mục")]
-        public string TenDanhMuc { get; set; }
-
         [Display(Name = "Giá")]
         public decimal Gia { get; set; }
 

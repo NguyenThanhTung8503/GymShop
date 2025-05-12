@@ -38,6 +38,24 @@ namespace ShopGYM.BackendApi.Controllers
             return Ok(sanpham);
         }
 
+        [HttpGet("featured/{take}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetFeatureProducts(int take)
+        {
+            var sanpham = await _productService.GetFeatureProducts(take);
+
+            return Ok(sanpham);
+        }
+
+        [HttpGet("latest/{take}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetLatestProducts(int take)
+        {
+            var sanpham = await _productService.GetLatestProducts(take);
+
+            return Ok(sanpham);
+        }
+
         [HttpPost]
         [Consumes("multipart/form-data")]
         [Authorize]
@@ -70,8 +88,10 @@ namespace ShopGYM.BackendApi.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Edit([FromRoute] int IdSanpham, ProductUpdateRequets request)
+        [HttpPut("{IdSanpham}")]
+        [Consumes("multipart/form-data")]
+        [Authorize]
+        public async Task<IActionResult> Edit([FromRoute] int IdSanpham, [FromForm] ProductUpdateRequets request)
         {
             if (!ModelState.IsValid)
             {
@@ -99,12 +119,12 @@ namespace ShopGYM.BackendApi.Controllers
         }
 
         [HttpDelete("{IdSanPham}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int IdSanPham)
         {
             var affectedresult = await _productService.Delete(IdSanPham);
             if (affectedresult == 0)
                 return BadRequest();
-
 
             return Ok();
         }

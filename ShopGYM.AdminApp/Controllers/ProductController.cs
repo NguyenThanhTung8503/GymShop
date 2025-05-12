@@ -129,7 +129,7 @@ namespace ShopGYM.AdminApp.Controllers
                 KichThuoc = product.KichThuoc,
                 MauSac = product.MauSac,
                 SoLuongTon = product.SoLuongTon,
-                TenDanhMuc = product.TenDanhMuc
+                Gia = product.Gia,
             };
             return View(editVm);
         }
@@ -138,11 +138,9 @@ namespace ShopGYM.AdminApp.Controllers
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Edit([FromForm] ProductUpdateRequets request)
-        
-        
         {
             if (!ModelState.IsValid)
-                return View();
+                return View(request);
 
             var result = await _productApiClient.EditProduct(request);
             if (result)
@@ -152,6 +150,32 @@ namespace ShopGYM.AdminApp.Controllers
             }
 
             ModelState.AddModelError("", "Sửa thất bại");
+            return View(request);
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            return View(new ProductDeleteRequest()
+            {
+                Id = id
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(ProductDeleteRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _productApiClient.DeleteProduct(request.Id);
+            if (result)
+            {
+                TempData["result"] = "Xóa sản phẩm thành công";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "Xóa không thành công");
             return View(request);
         }
     }

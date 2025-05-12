@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ShopGYM.ApiIntegration;
 using ShopGYM.WebApp.Models;
 using System.Diagnostics;
 
@@ -6,16 +7,24 @@ namespace ShopGYM.WebApp.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IProductApiClient _productApiClient;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,
+            IProductApiClient productApiClient)
         {
+            _productApiClient = productApiClient;
             _logger = logger;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var viewModel = new HomeViewModel()
+            {
+                FeaturedProducts = _productApiClient.GetFeaturedProducts(4).Result,
+                LatestProducts = _productApiClient.GetLatestProducts(6).Result
+            };
+            return View(viewModel);
         }
 
         public IActionResult Privacy()

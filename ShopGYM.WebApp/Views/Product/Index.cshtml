@@ -1,0 +1,73 @@
+﻿@using ShopGYM.ViewModels.Common
+@model PagedResult<ShopGYM.ViewModels.Catalog.SanPham.ProductVM>
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+@{
+	ViewData["Title"] = "Famms";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- inner page section -->
+<section class="inner_page_head">
+	<div class="container_fuild">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="full">
+					<h3>Sản phẩm</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- end inner page section -->
+<!-- product section -->
+<section class="product_section layout_padding">
+	<div class="container">
+		<div class=" col-xs-12">
+			<form asp-action="Index" method="get">
+				<div class="row">
+					<div class="col-md-6">
+						<input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+					</div>
+					<div class="col-md-3">
+						<select name="CategoryId" onchange="this.form.submit()" asp-items="@ViewBag.Categories" class="form-control">
+							<option>--Chọn danh mục--</option>
+						</select>
+					</div>
+					<div class="cold-md-3">
+						<button type="submit" class="btn btn-primary">Tìm</button>
+						<button type="button" onclick="window.location.href='/Product/Index'" class="btn btn-dark">Reset</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="row">
+			@foreach (var product in Model.Items)
+			{
+				<div class="col-sm-6 col-md-4 col-lg-4">
+					<div class="box">
+						<div class="option_container">
+							<div class="options">
+								<a href="" class="option1">
+									Men's Shirt
+								</a>
+								<a href="" class="option2">
+									Buy Now
+								</a>
+							</div>
+						</div>
+						<div class="img-box">
+							<img src="@(Configuration["BaseAddress"] + product.HinhAnhChinh)" alt="@product.TenSanPham">
+						</div>
+						<h5 style="text-align: center;">
+							@product.TenSanPham
+						</h5>
+						<h6 style="text-align: center;">
+							@product.Gia
+						</h6>
+					</div>
+				</div>
+			}
+		</div>
+	</div>
+</section>
+<!-- end product section -->

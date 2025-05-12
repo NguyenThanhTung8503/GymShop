@@ -13,9 +13,11 @@ namespace ShopGYM.Data.Entities
         public string TenSanPham { get; set; }
         public decimal Gia { get; set; }
         public string? MoTa { get; set; }
-        public string? KichThuoc { get; set; }
-        public string? MauSac { get; set; }
+        public string KichThuoc { get; set; }
+        public string MauSac { get; set; }
         public int SoLuongTon { get; set; }
+        public DateTime NgayTao { get; set; }
+        public bool? NoiBat { get; set; }
         public ICollection<HinhAnh> HinhAnhs { get; set; }
         public ICollection<ChiTietDonHang> ChiTietDonHangs { get; set; }
         public ICollection<GioHang> GioHangs { get; set; }

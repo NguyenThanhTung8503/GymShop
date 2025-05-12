@@ -70,11 +70,11 @@ namespace ShopGYM.Data.Extensions
 
             // Seed SanPham
             modelBuilder.Entity<SanPham>().HasData(
-                new SanPham { MaSanPham = 1, TenSanPham = "Quần Jeans Nam", Gia = 350000, MoTa = "Quần jeans nam phong cách", KichThuoc = "M", MauSac = "Xanh đậm", SoLuongTon = 50 },
-                new SanPham { MaSanPham = 2, TenSanPham = "Quần Kaki Nữ", Gia = 280000, MoTa = "Quần kaki nữ thời trang", KichThuoc = "S", MauSac = "Beige", SoLuongTon = 40 },
-                new SanPham { MaSanPham = 3, TenSanPham = "Áo Thun Nam", Gia = 150000, MoTa = "Áo thun nam cotton", KichThuoc = "L", MauSac = "Trắng", SoLuongTon = 100 },
-                new SanPham { MaSanPham = 4, TenSanPham = "Áo Sơ Mi Nữ", Gia = 250000, MoTa = "Áo sơ mi nữ công sở", KichThuoc = "M", MauSac = "Xanh nhạt", SoLuongTon = 30 },
-                new SanPham { MaSanPham = 5, TenSanPham = "Giày Sneaker Nam", Gia = 650000, MoTa = "Giày sneaker nam thời trang", KichThuoc = "L", MauSac = "Đen", SoLuongTon = 25 }
+                new SanPham { MaSanPham = 1, NgayTao = new DateTime(2025, 5, 1), TenSanPham = "Quần Jeans Nam", Gia = 350000, MoTa = "Quần jeans nam phong cách", KichThuoc = "M", MauSac = "Xanh đậm", SoLuongTon = 50 },
+                new SanPham { MaSanPham = 2, NgayTao = new DateTime(2025, 5, 1), TenSanPham = "Quần Kaki Nữ", Gia = 280000, MoTa = "Quần kaki nữ thời trang", KichThuoc = "S", MauSac = "Beige", SoLuongTon = 40 },
+                new SanPham { MaSanPham = 3, NgayTao = new DateTime(2025, 5, 1), TenSanPham = "Áo Thun Nam", Gia = 150000, MoTa = "Áo thun nam cotton", KichThuoc = "L", MauSac = "Trắng", SoLuongTon = 100 },
+                new SanPham { MaSanPham = 4, NgayTao = new DateTime(2025, 5, 1), TenSanPham = "Áo Sơ Mi Nữ", Gia = 250000, MoTa = "Áo sơ mi nữ công sở", KichThuoc = "M", MauSac = "Xanh nhạt", SoLuongTon = 30 },
+                new SanPham { MaSanPham = 5, NgayTao = new DateTime(2025, 5, 1), TenSanPham = "Giày Sneaker Nam", Gia = 650000, MoTa = "Giày sneaker nam thời trang", KichThuoc = "L", MauSac = "Đen", SoLuongTon = 25 }
            
             );
 

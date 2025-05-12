@@ -806,6 +806,12 @@ namespace ShopGYM.Data.Migrations
                     b.Property<string>("MoTa")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("NgayTao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("NoiBat")
+                        .HasColumnType("bit");
+
                     b.Property<int>("SoLuongTon")
                         .HasColumnType("int");
 
@@ -826,6 +832,7 @@ namespace ShopGYM.Data.Migrations
                             KichThuoc = "M",
                             MauSac = "Xanh đậm",
                             MoTa = "Quần jeans nam phong cách",
+                            NgayTao = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SoLuongTon = 50,
                             TenSanPham = "Quần Jeans Nam"
                         },
@@ -836,6 +843,7 @@ namespace ShopGYM.Data.Migrations
                             KichThuoc = "S",
                             MauSac = "Beige",
                             MoTa = "Quần kaki nữ thời trang",
+                            NgayTao = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SoLuongTon = 40,
                             TenSanPham = "Quần Kaki Nữ"
                         },
@@ -846,6 +854,7 @@ namespace ShopGYM.Data.Migrations
                             KichThuoc = "L",
                             MauSac = "Trắng",
                             MoTa = "Áo thun nam cotton",
+                            NgayTao = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SoLuongTon = 100,
                             TenSanPham = "Áo Thun Nam"
                         },
@@ -856,6 +865,7 @@ namespace ShopGYM.Data.Migrations
                             KichThuoc = "M",
                             MauSac = "Xanh nhạt",
                             MoTa = "Áo sơ mi nữ công sở",
+                            NgayTao = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SoLuongTon = 30,
                             TenSanPham = "Áo Sơ Mi Nữ"
                         },
@@ -866,6 +876,7 @@ namespace ShopGYM.Data.Migrations
                             KichThuoc = "L",
                             MauSac = "Đen",
                             MoTa = "Giày sneaker nam thời trang",
+                            NgayTao = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SoLuongTon = 25,
                             TenSanPham = "Giày Sneaker Nam"
                         });

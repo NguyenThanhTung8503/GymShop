@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "ShopGYM.BackendApi\\ShopGYM.BackendApi.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "ShopGYM.WebApp\\ShopGYM.WebApp.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "ShopGYM.AdminApp\\ShopGYM.AdminApp.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

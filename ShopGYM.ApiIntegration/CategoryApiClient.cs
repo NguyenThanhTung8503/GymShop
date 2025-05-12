@@ -20,9 +20,10 @@ namespace ShopGYM.ApiIntegration
 
         }
 
-        public async Task<CategoryVm> GetById(string languageId, int id)
+        public async Task<CategoryVm> GetById(int id)
         {
             return await GetAsync<CategoryVm>($"/api/categories/{id}");
         }
+
     }
 }

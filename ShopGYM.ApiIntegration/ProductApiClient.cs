@@ -8,6 +8,7 @@ using ShopGYM.ViewModels.Common;
 using ShopGYM.ViewModels.System.Users;
 using System.Net.Http.Headers;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ShopGYM.ApiIntegration
 {
@@ -108,9 +109,11 @@ namespace ShopGYM.ApiIntegration
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.MoTa) ? "" : request.MoTa.ToString()), "MoTa");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.KichThuoc) ? "" : request.KichThuoc.ToString()), "KichThuoc");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.MauSac) ? "" : request.MauSac.ToString()), "MauSac");
-            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.TenDanhMuc) ? "" : request.TenDanhMuc.ToString()), "TenDanhMuc");
+            requestContent.Add(new StringContent(request.SoLuongTon.ToString()), "SoLuongTon");
+            requestContent.Add(new StringContent(request.Gia.ToString()), "Gia");
 
-            var response = await client.PostAsync($"/api/products" + request.Id, requestContent);
+
+            var response = await client.PutAsync($"/api/products/" + request.Id, requestContent);
             return response.IsSuccessStatusCode;
         }
 
@@ -132,6 +135,23 @@ namespace ShopGYM.ApiIntegration
                 return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
             }
             return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
+        }
+
+        public async Task<List<ProductVM>> GetFeaturedProducts(int take)
+        {
+            var data = await GetListAsync<ProductVM>($"/api/products/featured/{take}");
+            return data;
+        }
+
+        public async Task<List<ProductVM>> GetLatestProducts(int take)
+        {
+            var data = await GetListAsync<ProductVM>($"/api/products/latest/{take}");
+            return data;
+        }
+
+        public async Task<bool> DeleteProduct(int id)
+        {
+            return await Delete($"/api/products/" + id);
         }
     } 
 }

@@ -6,7 +6,7 @@ using ShopGYM.ViewModels.System.Users;
 namespace ShopGYM.Application.Catalog.SanPham
 {
     public interface IProductService
-    {
+    { 
         Task<int> Create(ProductCreateRequest request);
         Task<int> Edit(ProductUpdateRequets request);
         Task<int> Delete(int IdSanPham);
@@ -20,7 +20,8 @@ namespace ShopGYM.Application.Catalog.SanPham
         Task<int> RemoveImage(int IdHinhAnh);
         Task<int> UpdateImage(int IdHinhAnh, HinhAnhUpdateRequest request);
         Task<HinhAnhViewModel> GetImageById(int IdHinhAnh);
-
+        Task<List<ProductVM>> GetFeatureProducts(int take);
+        Task<List<ProductVM>> GetLatestProducts(int take);
         Task<List<HinhAnhViewModel>> GetListImages(int IdSanPham);
 
 

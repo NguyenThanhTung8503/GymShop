@@ -17,6 +17,7 @@ namespace ShopGYM.Application.Catalog.SanPham
     {
         private readonly ShopGYMDbContext _context;
         private readonly IStorageService _storageService;
+        private const string USER_CONTENT_FOLDER_NAME = "user-content";
         public ProductService(ShopGYMDbContext context, IStorageService storageService)
 
         {
@@ -33,7 +34,8 @@ namespace ShopGYM.Application.Catalog.SanPham
                 MoTa = request.MoTa,
                 KichThuoc = request.KichThuoc,
                 MauSac = request.MauSac,
-                SoLuongTon = request.SoLuongTon
+                SoLuongTon = request.SoLuongTon,
+                NgayTao = DateTime.Now,
             };
             //Save Images
             if (request.ThumbnailImage != null)
@@ -44,7 +46,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                     {
                         Mota = "Thumbnail Images",
                         NgayTao = DateTime.Now,
-                        DuongDan = await SaveFile(request.ThumbnailImage),
+                        DuongDan = await this.SaveFile(request.ThumbnailImage),
                         ThuTu = 1
                     }
                 };
@@ -62,7 +64,8 @@ namespace ShopGYM.Application.Catalog.SanPham
             sanpham.MoTa = request.MoTa;
             sanpham.MauSac = request.MauSac;
             sanpham.KichThuoc = request.KichThuoc;
-
+            sanpham.Gia = request.Gia;
+            sanpham.SoLuongTon = request.SoLuongTon;
             //Save Images
             if (request.ThumbnailImage != null)
             {
@@ -72,9 +75,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                     thumbNailImage.DuongDan = await SaveFile(request.ThumbnailImage);
                     _context.HinhAnhs.Update(thumbNailImage);
                 }
-
             }
-
             return await _context.SaveChangesAsync();
         }
         public async Task<int> Delete(int IdSanpham)
@@ -216,12 +217,13 @@ namespace ShopGYM.Application.Catalog.SanPham
             return await _context.SaveChangesAsync() > 0;
         }
 
+        
         private async Task<string> SaveFile(IFormFile file)
         {
             var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-            var fileName = $"{Guid.NewGuid()}.{Path.GetExtension(originalFileName)}";
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
-            return fileName;
+            return "/" + USER_CONTENT_FOLDER_NAME + "/" + fileName;
         }
 
         public async Task<int> AddImage(int IdSanPham, HinhAnhCreateRequest request)
@@ -356,6 +358,80 @@ namespace ShopGYM.Application.Catalog.SanPham
             await _context.SaveChangesAsync();
             return new ApiSuccessResult<bool>();
         }
+
+        public async Task<List<ProductVM>> GetFeatureProducts(int take)
+        {
+
+
+            // Tạo truy vấn
+            var query = from sp in _context.SanPhams
+                        join pic in _context.ProductInCategories on sp.MaSanPham equals pic.MaSanPham into sppic
+                        from pic in sppic.DefaultIfEmpty()
+                        join dm in _context.DanhMucs on pic.MaDanhMuc equals dm.MaDanhMuc into dmsp
+                        from dm in dmsp.DefaultIfEmpty()
+                        join ha in _context.HinhAnhs on sp.MaSanPham equals ha.MaSanPham into spha
+                        from ha in spha.DefaultIfEmpty() // Kết nối trái cho hình ảnh
+                        where sp.NoiBat == true && (ha == null || ha.ThuTu == (from h in _context.HinhAnhs
+                                                         where h.MaSanPham == sp.MaSanPham
+                                                         orderby h.ThuTu
+                                                         select h.ThuTu).FirstOrDefault()) // Lấy hình đầu tiên
+                        select new { sp, pic, ha, dm };
+
+           
+            var items = await query.OrderByDescending(x => x.sp.NgayTao).Take(take)
+                .Select(x => new ProductVM
+                {
+                    MaSanPham = x.sp.MaSanPham,
+                    TenSanPham = x.sp.TenSanPham,
+                    TenDanhMuc = x.dm.TenDanhMuc,
+                    Gia = x.sp.Gia,
+                    MoTa = x.sp.MoTa,
+                    KichThuoc = x.sp.KichThuoc,
+                    MauSac = x.sp.MauSac,
+                    SoLuongTon = x.sp.SoLuongTon,
+                    HinhAnhChinh =  x.ha.DuongDan 
+                })
+                .ToListAsync(); 
+
+            return items;
+        }
+
+        public async Task<List<ProductVM>> GetLatestProducts(int take)
+        {
+
+            var query = from sp in _context.SanPhams
+                        join pic in _context.ProductInCategories on sp.MaSanPham equals pic.MaSanPham into sppic
+                        from pic in sppic.DefaultIfEmpty()
+                        join dm in _context.DanhMucs on pic.MaDanhMuc equals dm.MaDanhMuc into dmsp
+                        from dm in dmsp.DefaultIfEmpty()
+                        join ha in _context.HinhAnhs on sp.MaSanPham equals ha.MaSanPham into spha
+                        from ha in spha.DefaultIfEmpty() // Kết nối trái cho hình ảnh
+                        where (ha == null || ha.ThuTu == (from h in _context.HinhAnhs
+                                                                               where h.MaSanPham == sp.MaSanPham
+                                                                               orderby h.ThuTu
+                                                                               select h.ThuTu).FirstOrDefault()) // Lấy hình đầu tiên
+                        select new { sp, pic, ha, dm };
+
+
+            var items = await query.OrderByDescending(x => x.sp.NgayTao).Take(take)
+                .Select(x => new ProductVM
+                {
+                    MaSanPham = x.sp.MaSanPham,
+                    TenSanPham = x.sp.TenSanPham,
+                    TenDanhMuc = x.dm.TenDanhMuc,
+                    Gia = x.sp.Gia,
+                    MoTa = x.sp.MoTa,
+                    KichThuoc = x.sp.KichThuoc,
+                    MauSac = x.sp.MauSac,
+                    SoLuongTon = x.sp.SoLuongTon,
+                    HinhAnhChinh = x.ha.DuongDan
+                })
+                .ToListAsync();
+
+            return items;
+        }
+
+       
     }
 
 
