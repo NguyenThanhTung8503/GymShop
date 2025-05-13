@@ -15,7 +15,7 @@ namespace ShopGYM.WebApp.Controllers
             _productApiClient = productApiClient;
             _categoryApiClient = categoryApiClient;
         }
-        public async Task<IActionResult> Index(string keyword, int? CategoryId, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string keyword, int? CategoryId, int pageIndex = 1, int pageSize = 9)
         {
             var request = new GetManageProductPagingRequest()
             {

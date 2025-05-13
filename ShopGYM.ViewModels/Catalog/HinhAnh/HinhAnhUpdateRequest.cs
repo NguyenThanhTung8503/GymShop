@@ -9,9 +9,8 @@ namespace ShopGYM.ViewModels.Catalog.HinhAnh
 {
     public class HinhAnhUpdateRequest
     {
-        public int IdHinhAnh { get; set; }
         public string MoTa { get; set; }
-        public int ThuTu { get; set; }
+        public bool IsDefault { get; set; }
         public IFormFile ImageFile { get; set; }
     }
 }

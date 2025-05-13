@@ -1,0 +1,134 @@
+﻿@model ShopGYM.ViewModels.Catalog.SanPham.ProductVM
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mt-4">Chi tiết sản phẩm</h1>
+
+<style>
+    .form-group {
+        margin-bottom: 0.5rem;
+    }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+    .form-control-static {
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        background-color: #f8f9fa;
+        min-height: 38px;
+        line-height: 1.5;
+    }
+
+    .btn-secondary {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+        border-radius: 0.25rem;
+        padding: 0.375rem 0.75rem;
+    }
+
+        .btn-secondary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #212529;
+        border-radius: 0.25rem;
+        padding: 0.375rem 0.75rem;
+    }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+        }
+
+    .product-image {
+        max-width: 200px;
+        max-height: 200px;
+        object-fit: contain;
+        margin: 5px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Detail">
+            <div class="container-fluid px-4">
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a asp-controller="Product" asp-action="Index">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Chi tiết sản phẩm</li>
+                </ol>
+                <p>
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Về danh sách</a>
+                </p>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="MaSanPham">Mã sản phẩm</label>
+                            <p class="form-control-static">@Model.MaSanPham</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TenSanPham">Tên sản phẩm</label>
+                            <p class="form-control-static">@Model.TenSanPham</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Category">Danh mục</label>
+                            <p class="form-control-static">@(Model.Category != null ? string.Join(", ", Model.Category) : "Không có danh mục")</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Gia">Giá</label>
+                            <p class="form-control-static">@Model.Gia.ToString("N0") VNĐ</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MoTa">Mô tả</label>
+                            <p class="form-control-static">@(string.IsNullOrEmpty(Model.MoTa) ? "Không có mô tả" : Model.MoTa)</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="KichThuoc">Kích thước</label>
+                            <p class="form-control-static">@(string.IsNullOrEmpty(Model.KichThuoc) ? "Không có kích thước" : Model.KichThuoc)</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MauSac">Màu sắc</label>
+                            <p class="form-control-static">@(string.IsNullOrEmpty(Model.MauSac) ? "Không có màu sắc" : Model.MauSac)</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SoLuongTon">Số lượng tồn</label>
+                            <p class="form-control-static">@Model.SoLuongTon</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="HinhAnhs">Danh sách hình ảnh</label>
+                            <div>
+                                @if (Model.HinhAnhs != null && Model.HinhAnhs.Any())
+                                {
+                                    foreach (var image in Model.HinhAnhs)
+                                    {
+                                        <img src="@(Configuration["BaseAddress"] + image)" class="product-image" alt="@Model.TenSanPham" />
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="form-control-static">Không có hình ảnh phụ</p>
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <a asp-action="Edit" asp-route-id="@Model.MaSanPham" class="btn btn-warning">Chỉnh sửa</a>
+                            <a asp-controller="Product" asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -14,7 +14,7 @@ namespace ShopGYM.Data.Entities
         public string Mota { get; set; }
         public DateTime NgayTao { get; set; }
         public int? MaDanhGia { get; set; }
-        public int ThuTu { get; set; }
+        public bool IsDefault { get; set; }
 
         public SanPham SanPham { get; set; }
         public DanhGia DanhGia { get; set; }

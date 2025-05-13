@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopGYM.ApiIntegration;
 using ShopGYM.ViewModels.Catalog.DanhMuc;
+using ShopGYM.ViewModels.Catalog.HinhAnh;
 using ShopGYM.ViewModels.Catalog.SanPham;
 using ShopGYM.ViewModels.Common;
 using ShopGYM.ViewModels.System.Users;
@@ -72,6 +73,8 @@ namespace ShopGYM.AdminApp.Controllers
             ModelState.AddModelError("", "Thêm sản phẩm không thành công");
             return View(request);
         }
+
+        
 
         [HttpGet]
         public async Task<IActionResult> CategoryAssign(int id)
@@ -154,6 +157,41 @@ namespace ShopGYM.AdminApp.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> AddImage(int id)
+        {
+            var product = await _productApiClient.GetById(id);
+            if (product == null)
+            {
+                return NotFound("Không tìm thấy sản phẩm");
+            }
+
+            var hinhAnhRequest = new HinhAnhCreateRequest
+            {
+                IdSanPham = product.MaSanPham
+            };
+
+            return View(hinhAnhRequest);
+        }
+
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddImage([FromForm] HinhAnhCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(request);
+            }
+            var result = await _productApiClient.AddImage(request);
+            if (result)
+            {
+                TempData["result"] = "Thêm ảnh thành công";
+                return RedirectToAction("Index");
+            }
+            ModelState.AddModelError("", "Thêm ảnh không thành công");
+            return View(request);
+        }
+
+        [HttpGet]
         public IActionResult Delete(int id)
         {
             return View(new ProductDeleteRequest()
@@ -177,6 +215,13 @@ namespace ShopGYM.AdminApp.Controllers
 
             ModelState.AddModelError("", "Xóa không thành công");
             return View(request);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Detail(int id)
+        {
+            var result = await _productApiClient.Detail(id);
+            return View(result);
         }
     }
 }

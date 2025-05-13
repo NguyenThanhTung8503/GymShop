@@ -18,7 +18,6 @@ namespace ShopGYM.Data.Configuration
             entity.Property(ha => ha.MaHinhAnh).ValueGeneratedOnAdd();
             entity.Property(ha => ha.DuongDan).IsRequired(true).HasMaxLength(255);
             entity.Property(ha => ha.Mota).HasDefaultValue(0);
-            entity.Property(ha => ha.ThuTu).HasDefaultValue(0);
 
             entity.HasOne(ha => ha.SanPham)
                   .WithMany(sp => sp.HinhAnhs)

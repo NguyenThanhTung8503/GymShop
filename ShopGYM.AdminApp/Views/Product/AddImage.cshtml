@@ -1,0 +1,66 @@
+﻿@model ShopGYM.ViewModels.Catalog.HinhAnh.HinhAnhCreateRequest
+
+@{
+	ViewData["Title"] = "Thêm mới ảnh";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mt-4">Thêm mới ảnh</h1>
+@section Scripts {
+	<script src="https://cdn.ckeditor.com/ckeditor5/21.0.0/classic/ckeditor.js"></script>
+	<script>
+		ClassicEditor
+			.create(document.querySelector('#txt_MoTa'), {
+				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'BulletedList','NumberedList' ]
+			})
+			.then(editor => {
+				window.editor = editor;
+			})
+			.catch(err => {
+				console.error(err.stack);
+			});
+	</script>
+}
+
+
+<div class="row">
+	<div class="col-md-8">
+		<form asp-action="AddImage" enctype="multipart/form-data" method="post">
+			<div class="container-fluid px-4">
+				<ol class="breadcrumb mb-4">
+					<li class="breadcrumb-item"><a asp-controller="Product" asp-action="Index">Trang chủ</a></li>
+					<li class="breadcrumb-item active">Thêm mới</li>
+				</ol>
+				<p>
+					<a asp-controller="Product" asp-action="Index" class="btn btn-primary">Về danh sách</a>
+				</p>
+				<div class="card mb-8">
+					<div class="card-body">
+						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+						<div class="form-group">
+							<label asp-for="IdSanPham"></label>
+							<input asp-for="IdSanPham" class="form-control" />
+							<span asp-validation-for="IdSanPham" class="text-danger"></span>
+						</div>
+						<div class="form-group">
+							<label asp-for="MoTa"></label>
+							<input asp-for="MoTa" class="form-control" />
+							<span asp-validation-for="MoTa" class="text-danger"></span>
+						</div>
+						
+						<div class="form-group">
+							<label asp-for="ImageFile"></label>
+							<input asp-for="ImageFile" type="file" class="form-control" />
+							<span asp-validation-for="ImageFile" class="text-danger"></span>
+						</div>
+						<div class="form-group">
+							<input type="submit" value="Lưu lại" class="btn btn-success" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</form>
+
+	</div>
+</div>

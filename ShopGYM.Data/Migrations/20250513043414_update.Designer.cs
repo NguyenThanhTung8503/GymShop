@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopGYM.Data.EF;
 
@@ -11,9 +12,11 @@ using ShopGYM.Data.EF;
 namespace ShopGYM.Data.Migrations
 {
     [DbContext(typeof(ShopGYMDbContext))]
-    partial class ShopGYMDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513043414_update")]
+    partial class update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -38,6 +38,16 @@ namespace ShopGYM.BackendApi.Controllers
             return Ok(sanpham);
         }
 
+        [HttpGet("detail/{IdSanPham}")]
+        public async Task<IActionResult> Detail(int IdSanPham)
+        {
+            var sanpham = await _productService.Detail(IdSanPham);
+            if (sanpham == null)
+                return BadRequest("Không thể tìm thấy sản phẩm");
+
+            return Ok(sanpham);
+        }
+
         [HttpGet("featured/{take}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetFeatureProducts(int take)
@@ -132,6 +142,7 @@ namespace ShopGYM.BackendApi.Controllers
 
         //Hinh anh
         [HttpPost("{IdSanPham}/HinhAnh")]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> CreateImage(int IdSanPham, [FromForm] HinhAnhCreateRequest request)
         {
             if (!ModelState.IsValid)

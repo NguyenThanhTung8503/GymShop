@@ -14,6 +14,6 @@ namespace ShopGYM.ViewModels.Catalog.HinhAnh
         public string DuongDan { get; set; }
         public DateTime NgayTao { get; set; }
         public int MaDanhGia { get; set; }
-        public int ThuTu { get; set; }
+        public bool? IsDefault { get; set; }
     }
 }

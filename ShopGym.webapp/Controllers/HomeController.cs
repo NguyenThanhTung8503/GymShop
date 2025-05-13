@@ -21,7 +21,7 @@ namespace ShopGYM.WebApp.Controllers
         {
             var viewModel = new HomeViewModel()
             {
-                FeaturedProducts = _productApiClient.GetFeaturedProducts(4).Result,
+                FeaturedProducts = _productApiClient.GetFeaturedProducts(3).Result,
                 LatestProducts = _productApiClient.GetLatestProducts(6).Result
             };
             return View(viewModel);

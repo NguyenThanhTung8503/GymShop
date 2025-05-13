@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using ShopGYM.Utilities.Constants;
+using ShopGYM.ViewModels.Catalog.HinhAnh;
 using ShopGYM.ViewModels.Catalog.SanPham;
 using ShopGYM.ViewModels.Common;
 using ShopGYM.ViewModels.System.Users;
@@ -64,6 +65,36 @@ namespace ShopGYM.ApiIntegration
             return response.IsSuccessStatusCode;
         }
 
+        public async Task<bool> AddImage( HinhAnhCreateRequest request)
+        {
+            var sessions = _httpContextAccessor
+                .HttpContext
+                .Session
+                .GetString(SystemConstants.AppSettings.Token);
+
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+
+            var requestContent = new MultipartFormDataContent();
+
+            if (request.ImageFile != null)
+            {
+                byte[] data;
+                using (var br = new BinaryReader(request.ImageFile.OpenReadStream()))
+                {
+                    data = br.ReadBytes((int)request.ImageFile.OpenReadStream().Length);
+                }
+                ByteArrayContent bytes = new ByteArrayContent(data);
+                requestContent.Add(bytes, "ImageFile", request.ImageFile.FileName);
+            }
+
+            requestContent.Add(new StringContent(request.MoTa.ToString()), "MoTa");
+
+            var response = await client.PostAsync($"/api/products/{request.IdSanPham}/HinhAnh", requestContent);
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<PagedResult<ProductVM>> GetProductsPagings(GetManageProductPagingRequest request)
         {
             var data = await GetAsync<PagedResult<ProductVM>>("/api/products/paging?pageindex=" +
@@ -78,6 +109,12 @@ namespace ShopGYM.ApiIntegration
             return data;
         }
 
+
+        public async Task<ProductVM> Detail(int id)
+        {
+            var data = await GetAsync<ProductVM>($"/api/products/detail/{id}");
+            return data;
+        }
 
         public async Task<bool> EditProduct(ProductUpdateRequets request)
         {

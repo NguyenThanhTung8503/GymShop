@@ -105,11 +105,11 @@ namespace ShopGYM.Data.Extensions
             // Seed HinhAnh
             modelBuilder.Entity<HinhAnh>().HasData(
                 // Ảnh sản phẩm cho 13 sản phẩm
-                new HinhAnh { MaHinhAnh = 1, DuongDan = "/images/jeans.jpg", MaSanPham = 1, Mota = "Hình quần jeans nam", NgayTao = new DateTime(2025, 3, 26, 8, 0, 0), MaDanhGia = null, ThuTu = 1 },
-                new HinhAnh { MaHinhAnh = 2, DuongDan = "/images/kaki.jpg", MaSanPham = 2, Mota = "Hình quần kaki nữ", NgayTao = new DateTime(2025, 3, 26, 8, 0, 0), MaDanhGia = null, ThuTu = 1 },
-                new HinhAnh { MaHinhAnh = 3, DuongDan = "/images/tshirt.jpg", MaSanPham = 3, Mota = "Hình áo thun nam", NgayTao = new DateTime(2025, 3, 26, 8, 0, 0), MaDanhGia = null, ThuTu = 1 },
-                new HinhAnh { MaHinhAnh = 4, DuongDan = "/images/shirt.jpg", MaSanPham = 4, Mota = "Hình áo sơ mi nữ", NgayTao = new DateTime(2025, 3, 26, 8, 0, 0), MaDanhGia = null, ThuTu = 1 },
-                new HinhAnh { MaHinhAnh = 5, DuongDan = "/images/sneaker.jpg", MaSanPham = 5, Mota = "Hình giày sneaker nam", NgayTao = new DateTime(2025, 3, 26, 8, 0, 0), MaDanhGia = null, ThuTu = 1 }
+                new HinhAnh { MaHinhAnh = 1, DuongDan = "/images/jeans.jpg", MaSanPham = 1, Mota = "Hình quần jeans nam", NgayTao = new DateTime(2025, 3, 26, 8, 0, 0), MaDanhGia = null, IsDefault = true },
+                new HinhAnh { MaHinhAnh = 2, DuongDan = "/images/kaki.jpg", MaSanPham = 2, Mota = "Hình quần kaki nữ", NgayTao = new DateTime(2025, 3, 26, 8, 0, 0), MaDanhGia = null, IsDefault = true },
+                new HinhAnh { MaHinhAnh = 3, DuongDan = "/images/tshirt.jpg", MaSanPham = 3, Mota = "Hình áo thun nam", NgayTao = new DateTime(2025, 3, 26, 8, 0, 0), MaDanhGia = null, IsDefault = true },
+                new HinhAnh { MaHinhAnh = 4, DuongDan = "/images/shirt.jpg", MaSanPham = 4, Mota = "Hình áo sơ mi nữ", NgayTao = new DateTime(2025, 3, 26, 8, 0, 0), MaDanhGia = null, IsDefault = true },
+                new HinhAnh { MaHinhAnh = 5, DuongDan = "/images/sneaker.jpg", MaSanPham = 5, Mota = "Hình giày sneaker nam", NgayTao = new DateTime(2025, 3, 26, 8, 0, 0), MaDanhGia = null, IsDefault = true }
                 
              );
         }

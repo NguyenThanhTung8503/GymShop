@@ -13,6 +13,7 @@ namespace ShopGYM.Application.Catalog.SanPham
         Task<bool> UpdatePrice(int IdSanPham, decimal GiaMoi);
         Task<bool> UpdateStock(int IdSanPham, int SoLuongMoi);
         Task<ProductVM> GetById(int IdSanPham);
+        Task<ProductVM> Detail(int IdSanPham);
         Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request);
         Task<PagedResult<ProductVM>> GetAllByMaDanhMuc(GetPublicProductPagingRequest request);
         Task<PagedResult<ProductVM>> GetAllPaging(GetManageProductPagingRequest request);
