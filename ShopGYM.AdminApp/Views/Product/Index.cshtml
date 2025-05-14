@@ -84,7 +84,9 @@
 								<a asp-controller="Product" asp-action="CategoryAssign" asp-route-id="@item.MaSanPham" class="btn btn-danger">Gán danh mục</a>
 								<hr />
 
-								<a asp-action="AddImage" asp-route-id="@item.MaSanPham" class="btn btn-warning">Thêm ảnh</a>
+								<a asp-controller="Product" asp-action="SetThumbnailImage" asp-route-id="@item.MaSanPham" class="btn btn-warning">Gán thumbnail</a>
+								<a asp-controller="Product" asp-action="AddImage" asp-route-id="@item.MaSanPham" class="btn btn-warning">Thêm ảnh</a>
+								<a asp-controller="Product" asp-action="GetListImages" asp-route-id="@item.MaSanPham" class="btn btn-warning">Xem ảnh</a>
 							</td>
 						</tr>
 					}
@@ -92,5 +94,6 @@
 			</table>
 			@await Component.InvokeAsync("Pager", Model)
 		</div>
+		
 	</div>
 </div>

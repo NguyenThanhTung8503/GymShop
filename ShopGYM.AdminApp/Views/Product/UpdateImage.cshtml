@@ -1,0 +1,49 @@
+﻿@model ShopGYM.ViewModels.Catalog.HinhAnh.HinhAnhUpdateRequest
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "Thêm mới ảnh";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mt-4">Sửa ảnh</h1>
+
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="UpdateImage" enctype="multipart/form-data" method="post">
+            <div class="container-fluid px-4">
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a asp-controller="Product" asp-action="Index">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Thêm mới</li>
+                </ol>
+                <p>
+                    <a asp-controller="Product" asp-action="GetListImages" class="btn btn-primary">Về danh sách</a>
+                </p>
+                <div class="card mb-8">
+                    <div class="card-body">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="IdHinhAnh" />
+                        <div class="form-group">
+                            <label asp-for="MoTa"></label>
+                            <textarea asp-for="MoTa" class="form-control" id="txt_MoTa"></textarea>
+                            <span asp-validation-for="MoTa" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ImageFile"></label>
+                            <input asp-for="ImageFile" type="file" class="form-control" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Lưu lại" class="btn btn-success" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

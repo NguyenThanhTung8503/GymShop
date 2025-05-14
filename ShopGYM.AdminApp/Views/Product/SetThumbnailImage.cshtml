@@ -1,0 +1,49 @@
+﻿@using ShopGYM.ViewModels.Common
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@model ShopGYM.ViewModels.Catalog.SanPham.ThumbnailAssignRequest
+
+@{
+    ViewData["Title"] = "Gán thumbnail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="mt-4">Gán thumbnail</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <li class="breadcrumb-item active">Gán thumbnail</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-header">
+            <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về danh sách</a>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="SetThumbnailImage">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                @for (var i = 0; i < Model.Images.Count; i++)
+                {
+                    <div class="form-group d-flex align-items-center mb-2">
+                        <img src="@(Configuration["BaseAddress"] + Model.Images[i].Name)"
+                             style="width: 100px; height: 100px; object-fit: contain; margin-right: 10px;"
+                             alt="Thumbnail" />
+                        <label>
+                            <input type="checkbox" asp-for="Images[i].Selected" /> Chọn làm thumbnail
+                            <input type="hidden" asp-for="Images[i].Id" />
+                            <input type="hidden" asp-for="Images[i].Name" />
+                        </label>
+                    </div>
+                    <hr />
+                }
+                <div class="form-group">
+                    <input type="submit" value="Lưu lại" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

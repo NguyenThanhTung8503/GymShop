@@ -1,23 +1,9 @@
-﻿@model ShopGYM.ViewModels.Catalog.SanPham.ProductUpdateRequets
+﻿@model ShopGYM.ViewModels.Catalog.SanPham.ProductUpdateRequest
 @{
 	ViewData["Title"] = "Cập nhật sản phẩm";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@section Scripts {
-	<script src="https://cdn.ckeditor.com/ckeditor5/21.0.0/classic/ckeditor.js"></script>
-	<script>
-		ClassicEditor
-			.create(document.querySelector('#txt_MoTa'), {
-				toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
-			})
-			.then(editor => {
-				window.editor = editor;
-			})
-			.catch(err => {
-				console.error(err.stack);
-			});
-	</script>
-}
+
 <div class="container-fluid">
     <h1 class="mt-4">Cập nhật sản phẩm</h1>
     <ol class="breadcrumb mb-4">
@@ -42,22 +28,22 @@
 
                     <div class="form-group">
                         <label asp-for="MoTa" class="control-label"></label>
-                        <textarea id="txt_MoTa" asp-for="MoTa" rows="35" class="form-control"></textarea>
+                        <textarea asp-for="MoTa" rows="3" class="form-control"></textarea>
                         <span asp-validation-for="MoTa" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="MauSac" class="control-label"></label>
-                        <textarea asp-for="MauSac" class="form-control"></textarea>
+                        <input asp-for="MauSac" class="form-control">
                         <span asp-validation-for="MauSac" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Gia" class="control-label"></label>
-                        <textarea asp-for="Gia" type="number" class="form-control"></textarea>
+                        <input asp-for="Gia" type="number" class="form-control">
                         <span asp-validation-for="Gia" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="SoLuongTon" class="control-label"></label>
-                        <textarea asp-for="SoLuongTon" class="form-control"></textarea>
+                        <input asp-for="SoLuongTon" class="form-control">
                         <span asp-validation-for="SoLuongTon" class="text-danger"></span>
                     </div>
                     <div class="form-group">

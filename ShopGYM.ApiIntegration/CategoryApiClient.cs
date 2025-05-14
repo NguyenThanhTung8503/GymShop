@@ -7,7 +7,6 @@ namespace ShopGYM.ApiIntegration
 {
     public class CategoryApiClient : BaseApiClient, ICategoryApiClient
     {
-        private readonly HttpClient _httpClient;
         public CategoryApiClient(IHttpClientFactory httpClientFactory,
             IConfiguration configuration,
             IHttpContextAccessor httpContextAccessor)

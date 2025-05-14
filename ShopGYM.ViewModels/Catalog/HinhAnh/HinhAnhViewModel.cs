@@ -10,10 +10,11 @@ namespace ShopGYM.ViewModels.Catalog.HinhAnh
     {
         public int MaHinhAnh { get; set; }
         public int MaSanPham { get; set; }
-        public string Mota { get; set; }
+        public string? TenSanPham { get; set; }
+        public string? Mota { get; set; }
         public string DuongDan { get; set; }
         public DateTime NgayTao { get; set; }
         public int MaDanhGia { get; set; }
-        public bool? IsDefault { get; set; }
+        public bool IsDefault { get; set; }
     }
 }

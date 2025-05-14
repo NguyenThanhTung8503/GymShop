@@ -6,21 +6,6 @@
 }
 
 <h1 class="mt-4">Thêm mới sản phẩm</h1>
-@section Scripts {
-	<script src="https://cdn.ckeditor.com/ckeditor5/21.0.0/classic/ckeditor.js"></script>
-	<script>
-		ClassicEditor
-			.create(document.querySelector('#txt_MoTa'), {
-				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'BulletedList','NumberedList' ]
-			})
-			.then(editor => {
-				window.editor = editor;
-			})
-			.catch(err => {
-				console.error(err.stack);
-			});
-	</script>
-}
 
 
 <div class="row">
@@ -49,7 +34,7 @@
 						</div>
 						<div class="form-group">
 							<label asp-for="MoTa"></label>
-							<textarea id="txt_MoTa" asp-for="MoTa" rows="20" class="form-control" ></textarea>
+							<textarea asp-for="MoTa" rows="5" class="form-control" ></textarea>
 							<span asp-validation-for="MoTa" class="text-danger"></span>
 						</div>
 						<div class="form-group">

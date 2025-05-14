@@ -6,21 +6,6 @@
 }
 
 <h1 class="mt-4">Thêm mới ảnh</h1>
-@section Scripts {
-	<script src="https://cdn.ckeditor.com/ckeditor5/21.0.0/classic/ckeditor.js"></script>
-	<script>
-		ClassicEditor
-			.create(document.querySelector('#txt_MoTa'), {
-				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'BulletedList','NumberedList' ]
-			})
-			.then(editor => {
-				window.editor = editor;
-			})
-			.catch(err => {
-				console.error(err.stack);
-			});
-	</script>
-}
 
 
 <div class="row">
@@ -37,11 +22,7 @@
 				<div class="card mb-8">
 					<div class="card-body">
 						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-						<div class="form-group">
-							<label asp-for="IdSanPham"></label>
-							<input asp-for="IdSanPham" class="form-control" />
-							<span asp-validation-for="IdSanPham" class="text-danger"></span>
-						</div>
+						<input type="hidden" asp-for="IdSanPham" /> <!-- Ẩn IdSanPham -->
 						<div class="form-group">
 							<label asp-for="MoTa"></label>
 							<input asp-for="MoTa" class="form-control" />

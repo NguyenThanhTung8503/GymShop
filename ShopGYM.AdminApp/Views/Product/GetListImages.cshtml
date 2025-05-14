@@ -1,0 +1,64 @@
+﻿@model List<ShopGYM.ViewModels.Catalog.HinhAnh.HinhAnhViewModel>
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "Danh sách hình ảnh";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mt-4">Danh sách hình ảnh</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="container-fluid px-4">
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="Product" asp-action="Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Danh sách hình ảnh</li>
+            </ol>
+            <p>
+                <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Về danh sách</a>
+            </p>
+            <div class="card mb-4">
+                <div class="card-body">
+                    @if (Model != null && Model.Any())
+                    {
+                        <p>Đây là hình ảnh của sản phẩm <strong>@Model.First().TenSanPham</strong></p>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Mã hình ảnh</th>
+                                    <th>Hình ảnh</th>
+                                    <th>Mô tả</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var image in Model)
+                                {
+                                    <tr>
+                                        <td>@image.MaHinhAnh</td>
+                                        <td>
+                                            <img src="@(Configuration["BaseAddress"] + image.DuongDan)"
+                                                 style="max-width: 150px; max-height: 150px; object-fit: contain;"
+                                                 alt="Hình ảnh sản phẩm" />
+                                        </td>
+                                        <td>@(string.IsNullOrEmpty(image.Mota) ? "Không có mô tả" : image.Mota)</td>
+                                        <input type="hidden" value="@image.MaSanPham" />
+                                        <td>
+											<a asp-controller="Product" asp-action="UpdateImage" asp-route-id="@image.MaHinhAnh" class="btn btn-primary">Sửa</a>
+                                            <a asp-controller="Product" asp-action="DeleteImage" asp-route-id="@image.MaHinhAnh" class="btn btn-danger">Xóa</a>
+                                        </td>
+                                       
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>Không có hình ảnh nào để hiển thị.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

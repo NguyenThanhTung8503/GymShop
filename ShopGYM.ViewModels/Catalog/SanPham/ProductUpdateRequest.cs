@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShopGYM.ViewModels.Catalog.SanPham
 {
-    public class ProductUpdateRequets
+    public class ProductUpdateRequest
     {
         public int Id { get; set; }
 

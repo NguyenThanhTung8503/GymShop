@@ -109,6 +109,16 @@ namespace ShopGYM.ApiIntegration
             return data;
         }
 
+        public async Task<HinhAnhViewModel> GetImageById(int id)
+        {
+            var data = await GetAsync<HinhAnhViewModel>($"/api/products/HinhAnh/{id}");
+            return data;
+        }
+        public async Task<List<HinhAnhViewModel>> GetListImages(int id)
+        {
+            var data = await GetListAsync<HinhAnhViewModel>($"/api/products/{id}/HinhAnh");
+            return data;
+        }
 
         public async Task<ProductVM> Detail(int id)
         {
@@ -116,7 +126,7 @@ namespace ShopGYM.ApiIntegration
             return data;
         }
 
-        public async Task<bool> EditProduct(ProductUpdateRequets request)
+        public async Task<bool> EditProduct(ProductUpdateRequest request)
         {
             var sessions = _httpContextAccessor
                  .HttpContext
@@ -154,6 +164,36 @@ namespace ShopGYM.ApiIntegration
             return response.IsSuccessStatusCode;
         }
 
+        public async Task<bool> UpdateImage( HinhAnhUpdateRequest request)
+        {
+            var sessions = _httpContextAccessor
+                 .HttpContext
+                 .Session
+                 .GetString(SystemConstants.AppSettings.Token);
+
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+
+            var requestContent = new MultipartFormDataContent();
+
+            if (request.ImageFile != null)
+            {
+                byte[] data;
+                using (var br = new BinaryReader(request.ImageFile.OpenReadStream()))
+                {
+                    data = br.ReadBytes((int)request.ImageFile.OpenReadStream().Length);
+                }
+                ByteArrayContent bytes = new ByteArrayContent(data);
+                requestContent.Add(bytes, "ImageFile", request.ImageFile.FileName);
+            }
+
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.MoTa) ? "" : request.MoTa.ToString()), "MoTa");
+
+            var response = await client.PutAsync($"/api/products/HinhAnh/{request.IdHinhAnh}", requestContent);
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
         {
             var client = _httpClientFactory.CreateClient();
@@ -166,6 +206,25 @@ namespace ShopGYM.ApiIntegration
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await client.PutAsync($"/api/products/{id}/categories", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+            }
+            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
+        }
+        public async Task<ApiResult<bool>> SetThumbnailImage(int id, ThumbnailAssignRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync($"/api/products/{id}/setthumbnail", httpContent);
             var result = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
@@ -190,5 +249,10 @@ namespace ShopGYM.ApiIntegration
         {
             return await Delete($"/api/products/" + id);
         }
+        public async Task<bool> DeleteImage(int id)
+        {
+            return await Delete($"/api/products/HinhAnh/" + id);
+        }
+
     } 
 }

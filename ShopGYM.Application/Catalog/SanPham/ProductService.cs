@@ -10,6 +10,7 @@ using ShopGYM.Application.Common;
 using ShopGYM.ViewModels.Catalog.HinhAnh;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Identity;
+using System.Linq;
 
 namespace ShopGYM.Application.Catalog.SanPham
 {
@@ -26,6 +27,7 @@ namespace ShopGYM.Application.Catalog.SanPham
         }
         public async Task<int> Create(ProductCreateRequest request)
         {
+
             var sanpham = new Data.Entities.SanPham()
             {
                 TenSanPham = request.TenSanPham,
@@ -56,7 +58,7 @@ namespace ShopGYM.Application.Catalog.SanPham
             await _context.SaveChangesAsync();
             return sanpham.MaSanPham;
         }
-        public async Task<int> Edit(ProductUpdateRequets request)
+        public async Task<int> Edit(ProductUpdateRequest request)
         {
             var sanpham = await _context.SanPhams.FindAsync(request.Id);
             if (sanpham == null) throw new ShopGYMException($"Khong the tim thay san pham voi id: {request.Id}");
@@ -103,9 +105,14 @@ namespace ShopGYM.Application.Catalog.SanPham
                         join dm in _context.DanhMucs on pic.MaDanhMuc equals dm.MaDanhMuc into dmsp
                         from dm in dmsp.DefaultIfEmpty()
                         join ha in _context.HinhAnhs on sp.MaSanPham equals ha.MaSanPham into spha
-                        from ha in spha.DefaultIfEmpty() // Kết nối trái cho hình ảnh
-                        where ha.IsDefault == true
-                        select new { sp, pic, ha, dm };
+                        select new
+                        {
+                            sp,
+                            pic,
+                            dm,
+                            ha = spha.FirstOrDefault(h => h.IsDefault == true) ?? spha.FirstOrDefault() // Lấy hình ảnh IsDefault == true, nếu không có thì lấy ảnh đầu tiên
+                        };
+
 
             // Áp dụng bộ lọc
             if (request.MaDanhMuc != null && request.MaDanhMuc != 0)
@@ -258,6 +265,12 @@ namespace ShopGYM.Application.Catalog.SanPham
             {
                 hinhanh.DuongDan = await SaveFile(request.ImageFile);
             }
+            if (request.MoTa != null)
+            {
+                hinhanh.Mota = request.MoTa;
+            }
+            hinhanh.NgayTao = DateTime.Now;
+
             _context.HinhAnhs.Update(hinhanh);
             return await _context.SaveChangesAsync();
         }
@@ -285,7 +298,6 @@ namespace ShopGYM.Application.Catalog.SanPham
                 MauSac = sanpham.MauSac,
                 SoLuongTon = sanpham.SoLuongTon,
                 HinhAnhChinh = hinhanh != null ? hinhanh.DuongDan : "no-image.jpg",
-               
             };
             return sanphamtViewModel;
         }
@@ -310,7 +322,12 @@ namespace ShopGYM.Application.Catalog.SanPham
 
         public async Task<List<HinhAnhViewModel>> GetListImages(int IdSanPham)
         {
-            return await _context.HinhAnhs.Where(x => x.MaSanPham == IdSanPham)
+            var product = await _context.SanPhams.FindAsync(IdSanPham);
+            if (product == null)
+            {
+                return new List<HinhAnhViewModel>(); 
+            }
+            var images = await _context.HinhAnhs.Where(x => x.MaSanPham == IdSanPham)
                 .Select(i => new HinhAnhViewModel()
                 {
                     Mota = i.Mota,
@@ -318,8 +335,10 @@ namespace ShopGYM.Application.Catalog.SanPham
                     MaHinhAnh = i.MaHinhAnh,
                     DuongDan = i.DuongDan,
                     MaSanPham = i.MaSanPham,
-                    IsDefault = i.IsDefault == true
+                    TenSanPham = product.TenSanPham,
+                    IsDefault = i.IsDefault 
                 }).ToListAsync();
+            return images;
         }
 
 
@@ -328,7 +347,7 @@ namespace ShopGYM.Application.Catalog.SanPham
              var product = await _context.SanPhams.FindAsync(id);
              if (product == null)
              {
-                 return new ApiErrorResult<bool>($"Sản phẩm với id {id} không tồn tại");
+                 return new ApiErrorResult<bool>($"Sản phẩm với id: {id} không tồn tại");
              }
 
             foreach (var category in request.Categories)
@@ -351,6 +370,52 @@ namespace ShopGYM.Application.Catalog.SanPham
             }
             await _context.SaveChangesAsync();
             return new ApiSuccessResult<bool>();
+        }
+
+        public async Task<ApiResult<bool>> SetThumbnailImage(int id, ThumbnailAssignRequest request)
+        {
+            var product = await _context.SanPhams.FindAsync(id);
+            if (product == null)
+            {
+                return new ApiErrorResult<bool>($"Không có hình ảnh nào cho sản phẩm: {id}");
+            }
+           
+            var images = await _context.HinhAnhs
+                .Where(x => x.MaSanPham == id)
+                .ToListAsync();
+
+            if (images == null || !images.Any())
+            {
+                return new ApiErrorResult<bool>("Không có hình ảnh nào cho sản phẩm này");
+            }
+            // Tìm ảnh hiện tại có IsDefault = true
+            var currentDefaultImage = images.FirstOrDefault(x => x.IsDefault);
+            
+            foreach (var item in request.Images)
+            {
+                var image = images.FirstOrDefault(x => x.MaHinhAnh == int.Parse(item.Id) && x.MaSanPham == id );
+
+                if (item.Selected)
+                {
+                    if (currentDefaultImage != null && currentDefaultImage.MaHinhAnh != int.Parse(item.Id))
+                    {
+                        currentDefaultImage.IsDefault = false;
+                        _context.HinhAnhs.Update(currentDefaultImage);
+                    }
+                    if (!image.IsDefault) 
+                    {
+                        image.IsDefault = true;
+                        _context.HinhAnhs.Update(image);
+                    }
+                }
+                else if (image.IsDefault && !item.Selected)
+                {
+                }
+            }
+        
+            await _context.SaveChangesAsync();
+            return new ApiSuccessResult<bool>();
+
         }
 
         public async Task<List<ProductVM>> GetFeatureProducts(int take)

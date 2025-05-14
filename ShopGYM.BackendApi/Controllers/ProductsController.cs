@@ -21,7 +21,7 @@ namespace ShopGYM.BackendApi.Controllers
         }
         //San pham
         [HttpGet("paging")]
-        public async Task<IActionResult> GetAllPaging([FromQuery]GetManageProductPagingRequest request)
+        public async Task<IActionResult> GetProductsPagings([FromQuery]GetManageProductPagingRequest request)
         {
             var sanpham = await _productService.GetAllPaging(request);
             return Ok(sanpham);
@@ -98,10 +98,25 @@ namespace ShopGYM.BackendApi.Controllers
             return Ok(result);
         }
 
+
+        [HttpPut("{id}/setthumbnail")]
+        public async Task<IActionResult> SetThumbnailImage(int id, [FromBody] ThumbnailAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _productService.SetThumbnailImage(id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result);
+        }
+
         [HttpPut("{IdSanpham}")]
         [Consumes("multipart/form-data")]
         [Authorize]
-        public async Task<IActionResult> Edit([FromRoute] int IdSanpham, [FromForm] ProductUpdateRequets request)
+        public async Task<IActionResult> Edit([FromRoute] int IdSanpham, [FromForm] ProductUpdateRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -141,6 +156,17 @@ namespace ShopGYM.BackendApi.Controllers
 
 
         //Hinh anh
+
+        [HttpGet("HinhAnh/{IdHinhAnh}")]
+        public async Task<IActionResult> GetImageById(int IdHinhAnh)
+        {
+            var image = await _productService.GetImageById(IdHinhAnh);
+            if (image == null)
+                return BadRequest("Không thể tìm thấy ảnh");
+
+            return Ok(image);
+        }
+
         [HttpPost("{IdSanPham}/HinhAnh")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> CreateImage(int IdSanPham, [FromForm] HinhAnhCreateRequest request)
@@ -158,8 +184,9 @@ namespace ShopGYM.BackendApi.Controllers
             return CreatedAtAction(nameof(GetListImageByIdSanPham), new { id = IdSanPham }, HinhAnh);
         }
 
-        [HttpPut("{IdSanPham}/HinhAnh/{IdHinhAnh}")]
-        public async Task<IActionResult> UpdateImage(int IdHinhAnh, [FromForm] HinhAnhUpdateRequest request)
+        [HttpPut("HinhAnh/{IdHinhAnh}")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateImage([FromRoute] int IdHinhAnh, [FromForm] HinhAnhUpdateRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -172,7 +199,7 @@ namespace ShopGYM.BackendApi.Controllers
             return Ok();
         }
 
-        [HttpDelete("{IdSanPham}/HinhAnh/{IdHinhAnh}")]
+        [HttpDelete("HinhAnh/{IdHinhAnh}")]
         public async Task<IActionResult> RemoveImage(int IdHinhAnh)
         {
             if (!ModelState.IsValid)
