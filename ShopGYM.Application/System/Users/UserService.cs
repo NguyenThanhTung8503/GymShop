@@ -76,7 +76,7 @@ namespace ShopGYM.Application.System.Users
                 return new ApiSuccessResult<bool>();
             }
             
-            return new ApiErrorResult<bool>();
+            return new ApiErrorResult<bool>("Xóa không thành công");
 
         }
 
@@ -138,7 +138,7 @@ namespace ShopGYM.Application.System.Users
         public async Task<ApiResult<bool>> Register(RegisterRequest request)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
-            if (user == null)
+            if (user != null)
             {
                 return new ApiErrorResult<bool>("Tài khoản đã tồn tại");
             }

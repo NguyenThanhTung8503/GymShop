@@ -12,6 +12,7 @@ namespace ShopGYM.Data.Entities
         public Guid MaNguoiDung { get; set; }
         public int MaSanPham { get; set; }
         public int SoLuong { get; set; }
+        public decimal Gia { set; get; }
 
         public AppUser AppUser { get; set; }
         public SanPham SanPham { get; set; }

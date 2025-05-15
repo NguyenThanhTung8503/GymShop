@@ -36,7 +36,7 @@ namespace ShopGYM.BackendApi.Controllers
             return Ok(result);
         }
 
-        //PUT: http://localhost/api/users/id
+     
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody]UserUpdateRequest request)
         {

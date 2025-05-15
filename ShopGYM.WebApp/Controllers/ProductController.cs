@@ -43,12 +43,14 @@ namespace ShopGYM.WebApp.Controllers
         }
 
 
-        public async Task<IActionResult> Detail(int id, string culture)
+        public async Task<IActionResult> Detail(int id)
         {
-            var product = await _productApiClient.GetById(id);
-            return View(new ProductDetailViewModel()
+            var product = await _productApiClient.Detail(id);
+            var images = await _productApiClient.GetListImages(id); // Lấy danh sách hình ảnh
+            return View(new ProductDetailViewModel
             {
-                Product = product
+                Product = product,
+                ProductImages = images
             });
         }
 
