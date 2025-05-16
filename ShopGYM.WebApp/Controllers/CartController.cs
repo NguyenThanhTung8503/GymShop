@@ -60,6 +60,29 @@ namespace ShopGYM.WebApp.Controllers
             return Ok(currentCart);
         }
 
+        public IActionResult UpdateCart(int id, int quantity)
+        {
+            var session = HttpContext.Session.GetString(SystemConstants.CartSession);
+            List<CartItemViewModel> currentCart = new List<CartItemViewModel>();
+            if (session != null)
+                currentCart = JsonConvert.DeserializeObject<List<CartItemViewModel>>(session);
+
+            foreach (var item in currentCart)
+            {
+                if (item.IdSanPham == id)
+                {
+                    if (quantity == 0)
+                    {
+                        currentCart.Remove(item);
+                        break;
+                    }
+                    item.SoLuong = quantity;
+                }
+            }
+
+            HttpContext.Session.SetString(SystemConstants.CartSession, JsonConvert.SerializeObject(currentCart));
+            return Ok(currentCart);
+        }
     }
 }
 

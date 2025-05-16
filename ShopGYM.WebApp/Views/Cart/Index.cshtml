@@ -1,50 +1,52 @@
 ﻿@{
-	ViewData["Title"] = "Index";
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 @section scripts {
-	<script src="~/assets/js/cart2.js"></script>
-	<script>
-		var cartController = new CartController();
-		cartController.initialize();
-	</script>
+    <script src="~/assets/js/cart2.js"></script>
+    <script>
+        var cartController = new CartController();
+        cartController.initialize();
+    </script>
 }
 
 <section class="inner_page_head">
-	<div class="container_fuild">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="full">
-					<h3>Giỏ hàng của bạn</h3>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="container_fuild">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="full">
+                    <h3>Giỏ hàng của bạn</h3>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <hr class="soft" />
 
 <div class="container">
+    <table class="table table-bordered" id="tbl_cart">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Mô tả</th>
+                <th>Số lượng</th>
+                <th>Giá</th>
+            </tr>
+        </thead>
+        <tbody id="cart_body">
+        </tbody>
+    </table>
 
-	<table class="table table-bordered" id="tbl_cart">
-		<thead>
-			<tr>
-				<th>Sản phẩm</th>
-				<th>Mô tả</th>
-				<th>Số lượng</th>
-				<th>Giá</th>
-			</tr>
-		</thead>
-		<tbody id="cart_body">
-		</tbody>
-	</table>
-
-	<div class="row">
-		<div class="col-12">
-			<div class="d-flex justify-content-between align-items-center mt-3">
-				<a href="/" class="btn btn-primary"><i class="icon-arrow-left"></i>Tiếp tục mua sắm</a>
-				<a href="/Cart/Checkout" class="btn btn-primary">Thanh toán <i class="icon-arrow-right"></i></a>
-			</div>
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <a href="/" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Tiếp tục mua sắm</a>
+                <a href="/Cart/Checkout" class="btn btn-primary">Thanh toán <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
 </div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
