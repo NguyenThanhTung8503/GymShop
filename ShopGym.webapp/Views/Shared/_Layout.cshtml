@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+<!DOCTYPE html>
 <html>
 <head>
     <!-- Basic -->
@@ -22,6 +23,7 @@
     <link href="/assets/css/responsive.css" rel="stylesheet" />
 </head>
 <body>
+    <input type="hidden" id="hidBaseAddress" value="@Configuration["BaseAddress"]" />
     <div class="hero_area">
         <!-- header section starts -->
         <header class="header_section">
@@ -73,7 +75,7 @@
                                 </li>
                             }
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" asp-controller="Cart" asp-action="Index">
                                     <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 456.029 456.029" style="enable-background:new 0 0 456.029 456.029;" xml:space="preserve">
                                     <g>
                                     <g>
@@ -98,11 +100,6 @@
                                     </svg>
                                 </a>
                             </li>
-                            <form class="form-inline">
-                                <button class="btn my-2 my-sm-0 nav_search-btn" type="submit">
-                                    <i class="fa fa-search" aria-hidden="true"></i>
-                                </button>
-                            </form>
                         </ul>
                     </div>
                 </nav>
@@ -190,16 +187,22 @@
         </div>
     </footer>
     <!-- footer section -->
-    <!-- jQuery -->
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+	<!-- jQuery -->
+	<script src="/assets/js/jquery-3.4.1.min.js"></script>
+    
     <!-- popper js -->
     <script src="/assets/js/popper.min.js"></script>
     <!-- bootstrap js -->
     <script src="/assets/js/bootstrap.js"></script>
     <!-- custom js -->
-    <script src="/assets/js/custom.js"></script>
-    @RenderSection("scripts", required: false)
+	<script src="/assets/js/custom.js"></script>
+    <script src="/assets/js/site.js"></script>
+    <script>
+        var site = new SiteController();
+        site.initialize();
+    </script>
+   
     <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93e21596cf16b019',t:'MTc0Njk3MDc4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+	@RenderSection("scripts", required: false)
 </body>
 </html>

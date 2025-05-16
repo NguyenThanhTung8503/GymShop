@@ -9,6 +9,7 @@ namespace ShopGYM.Utilities.Constants
     public class SystemConstants
     {
         public const string MainConnectionString = "GYMShopDatabase";
+        public const string CartSession = "CartSession";
         public class AppSettings
         {
             public const string Token = "Token";
