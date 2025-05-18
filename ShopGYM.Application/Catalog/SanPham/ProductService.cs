@@ -38,6 +38,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                 MauSac = request.MauSac,
                 SoLuongTon = request.SoLuongTon,
                 NgayTao = DateTime.Now,
+                NoiBat = false,
             };
             //Save Images
             if (request.ThumbnailImage != null)
@@ -158,7 +159,7 @@ namespace ShopGYM.Application.Catalog.SanPham
         {
             // Tạo truy vấn
             var query = from sp in _context.SanPhams
-                        join pic in _context.ProductInCategories on sp.MaSanPham equals pic.MaSanPham 
+                        join pic in _context.ProductInCategories on sp.MaSanPham equals pic.MaSanPham
                         join dm in _context.DanhMucs on pic.MaDanhMuc equals dm.MaDanhMuc
                         join ha in _context.HinhAnhs on sp.MaSanPham equals ha.MaSanPham into hinhAnhs
                         from ha in hinhAnhs.DefaultIfEmpty() // Kết nối trái cho hình ảnh
@@ -200,7 +201,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                 Items = items
             };
         }
-    
+
 
         public async Task<bool> UpdatePrice(int IdSanPham, decimal GiaMoi)
         {
@@ -218,7 +219,7 @@ namespace ShopGYM.Application.Catalog.SanPham
             return await _context.SaveChangesAsync() > 0;
         }
 
-        
+
         private async Task<string> SaveFile(IFormFile file)
         {
             var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
@@ -315,7 +316,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                 MaHinhAnh = hinhanh.MaHinhAnh,
                 DuongDan = hinhanh.DuongDan,
                 MaSanPham = hinhanh.MaSanPham,
-                IsDefault = hinhanh.IsDefault == true 
+                IsDefault = hinhanh.IsDefault == true
             };
             return viewModel;
         }
@@ -325,7 +326,7 @@ namespace ShopGYM.Application.Catalog.SanPham
             var product = await _context.SanPhams.FindAsync(IdSanPham);
             if (product == null)
             {
-                return new List<HinhAnhViewModel>(); 
+                return new List<HinhAnhViewModel>();
             }
             var images = await _context.HinhAnhs.Where(x => x.MaSanPham == IdSanPham)
                 .Select(i => new HinhAnhViewModel()
@@ -336,19 +337,19 @@ namespace ShopGYM.Application.Catalog.SanPham
                     DuongDan = i.DuongDan,
                     MaSanPham = i.MaSanPham,
                     TenSanPham = product.TenSanPham,
-                    IsDefault = i.IsDefault 
+                    IsDefault = i.IsDefault
                 }).ToListAsync();
             return images;
         }
 
 
-         public async Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
-         {
-             var product = await _context.SanPhams.FindAsync(id);
-             if (product == null)
-             {
-                 return new ApiErrorResult<bool>($"Sản phẩm với id: {id} không tồn tại");
-             }
+        public async Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
+        {
+            var product = await _context.SanPhams.FindAsync(id);
+            if (product == null)
+            {
+                return new ApiErrorResult<bool>($"Sản phẩm với id: {id} không tồn tại");
+            }
 
             foreach (var category in request.Categories)
             {
@@ -379,7 +380,7 @@ namespace ShopGYM.Application.Catalog.SanPham
             {
                 return new ApiErrorResult<bool>($"Không có hình ảnh nào cho sản phẩm: {id}");
             }
-           
+
             var images = await _context.HinhAnhs
                 .Where(x => x.MaSanPham == id)
                 .ToListAsync();
@@ -390,10 +391,10 @@ namespace ShopGYM.Application.Catalog.SanPham
             }
             // Tìm ảnh hiện tại có IsDefault = true
             var currentDefaultImage = images.FirstOrDefault(x => x.IsDefault);
-            
+
             foreach (var item in request.Images)
             {
-                var image = images.FirstOrDefault(x => x.MaHinhAnh == int.Parse(item.Id) && x.MaSanPham == id );
+                var image = images.FirstOrDefault(x => x.MaHinhAnh == int.Parse(item.Id) && x.MaSanPham == id);
 
                 if (item.Selected)
                 {
@@ -402,7 +403,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                         currentDefaultImage.IsDefault = false;
                         _context.HinhAnhs.Update(currentDefaultImage);
                     }
-                    if (!image.IsDefault) 
+                    if (!image.IsDefault)
                     {
                         image.IsDefault = true;
                         _context.HinhAnhs.Update(image);
@@ -412,7 +413,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                 {
                 }
             }
-        
+
             await _context.SaveChangesAsync();
             return new ApiSuccessResult<bool>();
 
@@ -433,7 +434,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                         where sp.NoiBat == true && (ha == null || ha.IsDefault == true)
                         select new { sp, pic, ha, dm };
 
-           
+
             var items = await query.OrderByDescending(x => x.sp.NgayTao).Take(take)
                 .Select(x => new ProductVM
                 {
@@ -445,9 +446,10 @@ namespace ShopGYM.Application.Catalog.SanPham
                     KichThuoc = x.sp.KichThuoc,
                     MauSac = x.sp.MauSac,
                     SoLuongTon = x.sp.SoLuongTon,
-                    HinhAnhChinh =  x.ha.DuongDan 
+                    HinhAnhChinh = x.ha.DuongDan, 
+                    NoiBat = x.sp.NoiBat 
                 })
-                .ToListAsync(); 
+                .ToListAsync();
 
             return items;
         }
@@ -462,7 +464,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                         from dm in dmsp.DefaultIfEmpty()
                         join ha in _context.HinhAnhs on sp.MaSanPham equals ha.MaSanPham into spha
                         from ha in spha.DefaultIfEmpty() // Kết nối trái cho hình ảnh
-                        where  (ha == null || ha.IsDefault == true)
+                        where (ha == null || ha.IsDefault == true)
                         select new { sp, pic, ha, dm };
 
 
@@ -494,7 +496,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                                   join pic in _context.ProductInCategories on dm.MaDanhMuc equals pic.MaDanhMuc
                                   where pic.MaSanPham == IdSanPham
                                   select dm.TenDanhMuc).ToListAsync();
-           
+
 
             var hinhanhs = await _context.HinhAnhs
                 .Where(x => x.MaSanPham == IdSanPham)
@@ -516,6 +518,7 @@ namespace ShopGYM.Application.Catalog.SanPham
 
             return sanphamtViewModel;
         }
+
     }
 
 

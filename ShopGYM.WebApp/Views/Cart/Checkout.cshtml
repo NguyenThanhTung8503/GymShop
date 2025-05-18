@@ -1,0 +1,112 @@
+﻿@model CheckoutViewModel
+@{
+	ViewData["Title"] = "Checkout";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+
+
+<section class="inner_page_head">
+	<div class="container_fuild">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="full">
+					<h3>Đặt hàng</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<hr class="soft" />
+<div class="container">
+	@if (TempData["SuccessMsg"] != null)
+	{
+		<span class="alert alert-success">@TempData["SuccessMsg"]</span>
+	}
+	else
+	{
+
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Sản phẩm</th>
+					<th>Mô tả</th>
+					<th>Số lượng</th>
+					<th>Giá</th>
+					<th>Tổng</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model.CartItems)
+				{
+					<tr>
+						<td> <img width="60" src="@(Configuration["BaseAddress"] + item.Image)" alt="" /></td>
+						<td>@item.MoTa</td>
+						<td>
+							@item.SoLuong
+						</td>
+						<td>@item.Gia</td>
+						<td>@(item.SoLuong * item.Gia)</td>
+					</tr>
+				}
+
+				<tr>
+					<td colspan="4" style="text-align:right"><strong>TOTAL =</strong></td>
+					<td class="label label-important" style="display:block"> <strong> @Model.CartItems.Sum(x => x.SoLuong * x.Gia).ToString("N0")</strong></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<table class="table table-bordered">
+			<tr><th>Thông tin vận chuyển </th></tr>
+			<tr>
+				<td>
+					<form class="form-horizontal" action="/Cart/Checkout" method="post">
+						<div class="control-group">
+							<label class="control-label" for="inputCountry">Tên </label>
+							<div class="controls">
+								<input type="text" id="inputCountry" asp-for="CheckoutModel.Name" placeholder="Tên">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="inputCountry">Địa chỉ </label>
+							<div class="controls">
+								<input type="text" id="inputCountry" asp-for="CheckoutModel.Address" placeholder="Địa chỉ ">
+							</div>
+						</div>
+
+
+						<div class="control-group">
+							<label class="control-label" for="inputCountry">Số điện thoại </label>
+							<div class="controls">
+								<input type="text" id="inputCountry" asp-for="CheckoutModel.PhoneNumber" placeholder="Số điện thoại">
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-12">
+								<div class="d-flex justify-content-between align-items-center mt-3">
+									<a href="/" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Tiếp tục mua sắm</a>
+									<div class="d-flex gap-2">
+										<button type="submit" class="btn btn-primary">Thanh toán khi nhận hàng</button>
+										
+									</div>
+									
+								</div>
+							</div>
+						</div>
+					</form>
+					<form asp-action="CreatePaymentMomo" asp-controller="Payment" method="post">
+						<input type="hidden" name="Amount" value="@Model.CartItems.Sum(x => x.SoLuong * x.Gia)" />
+						<input type="hidden" name="FullName" value="@Model.CheckoutModel.Name" />
+						<input type="hidden" name="OrderInfo" value="gafg" />
+						<input type="hidden" name="OrderId" value="12412" />
+						<button class="btn btn-primary">Thanh toán với Momo <i class="fas fa-arrow-right"></i></button>
+					</form>
+				</td>
+				
+			</tr>
+		</table>
+	}
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopGYM.Data.EF;
 
@@ -11,9 +12,11 @@ using ShopGYM.Data.EF;
 namespace ShopGYM.Data.Migrations
 {
     [DbContext(typeof(ShopGYMDbContext))]
-    partial class ShopGYMDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250517110944_dltTable")]
+    partial class dltTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,27 +254,6 @@ namespace ShopGYM.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ShopGYM.Data.Entities.ChiTietDonHang", b =>
-                {
-                    b.Property<int>("MaDonHang")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaSanPham")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Gia")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("SoLuong")
-                        .HasColumnType("int");
-
-                    b.HasKey("MaDonHang", "MaSanPham");
-
-                    b.HasIndex("MaSanPham");
-
-                    b.ToTable("ChiTietDonHang", (string)null);
-                });
-
             modelBuilder.Entity("ShopGYM.Data.Entities.DanhGia", b =>
                 {
                     b.Property<int>("MaDanhGia")
@@ -363,8 +345,14 @@ namespace ShopGYM.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("GiaBan")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<Guid>("MaNguoiDung")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("MaSanPham")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("NgayDatHang")
                         .HasColumnType("datetime2");
@@ -373,13 +361,20 @@ namespace ShopGYM.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TenNguoiNhan")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("SanPhamMaSanPham")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SoLuong")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TongTien")
+                        .HasColumnType("DECIMAL(18,2)");
 
                     b.HasKey("MaDonHang");
 
                     b.HasIndex("MaNguoiDung");
+
+                    b.HasIndex("SanPhamMaSanPham");
 
                     b.ToTable("DonHang", (string)null);
                 });
@@ -642,25 +637,6 @@ namespace ShopGYM.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ShopGYM.Data.Entities.ChiTietDonHang", b =>
-                {
-                    b.HasOne("ShopGYM.Data.Entities.DonHang", "DonHang")
-                        .WithMany("ChiTietDonHangs")
-                        .HasForeignKey("MaDonHang")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ShopGYM.Data.Entities.SanPham", "SanPham")
-                        .WithMany("ChiTietDonHangs")
-                        .HasForeignKey("MaSanPham")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("DonHang");
-
-                    b.Navigation("SanPham");
-                });
-
             modelBuilder.Entity("ShopGYM.Data.Entities.DanhGia", b =>
                 {
                     b.HasOne("ShopGYM.Data.Entities.AppUser", "AppUser")
@@ -688,7 +664,15 @@ namespace ShopGYM.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ShopGYM.Data.Entities.SanPham", "SanPham")
+                        .WithMany()
+                        .HasForeignKey("SanPhamMaSanPham")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("AppUser");
+
+                    b.Navigation("SanPham");
                 });
 
             modelBuilder.Entity("ShopGYM.Data.Entities.GioHang", b =>
@@ -766,15 +750,8 @@ namespace ShopGYM.Data.Migrations
                     b.Navigation("ProductInCategories");
                 });
 
-            modelBuilder.Entity("ShopGYM.Data.Entities.DonHang", b =>
-                {
-                    b.Navigation("ChiTietDonHangs");
-                });
-
             modelBuilder.Entity("ShopGYM.Data.Entities.SanPham", b =>
                 {
-                    b.Navigation("ChiTietDonHangs");
-
                     b.Navigation("DanhGias");
 
                     b.Navigation("GioHangs");

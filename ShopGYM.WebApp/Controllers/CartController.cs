@@ -1,21 +1,78 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using ShopGYM.ApiIntegration;
+using ShopGYM.Data.EF;
 using ShopGYM.Utilities.Constants;
+using ShopGYM.ViewModels.Catalog.Checkout;
 using ShopGYM.WebApp.Models;
+using System.Security.Claims;
 
 namespace ShopGYM.WebApp.Controllers
 {
     public class CartController : Controller
     {
         private readonly IProductApiClient _productApiClient;
-        public CartController(IProductApiClient productApiClient)
+        private readonly IOrderApiClient _orderApiClient;
+        private readonly ShopGYMDbContext _context;
+        public CartController(IProductApiClient productApiClient, IOrderApiClient orderApiClient, ShopGYMDbContext context)
         {
             _productApiClient = productApiClient;
+            _orderApiClient = orderApiClient;
+            _context = context;
         }
         public IActionResult Index()
         {
             return View();
+        }
+
+        public IActionResult Checkout()
+        {
+            return View(GetCheckoutViewModel());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Checkout(CheckoutViewModel request)
+        {
+            var model = GetCheckoutViewModel();
+            var orderDetails = model.CartItems.Select(item => new OrderDetailVm
+            {
+                ProductId = item.IdSanPham,
+                Quantity = item.SoLuong,
+                Total = item.Gia * item.SoLuong
+            }).ToList();
+
+            var userId = HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var checkoutRequest = new CheckoutRequest
+            {
+                Address = request.CheckoutModel.Address,
+                Name = request.CheckoutModel.Name,
+                PhoneNumber = request.CheckoutModel.PhoneNumber,
+                UserId = Guid.Parse(userId),
+                OrderDetails = orderDetails
+            };
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            var maDonHang = await _orderApiClient.CreateOrder(checkoutRequest);
+            await transaction.CommitAsync();
+
+            TempData["SuccessMsg"] = "Đặt hàng thành công";
+            return View(model);
+        }
+
+        private CheckoutViewModel GetCheckoutViewModel()
+        {
+            var session = HttpContext.Session.GetString(SystemConstants.CartSession);
+            List<CartItemViewModel> currentCart = new List<CartItemViewModel>();
+            if (session != null)
+                currentCart = JsonConvert.DeserializeObject<List<CartItemViewModel>>(session);
+            
+            var checkoutVm = new CheckoutViewModel()
+            {
+                CartItems = currentCart,
+                CheckoutModel = new CheckoutRequest()
+            };
+            return checkoutVm;
         }
 
         [HttpGet]

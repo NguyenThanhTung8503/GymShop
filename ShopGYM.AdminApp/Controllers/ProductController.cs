@@ -126,6 +126,7 @@ namespace ShopGYM.AdminApp.Controllers
             return View(thumnnailAssignRequet);
         }
 
+
         private async Task<CategoryAssignRequest> GetCategoryAssignRequet(int id)
         {
             var productObj = await _productApiClient.GetById(id);
@@ -143,6 +144,7 @@ namespace ShopGYM.AdminApp.Controllers
             return categoryAssignRequet;
 
         }
+        
 
         private async Task<ThumbnailAssignRequest> GetThumbnailAssignRequet(int id)
         {
@@ -319,7 +321,6 @@ namespace ShopGYM.AdminApp.Controllers
             ModelState.AddModelError("", "Xóa không thành công");
             return View(request);
         }
-
 
 
         [HttpGet]

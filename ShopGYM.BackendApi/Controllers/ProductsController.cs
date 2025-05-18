@@ -57,6 +57,7 @@ namespace ShopGYM.BackendApi.Controllers
             return Ok(sanpham);
         }
 
+
         [HttpGet("latest/{take}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetLatestProducts(int take)
@@ -112,6 +113,7 @@ namespace ShopGYM.BackendApi.Controllers
             }
             return Ok(result);
         }
+
 
         [HttpPut("{IdSanpham}")]
         [Consumes("multipart/form-data")]

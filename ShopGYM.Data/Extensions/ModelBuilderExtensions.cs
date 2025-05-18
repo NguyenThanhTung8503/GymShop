@@ -78,29 +78,6 @@ namespace ShopGYM.Data.Extensions
            
             );
 
-            // Seed NhaCungCap
-            modelBuilder.Entity<NhaCungCap>().HasData(
-                new NhaCungCap { MaNhaCungCap = 1, TenNhaCungCap = "Công ty TNHH May Mặc ABC", DiaChi = "123 Factory St, Hanoi", SoDienThoai = "0901234560", Email = "abc@company.com" },
-                new NhaCungCap { MaNhaCungCap = 2, TenNhaCungCap = "Công ty Giày XYZ", DiaChi = "456 Factory St, HCMC", SoDienThoai = "0901234561", Email = "xyz@company.com" },
-                new NhaCungCap { MaNhaCungCap = 3, TenNhaCungCap = "Công ty Phụ Kiện 123", DiaChi = "789 Factory St, Danang", SoDienThoai = "0901234562", Email = "123@company.com" },
-                new NhaCungCap { MaNhaCungCap = 4, TenNhaCungCap = "Công ty Thời Trang DEF", DiaChi = "321 Factory St, Hanoi", SoDienThoai = "0901234563", Email = "def@company.com" }
-            );
-
-            // Seed NhapHang
-            modelBuilder.Entity<NhapHang>().HasData(
-                new NhapHang { MaNhapHang = 1, MaNhaCungCap = 1, NgayNhap = new DateTime(2025, 4, 5, 8, 0, 0), TongTien = 5000000, GhiChu = "Nhập lô quần jeans" },
-                new NhapHang { MaNhapHang = 2, MaNhaCungCap = 2, NgayNhap = new DateTime(2025, 4, 10, 9, 0, 0), TongTien = 8000000, GhiChu = "Nhập lô giày sneaker" },
-                new NhapHang { MaNhapHang = 3, MaNhaCungCap = 3, NgayNhap = new DateTime(2025, 4, 15, 10, 0, 0), TongTien = 2000000, GhiChu = "Nhập lô phụ kiện" },
-                new NhapHang { MaNhapHang = 4, MaNhaCungCap = 4, NgayNhap = new DateTime(2025, 4, 20, 11, 0, 0), TongTien = 6000000, GhiChu = "Nhập lô áo thun" }
-            );
-
-            // Seed ChiTietNhapHang
-            modelBuilder.Entity<ChiTietNhapHang>().HasData(
-                new ChiTietNhapHang { MaChiTietNhapHang = 1, MaNhapHang = 1, MaSanPham = 1, SoLuong = 50, GiaNhap = 200000 },
-                new ChiTietNhapHang { MaChiTietNhapHang = 2, MaNhapHang = 2, MaSanPham = 5, SoLuong = 30, GiaNhap = 400000 },
-                new ChiTietNhapHang { MaChiTietNhapHang = 3, MaNhapHang = 3, MaSanPham = 4, SoLuong = 100, GiaNhap = 80000 },
-                new ChiTietNhapHang { MaChiTietNhapHang = 4, MaNhapHang = 4, MaSanPham = 3, SoLuong = 150, GiaNhap = 100000 }
-            );
 
             // Seed HinhAnh
             modelBuilder.Entity<HinhAnh>().HasData(

@@ -11,14 +11,13 @@ namespace ShopGYM.Data.Entities
     {
         public int MaDonHang { get; set; }
         public Guid MaNguoiDung { get; set; }
-        public DateTime NgayDatHang { get; set; } 
-        public decimal TongTien { get; set; }
-        public TrangThaiDonHang TrangThai { get; set; }  
-        public PhuongThucThanhToan PhuongThucThanhToan { get; set; } 
+        public DateTime NgayDatHang { get; set; }
+        public string TenNguoiNhan { get; set; }
         public string DiaChiGiaoHang { get; set; }
+        public string SDT { get; set; }
 
         public AppUser AppUser { get; set; }
         public ICollection<ChiTietDonHang> ChiTietDonHangs { get; set; }
-        public ICollection<GiaoDich> GiaoDichs { get; set; }
+
     }
 }

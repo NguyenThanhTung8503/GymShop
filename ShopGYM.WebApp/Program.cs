@@ -1,10 +1,19 @@
 
 
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 using ShopGYM.ApiIntegration;
+using ShopGYM.Data.EF;
+using ShopGYM.Utilities.Constants;
+using ShopGYM.WebApp.Models.Momo;
+using ShopGYM.WebApp.Service;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//momo api
+builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+builder.Services.AddScoped<IMomoService, MomoService>();
 // Add Razor runtime compilation for development environment
 #if DEBUG
 if (builder.Environment.IsDevelopment())
@@ -13,12 +22,16 @@ if (builder.Environment.IsDevelopment())
 }
 #endif
 
+builder.Services.AddDbContext<ShopGYMDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString(SystemConstants.MainConnectionString)));
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<IProductApiClient, ProductApiClient>();
 builder.Services.AddTransient<ICategoryApiClient, CategoryApiClient>();
 builder.Services.AddTransient<IUserApiClient, UserApiClient>();
+builder.Services.AddTransient<IOrderApiClient, OrderApiClient>();
+
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddAntiforgery();

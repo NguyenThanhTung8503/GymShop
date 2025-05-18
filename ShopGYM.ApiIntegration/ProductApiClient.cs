@@ -233,6 +233,8 @@ namespace ShopGYM.ApiIntegration
             return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
 
+       
+
         public async Task<List<ProductVM>> GetFeaturedProducts(int take)
         {
             var data = await GetListAsync<ProductVM>($"/api/products/featured/{take}");

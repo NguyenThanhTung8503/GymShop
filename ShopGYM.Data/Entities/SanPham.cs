@@ -17,12 +17,12 @@ namespace ShopGYM.Data.Entities
         public string MauSac { get; set; }
         public int SoLuongTon { get; set; }
         public DateTime NgayTao { get; set; }
-        public bool? NoiBat { get; set; }
+        public bool NoiBat { get; set; }
         public ICollection<HinhAnh> HinhAnhs { get; set; }
-        public ICollection<ChiTietDonHang> ChiTietDonHangs { get; set; }
-        public ICollection<GioHang> GioHangs { get; set; }
+        public List<GioHang> GioHangs { get; set; }
+        public List<ChiTietDonHang> ChiTietDonHangs { get; set; }
+
         public ICollection<DanhGia> DanhGias { get; set; }
-        public ICollection<ChiTietNhapHang> ChiTietNhapHangs { get; set; }
         public List<ProductInCategory> ProductInCategories { get; set; }
     }
 }

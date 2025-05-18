@@ -18,13 +18,9 @@ namespace ShopGYM.Data.EF
             modelBuilder.ApplyConfiguration(new DanhMucConfiguration());
             modelBuilder.ApplyConfiguration(new SanPhamConfiguration());
             modelBuilder.ApplyConfiguration(new DonHangConfiguration());
-            modelBuilder.ApplyConfiguration(new ChiTietDonHangConfiguration());
             modelBuilder.ApplyConfiguration(new GioHangConfiguration());
             modelBuilder.ApplyConfiguration(new DanhGiaConfiguration());
-            modelBuilder.ApplyConfiguration(new GiaoDichConfiguration());
-            modelBuilder.ApplyConfiguration(new NhaCungCapConfiguration());
-            modelBuilder.ApplyConfiguration(new NhapHangConfiguration());
-            modelBuilder.ApplyConfiguration(new ChiTietNhapHangConfiguration());
+            modelBuilder.ApplyConfiguration(new ChiTietDonHangConfiguration());
             modelBuilder.ApplyConfiguration(new HinhAnhConfiguration());
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
             modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
@@ -47,10 +43,6 @@ namespace ShopGYM.Data.EF
         public DbSet<ChiTietDonHang> ChiTietDonHangs { get; set; }
         public DbSet<GioHang> GioHangs { get; set; }
         public DbSet<DanhGia> DanhGias { get; set; }
-        public DbSet<GiaoDich> GiaoDichs { get; set; }
-        public DbSet<NhaCungCap> NhaCungCaps { get; set; }
-        public DbSet<NhapHang> NhapHangs { get; set; }
-        public DbSet<ChiTietNhapHang> ChiTietNhapHangs { get; set; }
         public DbSet<HinhAnh> HinhAnhs { get; set; }
         public DbSet<ProductInCategory> ProductInCategories { get; set; }
 

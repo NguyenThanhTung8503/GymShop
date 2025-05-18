@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopGYM.Data.EF;
 
@@ -11,9 +12,11 @@ using ShopGYM.Data.EF;
 namespace ShopGYM.Data.Migrations
 {
     [DbContext(typeof(ShopGYMDbContext))]
-    partial class ShopGYMDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250517115502_updtable")]
+    partial class updtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -373,6 +376,9 @@ namespace ShopGYM.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("SanPhamMaSanPham")
+                        .HasColumnType("int");
+
                     b.Property<string>("TenNguoiNhan")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -380,6 +386,8 @@ namespace ShopGYM.Data.Migrations
                     b.HasKey("MaDonHang");
 
                     b.HasIndex("MaNguoiDung");
+
+                    b.HasIndex("SanPhamMaSanPham");
 
                     b.ToTable("DonHang", (string)null);
                 });
@@ -653,7 +661,7 @@ namespace ShopGYM.Data.Migrations
                     b.HasOne("ShopGYM.Data.Entities.SanPham", "SanPham")
                         .WithMany("ChiTietDonHangs")
                         .HasForeignKey("MaSanPham")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("DonHang");
@@ -688,7 +696,15 @@ namespace ShopGYM.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ShopGYM.Data.Entities.SanPham", "SanPham")
+                        .WithMany()
+                        .HasForeignKey("SanPhamMaSanPham")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("AppUser");
+
+                    b.Navigation("SanPham");
                 });
 
             modelBuilder.Entity("ShopGYM.Data.Entities.GioHang", b =>

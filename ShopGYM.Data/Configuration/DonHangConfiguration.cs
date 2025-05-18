@@ -17,11 +17,9 @@ namespace ShopGYM.Data.Configuration
             entity.HasKey(dh => dh.MaDonHang);
             entity.Property(dh => dh.MaDonHang).ValueGeneratedOnAdd();
             entity.Property(dh => dh.MaNguoiDung).IsRequired();
-            entity.Property(dh => dh.NgayDatHang).IsRequired();
-            entity.Property(dh => dh.TongTien).IsRequired().HasColumnType("DECIMAL(18,2)");
-            entity.Property(dh => dh.TrangThai).IsRequired().HasMaxLength(50).HasConversion<string>();
-            entity.Property(dh => dh.PhuongThucThanhToan).HasMaxLength(50).HasConversion<string>();
+            entity.Property(dh => dh.NgayDatHang);
             entity.Property(dh => dh.DiaChiGiaoHang);
+            entity.Property(dh => dh.SDT);
 
             entity.HasOne(dh => dh.AppUser)
                   .WithMany(nd => nd.DonHangs)
