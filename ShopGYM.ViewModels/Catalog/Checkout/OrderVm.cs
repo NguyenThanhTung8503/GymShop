@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopGYM.ViewModels.Catalog.SanPham;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,10 @@ namespace ShopGYM.ViewModels.Catalog.Checkout
         public string NameProduct { get; set; }
 
         public int Quantity { get; set; }
-
+        public DateTime NgayDatHang { get; set; }
         public decimal Total { get; set; }
         public DateTime CreatedDate { get; set; }
+        public List<ProductVM> Products { get; set; }
 
     }
 }

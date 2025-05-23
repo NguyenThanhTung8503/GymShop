@@ -65,17 +65,15 @@
 						<div class="control-group">
 							<label class="control-label" for="inputCountry">Tên </label>
 							<div class="controls">
-								<input type="text" id="inputCountry" asp-for="CheckoutModel.Name" placeholder="Tên">
+								<input type="text" id="inputName" asp-for="CheckoutModel.Name" placeholder="Tên">
 							</div>
 						</div>
 						<div class="control-group">
 							<label class="control-label" for="inputCountry">Địa chỉ </label>
 							<div class="controls">
-								<input type="text" id="inputCountry" asp-for="CheckoutModel.Address" placeholder="Địa chỉ ">
+								<input type="text" id="inputCountry" asp-for="CheckoutModel.Address" placeholder="Địa chỉ">
 							</div>
 						</div>
-
-
 						<div class="control-group">
 							<label class="control-label" for="inputCountry">Số điện thoại </label>
 							<div class="controls">
@@ -89,20 +87,26 @@
 									<a href="/" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Tiếp tục mua sắm</a>
 									<div class="d-flex gap-2">
 										<button type="submit" class="btn btn-primary">Thanh toán khi nhận hàng</button>
-										
 									</div>
-									
 								</div>
 							</div>
 						</div>
 					</form>
-					<form asp-action="CreatePaymentMomo" asp-controller="Payment" method="post">
+
+					<form asp-action="CreatePaymentMomo" asp-controller="Payment" method="post" id="momoForm">
 						<input type="hidden" name="Amount" value="@Model.CartItems.Sum(x => x.SoLuong * x.Gia)" />
-						<input type="hidden" name="FullName" value="@Model.CheckoutModel.Name" />
+						<input type="hidden" name="FullName" id="fullNameHidden" />
 						<input type="hidden" name="OrderInfo" value="gafg" />
 						<input type="hidden" name="OrderId" value="12412" />
-						<button class="btn btn-primary">Thanh toán với Momo <i class="fas fa-arrow-right"></i></button>
+						<button type="submit" class="btn btn-primary" onclick="setFullName()">Thanh toán với Momo <i class="fas fa-arrow-right"></i></button>
 					</form>
+
+					<script>
+						function setFullName() {
+							var nameInput = document.getElementById("inputName").value;
+							document.getElementById("fullNameHidden").value = nameInput;
+						}
+					</script>
 				</td>
 				
 			</tr>

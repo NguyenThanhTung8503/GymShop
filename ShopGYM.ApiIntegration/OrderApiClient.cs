@@ -82,9 +82,9 @@ namespace ShopGYM.ApiIntegration
             return await Delete($"/api/orders/{id}");
         }
 
-        public async Task<List<OrderVm>> GetAll()
+        public async Task<List<OrderVm>> GetAll(Guid userId)
         {
-            var data = await GetListAsync<OrderVm>($"/api/orders");
+            var data = await GetListAsync<OrderVm>($"/api/orders/{userId}/getall");
             return data;
         }
 

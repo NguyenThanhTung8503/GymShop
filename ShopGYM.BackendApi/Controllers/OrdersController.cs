@@ -17,10 +17,10 @@ namespace ShopGYM.BackendApi.Controllers
             _orderService = orderService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("{userId}/getall")]
+        public async Task<IActionResult> GetAll(Guid userId)
         {
-            var order = await _orderService.GetAll();
+            var order = await _orderService.GetAll(userId);
             return Ok(order);
         }
 
@@ -57,6 +57,22 @@ namespace ShopGYM.BackendApi.Controllers
             if (affectedresult == 0)
                 return BadRequest();
 
+            return Ok();
+        }
+
+        [HttpPut("{id}")]
+        [Consumes("multipart/form-data")]
+        [Authorize]
+        public async Task<IActionResult> Edit([FromRoute] Guid id, [FromForm] OrderUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            request.UserId = id;
+            var affectedResult = await _orderService.Edit(request);
+            if (affectedResult == 0)
+                return BadRequest();
             return Ok();
         }
 

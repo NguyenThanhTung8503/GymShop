@@ -3,6 +3,7 @@ using ShopGYM.Data.EF;
 using ShopGYM.Data.Entities;
 using ShopGYM.Utilities.Exceptions;
 using ShopGYM.ViewModels.Catalog.Checkout;
+using ShopGYM.ViewModels.Catalog.SanPham;
 
 namespace ShopGYM.Application.Catalog.DonHang
 {
@@ -59,24 +60,9 @@ namespace ShopGYM.Application.Catalog.DonHang
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    throw; // Ném lại ngoại lệ để xử lý ở cấp cao hơn
+                    throw; 
                 }
             }
-        }
-
-        public async Task<int> CreateOrderDetail(OrderDetailVm request, int id)
-        {
-
-            var donhang = new ChiTietDonHang()
-            {
-                MaSanPham = request.ProductId,
-                SoLuong = request.Quantity,
-                Gia = request.Total,
-                MaDonHang = id,
-            };
-
-            _context.ChiTietDonHangs.Add(donhang);
-            return await _context.SaveChangesAsync();
         }
 
         public async Task<int> Delete(int Id)
@@ -88,34 +74,44 @@ namespace ShopGYM.Application.Catalog.DonHang
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<List<OrderVm>> GetAll()
+        public async Task<int> Edit(OrderUpdateRequest request)
         {
-            var query = from sp in _context.SanPhams
-                        join od in _context.ChiTietDonHangs on sp.MaSanPham equals od.MaSanPham
-                        join dh in _context.DonHangs on od.MaDonHang equals dh.MaDonHang
-                        select new
-                        {
-                            sp, dh,od
-                        };
-
-
-            var items = await query
-                .Select(x => new OrderVm
-                {
-                    Id = x.dh.MaDonHang,
-                    Name = x.dh.TenNguoiNhan,
-                    NameProduct = x.sp.TenSanPham,
-                    Total = x.od.Gia,
-                    PhoneNumber = x.dh.SDT,
-                    Quantity = x.od.SoLuong,
-                    CreatedDate = x.dh.NgayDatHang,
-                    Address = x.dh.DiaChiGiaoHang
-                })
-                .OrderByDescending(x => x.Address)
-                .ToListAsync();
-            return items;
-
+            var sanpham = await _context.DonHangs.FindAsync(request.UserId);
+            if (sanpham == null) throw new ShopGYMException($"Khong the tim thay san pham voi id: {request.UserId}");
+            sanpham.TenNguoiNhan = request.Name;
+            sanpham.DiaChiGiaoHang = request.Address;
+            sanpham.SDT = request.PhoneNumber;
+            
+            return await _context.SaveChangesAsync();
         }
+
+        public async Task<List<OrderVm>> GetAll(Guid userId)
+        {
+            // Fetch data from the database
+            var orders = await _context.DonHangs
+                .Where(dh => dh.MaNguoiDung == userId)
+                .Include(dh => dh.ChiTietDonHangs) // Include related ChiTietDonHang
+                    .ThenInclude(ct => ct.SanPham) // Include related SanPham
+                .OrderByDescending(dh => dh.NgayDatHang)
+                .ToListAsync();
+
+            // Transform to OrderVm in memory
+            var items = orders.Select(dh => new OrderVm
+            {
+                Id = dh.MaDonHang,
+                Name = dh.TenNguoiNhan,
+                Address = dh.DiaChiGiaoHang,
+                UserId = dh.MaNguoiDung,
+                PhoneNumber = dh.SDT,
+                CreatedDate = dh.NgayDatHang,
+                NameProduct = string.Join(", ", dh.ChiTietDonHangs.Select(ct => ct.SanPham.TenSanPham)),
+                Quantity = dh.ChiTietDonHangs.Sum(ct => ct.SoLuong),
+                Total = dh.ChiTietDonHangs.Sum(ct => ct.Gia * ct.SoLuong)
+            }).ToList();
+
+            return items ?? new List<OrderVm>();
+        }
+
 
         public async Task<OrderVm> GetById(int MaDonHang)
         {
