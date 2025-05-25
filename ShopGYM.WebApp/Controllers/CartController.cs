@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using ShopGYM.ApiIntegration;
@@ -6,7 +7,9 @@ using ShopGYM.Data.EF;
 using ShopGYM.Utilities.Constants;
 using ShopGYM.ViewModels.Catalog.Checkout;
 using ShopGYM.WebApp.Models;
+using ShopGYM.WebApp.Service;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ShopGYM.WebApp.Controllers
 {
@@ -15,11 +18,15 @@ namespace ShopGYM.WebApp.Controllers
         private readonly IProductApiClient _productApiClient;
         private readonly IOrderApiClient _orderApiClient;
         private readonly ShopGYMDbContext _context;
-        public CartController(IProductApiClient productApiClient, IOrderApiClient orderApiClient, ShopGYMDbContext context)
+        private readonly PaypalClient _paypalCilent;
+        private object _paypalClient;
+
+        public CartController(IProductApiClient productApiClient, IOrderApiClient orderApiClient, ShopGYMDbContext context, PaypalClient paypalClient)
         {
             _productApiClient = productApiClient;
             _orderApiClient = orderApiClient;
             _context = context;
+            _paypalCilent = paypalClient;
         }
         public IActionResult Index()
         {
@@ -28,6 +35,7 @@ namespace ShopGYM.WebApp.Controllers
 
         public IActionResult Checkout()
         {
+            ViewBag.PaypalClientId = _paypalCilent.ClientId;
             return View(GetCheckoutViewModel());
         }
 
@@ -66,7 +74,7 @@ namespace ShopGYM.WebApp.Controllers
             List<CartItemViewModel> currentCart = new List<CartItemViewModel>();
             if (session != null)
                 currentCart = JsonConvert.DeserializeObject<List<CartItemViewModel>>(session);
-            
+
             var checkoutVm = new CheckoutViewModel()
             {
                 CartItems = currentCart,
@@ -88,7 +96,6 @@ namespace ShopGYM.WebApp.Controllers
         public async Task<IActionResult> AddToCart(int id)
         {
             var product = await _productApiClient.GetById(id);
-
             var session = HttpContext.Session.GetString(SystemConstants.CartSession);
             List<CartItemViewModel> currentCart = new List<CartItemViewModel>();
             if (session != null)
@@ -140,6 +147,7 @@ namespace ShopGYM.WebApp.Controllers
             HttpContext.Session.SetString(SystemConstants.CartSession, JsonConvert.SerializeObject(currentCart));
             return Ok(currentCart);
         }
+
     }
 }
 

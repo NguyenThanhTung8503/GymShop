@@ -31,7 +31,6 @@ namespace ShopGYM.Application.Catalog.SanPham
             var sanpham = new Data.Entities.SanPham()
             {
                 TenSanPham = request.TenSanPham,
-                //MaDanhMuc = request.MaDanhMuc,
                 Gia = request.Gia,
                 MoTa = request.MoTa,
                 KichThuoc = request.KichThuoc,
@@ -62,7 +61,8 @@ namespace ShopGYM.Application.Catalog.SanPham
         public async Task<int> Edit(ProductUpdateRequest request)
         {
             var sanpham = await _context.SanPhams.FindAsync(request.Id);
-            if (sanpham == null) throw new ShopGYMException($"Khong the tim thay san pham voi id: {request.Id}");
+            if (sanpham == null) 
+                throw new ShopGYMException($"Khong the tim thay san pham voi id: {request.Id}");
             sanpham.TenSanPham = request.TenSanPham;
             sanpham.MoTa = request.MoTa;
             sanpham.MauSac = request.MauSac;
@@ -125,6 +125,9 @@ namespace ShopGYM.Application.Catalog.SanPham
                 query = query.Where(x => x.sp.TenSanPham.Contains(request.Keyword) ||
                                         x.sp.MoTa != null && x.sp.MoTa.Contains(request.Keyword));
             }
+
+            // Sắp xếp theo sản phẩm mới nhất
+            query = query.OrderByDescending(x => x.sp.NgayTao);
             // Tính tổng số bản ghi (TotalRecords)
             int totalRecords = await query.CountAsync();
 
@@ -137,13 +140,9 @@ namespace ShopGYM.Application.Catalog.SanPham
                     TenSanPham = x.sp.TenSanPham,
                     TenDanhMuc = x.dm.TenDanhMuc,
                     Gia = x.sp.Gia,
-                    MoTa = x.sp.MoTa,
-                    KichThuoc = x.sp.KichThuoc,
-                    MauSac = x.sp.MauSac,
-                    SoLuongTon = x.sp.SoLuongTon,
                     HinhAnhChinh = x.ha.DuongDan
                 })
-                .ToListAsync(); // Thực thi truy vấn và trả về danh sách SanPhamViewModel
+                .ToListAsync(); 
 
             // Trả về kết quả phân trang
             return new PagedResult<ProductVM>

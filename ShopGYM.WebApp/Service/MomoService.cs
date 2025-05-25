@@ -19,7 +19,7 @@ namespace ShopGYM.WebApp.Service
         public async Task<MomoCreatePaymentResponseModel> CreatePaymentAsync(OrderInfoModel model)
         {
             model.OrderId = DateTime.UtcNow.Ticks.ToString();
-            model.OrderInfo = "Khách hàng: " + model.FullName + ". Nội dung: " + model.OrderInfo;
+            model.OrderInfo = "Khách hàng: " + model.FullName  + model.OrderInfo;
             var rawData =
                 $"partnerCode={_options.Value.PartnerCode}" +
                 $"&accessKey={_options.Value.AccessKey}" +
@@ -71,8 +71,7 @@ namespace ShopGYM.WebApp.Service
             {
                 Amount = amount,
                 OrderId = orderId,
-                OrderInfo = orderInfo
-
+                OrderInfo = orderInfo,
             };
         }
 
@@ -93,6 +92,8 @@ namespace ShopGYM.WebApp.Service
 
             return hashString;
         }
+
+
 
     }
 }

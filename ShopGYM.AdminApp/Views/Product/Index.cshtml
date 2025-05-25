@@ -73,7 +73,7 @@
 							<td>@item.MaSanPham</td>
 							<td>@item.TenSanPham</td>
 							<td>@item.TenDanhMuc</td>
-							<td>@item.Gia</td>
+							<td>@item.Gia.ToString("N0") VNĐ</td>
 							<td style="text-align: center; vertical-align: middle;">
 								<img src="@(Configuration["BaseAddress"] + @item.HinhAnhChinh)" style="width: 150px; height:180px; object-fit: contain" alt="@item.TenSanPham">
 								</td>
@@ -87,7 +87,6 @@
 								<a asp-controller="Product" asp-action="SetThumbnailImage" asp-route-id="@item.MaSanPham" class="btn btn-warning">Gán thumbnail</a>
 								<a asp-controller="Product" asp-action="AddImage" asp-route-id="@item.MaSanPham" class="btn btn-warning">Thêm ảnh</a>
 								<a asp-controller="Product" asp-action="GetListImages" asp-route-id="@item.MaSanPham" class="btn btn-warning">Xem ảnh</a>
-								<a asp-controller="Product" asp-action="SetFeatureProduct" asp-route-id="@item.MaSanPham" class="btn btn-warning">Cài nổi bật</a>
 							</td>
 						</tr>
 					}

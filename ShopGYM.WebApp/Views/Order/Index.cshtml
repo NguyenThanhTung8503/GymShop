@@ -1,91 +1,97 @@
 ﻿@using ShopGYM.ViewModels.Catalog.Checkout
 @model List<OrderVm>
 @{
-	ViewBag.Title = "Order List";
-    Layout = "~/Views/Shared/_Layout.cshtml"; ;
+	ViewBag.Title = "Đơn hàng";
+	Layout = "~/Views/Shared/_Layout.cshtml"; ;
 }
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Order List</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-    </style>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Order List</title>
+	<style>
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+		}
+
+		th, td {
+			border: 1px solid #ddd;
+			padding: 8px;
+			text-align: left;
+		}
+
+		th {
+			background-color: #f2f2f2;
+		}
+
+		tr:nth-child(even) {
+			background-color: #f9f9f9;
+		}
+	</style>
 </head>
 <body>
-    <section class="inner_page_head">
-        <div class="container_fuild">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="full">
-                        <h3>Đơn hàng của bạn</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+	<section class="inner_page_head">
+		<div class="container_fuild">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="full">
+						<h3>Đơn hàng của bạn</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
+	<div class="container">
+		@if (ViewBag.SuccessMsg != null)
+		{
+			<div style="color: green; margin: 10px 0;">
+				@ViewBag.SuccessMsg
+			</div>
+		}
 
-    @if (ViewBag.SuccessMsg != null)
-    {
-        <div style="color: green; margin: 10px 0;">
-            @ViewBag.SuccessMsg
-        </div>
-    }
-
-    @if (Model == null || !Model.Any())
-    {
-        <p>No orders found.</p>
-    }
-    else
-    {
-        <table>
-            <thead>
-                <tr>
-                    <th>Mã đơn hàng</th>
-                    <th>Người nhận</th>
-                    <th>Địa chỉ</th>
-                    <th>Số điện thoại</th>
-                    <th>sản phẩm</th>
-                    <th>Số lượng</th>
-                    <th>Tổng tiền</th>
-                    <th>Ngày đặt</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var order in Model)
-                {
-                    <tr>
-                        <td>@order.Id</td>
-                        <td>@order.Name</td>
-                        <td>@order.Address</td>
-                        <td>@order.PhoneNumber</td>
-                        <td>@order.NameProduct</td>
-                        <td>@order.Quantity</td>
-                        <td>@order.Total.ToString("N0") VNĐ</td>
-                        <td>@order.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
+		@if (Model == null || !Model.Any())
+		{
+			<p>No orders found.</p>
+		}
+		else
+		{
+			<table>
+				<thead>
+					<tr>
+						<th>Mã đơn hàng</th>
+						<th>Người nhận</th>
+						<th>Địa chỉ</th>
+						<th>Số điện thoại</th>
+						<th>sản phẩm</th>
+						<th>Số lượng</th>
+						<th>Tổng tiền</th>
+						<th>Ngày đặt</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var order in Model)
+					{
+						<tr>
+							<td>@order.Id</td>
+							<td>@order.Name</td>
+							<td>@order.Address</td>
+							<td>@order.PhoneNumber</td>
+							<td>@order.NameProduct</td>
+							<td>@order.Quantity</td>
+							<td>@order.Total.ToString("N0") VNĐ</td>
+							<td>@order.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+		<a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary mt-3">Tiếp tục mua sắm</a>
+	</div>
+	<hr />
 </body>
 </html>

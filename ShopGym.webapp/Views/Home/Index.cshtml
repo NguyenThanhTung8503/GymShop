@@ -298,7 +298,7 @@
             @foreach (var product in Model.FeaturedProducts)
             {
                 <div class="col-sm-6 col-md-4 col-lg-4">
-                    <div class="box">
+                    <div class="box" style="height:400px !important; width:400px !important">
                         <div class="option_container">
                             <div class="options">
                                 <a asp-controller="Product" asp-action="Detail" asp-route-id="@product.MaSanPham" class="option1">
@@ -316,7 +316,7 @@
                             @product.TenSanPham
                         </h5>
                         <h6 style="text-align: center;">
-                            @product.Gia
+                            @product.Gia.ToString("N0") VNĐ
                         </h6>
                     </div>
                 </div>
@@ -324,7 +324,7 @@
         </div>
 
     </div>
-
+    <p></p>
     <div class="container">
         <div class="heading_container heading_center">
             <h2>
@@ -334,8 +334,8 @@
         <div class="row">
             @foreach (var product in Model.LatestProducts)
             {
-                <div class="col-sm-6 col-md-4 col-lg-4">
-                    <div class="box">
+                <div class="col-sm-6 col-md-4 col-lg-4" >
+                    <div class="box" style="height:400px !important; width:400px !important" >
                         <div class="option_container">
                             <div class="options">
                                 <a asp-controller="Product" asp-action="Detail" asp-route-id="@product.MaSanPham" class="option1">
@@ -346,14 +346,14 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="img-box">
+                        <div class="img-box" >
                             <img src="@(Configuration["BaseAddress"] + product.HinhAnhChinh)" alt="@product.TenSanPham">
                         </div>
                         <h5 style="text-align: center;">
                             @product.TenSanPham
                         </h5>
                         <h6 style="text-align: center;">
-                            @product.Gia
+                            @product.Gia.ToString("N0") VNĐ
                         </h6>
                     </div>
                 </div>
@@ -361,114 +361,11 @@
         </div>
 
         <div class="btn-box">
-            <a href="">
-                View All products
+            <a href="/Product/Index">
+                Xem tất cả sản phẩm
             </a>
         </div>
     </div>
     
 </section>
 <!-- end product section -->
-<!-- subscribe section -->
-<section class="subscribe_section">
-    <div class="container-fuild">
-        <div class="box">
-            <div class="row">
-                <div class="col-md-6 offset-md-3">
-                    <div class="subscribe_form ">
-                        <div class="heading_container heading_center">
-                            <h3>Subscribe To Get Discount Offers</h3>
-                        </div>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
-                        <form action="">
-                            <input type="email" placeholder="Enter your email">
-                            <button>
-                                subscribe
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- end subscribe section -->
-
-<!-- footer start -->
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="full">
-                    <div class="logo_footer">
-                        <a href="#"><img width="210" src="/assets/images/logo.png" alt="#" /></a>
-                    </div>
-                    <div class="information_f">
-                        <p><strong>ADDRESS:</strong> 28 White tower, Street Name New York City, USA</p>
-                        <p><strong>TELEPHONE:</strong> +91 987 654 3210</p>
-                        <p><strong>EMAIL:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="35c1a6">[email&#160;protected]</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-8">
-                <div class="row">
-                    <div class="col-md-7">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="widget_menu">
-                                    <h3>Menu</h3>
-                                    <ul>
-                                        <li><a href="#">Home</a></li>
-                                        <li><a href="#">About</a></li>
-                                        <li><a href="#">Services</a></li>
-                                        <li><a href="#">Testimonial</a></li>
-                                        <li><a href="#">Blog</a></li>
-                                        <li><a href="#">Contact</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="widget_menu">
-                                    <h3>Account</h3>
-                                    <ul>
-                                        <li><a href="#">Account</a></li>
-                                        <li><a href="#">Checkout</a></li>
-                                        <li><a href="#">Login</a></li>
-                                        <li><a href="#">Register</a></li>
-                                        <li><a href="#">Shopping</a></li>
-                                        <li><a href="#">Widget</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="widget_menu">
-                            <h3>Newsletter</h3>
-                            <div class="information_f">
-                                <p>Subscribe by our newsletter and get update protidin.</p>
-                            </div>
-                            <div class="form_sub">
-                                <form>
-                                    <fieldset>
-                                        <div class="field">
-                                            <input type="email" placeholder="Enter Your Mail" name="email" />
-                                            <input type="submit" value="Subscribe" />
-                                        </div>
-                                    </fieldset>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
-<!-- footer end -->
-<div class="cpy_">
-    <p class="mx-auto">
-        © 2021 All Rights Reserved By <a href="https://html.design/">Free Html Templates</a><br>
-        Distributed By <a href="https://themewagon.com/" target="_blank">ThemeWagon</a>
-    </p>
-</div>
