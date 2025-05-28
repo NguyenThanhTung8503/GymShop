@@ -78,13 +78,13 @@ namespace ShopGYM.WebApp.Controllers
             var requestQuery = HttpContext.Request.Query;
             var errorCode = requestQuery["errorCode"];
             var message = requestQuery["message"];
-            if (errorCode != "0" || message != "Success")
+            if (errorCode != "0" && message != "Success")
             {
                 TempData["ErrorMsg"] = "Không nhận được thông tin kết quả thanh toán.";
                 return RedirectToAction("Checkout", "Cart");
             }
             
-            if (errorCode == "0")
+            if (errorCode == "0" && message == "Success")
             {
                 using var transaction = await _context.Database.BeginTransactionAsync();
                 try

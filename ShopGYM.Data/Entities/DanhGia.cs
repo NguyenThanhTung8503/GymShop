@@ -11,7 +11,7 @@ namespace ShopGYM.Data.Entities
         public int MaDanhGia { get; set; }
         public int MaSanPham { get; set; }
         public Guid MaNguoiDung { get; set; }
-        public string NoiDung { get; set; }
+        public string? NoiDung { get; set; }
         public DateTime NgayDanhGia { get; set; }
 
         public SanPham SanPham { get; set; }

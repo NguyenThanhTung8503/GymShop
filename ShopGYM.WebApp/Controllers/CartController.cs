@@ -18,15 +18,12 @@ namespace ShopGYM.WebApp.Controllers
         private readonly IProductApiClient _productApiClient;
         private readonly IOrderApiClient _orderApiClient;
         private readonly ShopGYMDbContext _context;
-        private readonly PaypalClient _paypalCilent;
-        private object _paypalClient;
 
-        public CartController(IProductApiClient productApiClient, IOrderApiClient orderApiClient, ShopGYMDbContext context, PaypalClient paypalClient)
+        public CartController(IProductApiClient productApiClient, IOrderApiClient orderApiClient, ShopGYMDbContext context)
         {
             _productApiClient = productApiClient;
             _orderApiClient = orderApiClient;
             _context = context;
-            _paypalCilent = paypalClient;
         }
         public IActionResult Index()
         {
@@ -35,14 +32,19 @@ namespace ShopGYM.WebApp.Controllers
 
         public IActionResult Checkout()
         {
-            ViewBag.PaypalClientId = _paypalCilent.ClientId;
             return View(GetCheckoutViewModel());
         }
 
         [HttpPost]
         public async Task<IActionResult> Checkout(CheckoutViewModel request)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var model = GetCheckoutViewModel();
+                
             var orderDetails = model.CartItems.Select(item => new OrderDetailVm
             {
                 ProductId = item.IdSanPham,
@@ -65,7 +67,7 @@ namespace ShopGYM.WebApp.Controllers
             await transaction.CommitAsync();
 
             TempData["SuccessMsg"] = "Đặt hàng thành công";
-            return View(model);
+            return RedirectToAction("Index", "Order");
         }
 
         private CheckoutViewModel GetCheckoutViewModel()

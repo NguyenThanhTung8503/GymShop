@@ -1,125 +1,186 @@
 ﻿@using ShopGYM.ViewModels.Common
+@using System.Security.Claims
 @model ProductDetailViewModel
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
 @{
-    ViewData["Title"] = "Chi tiết sản phẩm";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Chi tiết sản phẩm";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style>
-    .product-image {
-        width: 400px; /* Kích thước khung cố định */
-        height: 400px; /* Kích thước khung cố định */
-        object-fit: contain; /* Giữ tỷ lệ ảnh, vừa khung */
-        border: 1px solid #ddd; /* Thêm viền để dễ thấy khung */
-        border-radius: 5px;
-    }
+	.product-image {
+		width: 400px; /* Kích thước khung cố định */
+		height: 400px; /* Kích thước khung cố định */
+		object-fit: contain; /* Giữ tỷ lệ ảnh, vừa khung */
+		border: 1px solid #ddd; /* Thêm viền để dễ thấy khung */
+		border-radius: 5px;
+	}
 
-    .thumbnail {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        cursor: pointer;
-        opacity: 0.6;
-        transition: opacity 0.3s ease;
-    }
+	.thumbnail {
+		width: 80px;
+		height: 80px;
+		object-fit: cover;
+		cursor: pointer;
+		opacity: 0.6;
+		transition: opacity 0.3s ease;
+	}
 
-        .thumbnail:hover, .thumbnail.active {
-            opacity: 1;
-        }
+		.thumbnail:hover, .thumbnail.active {
+			opacity: 1;
+		}
 </style>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 
 <!-- inner page section -->
 <section class="inner_page_head">
-    <div class="container_fuild">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="full">
-                    <h3>Chi tiết sản phẩm</h3>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="container_fuild">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="full">
+					<h3>Chi tiết sản phẩm</h3>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 <!-- end inner page section -->
 
 <div class="container mt-5">
-    <div class="row">
-        <!-- Product Images -->
-        <div class="col-md-6 mb-4">
-            @{
-                // Lấy ảnh chính (ưu tiên ảnh có IsDefault == true, nếu không thì lấy ảnh đầu tiên từ HinhAnhs)
-                var mainImage = Model.ProductImages?.FirstOrDefault(img => img.IsDefault)?.DuongDan
-                ?? Model.Product.HinhAnhs?.FirstOrDefault()
-                ?? "no-image.jpg";
-            }
-            <img src="@(Configuration["BaseAddress"] + mainImage)" alt="@Model.Product.TenSanPham" class="img-fluid rounded mb-3 product-image" id="mainImage">
-            <div class="d-flex justify-content-between">
-                @{
-                    // Sử dụng ProductImages nếu có, nếu không thì dùng HinhAnhs
-                    var images = Model.ProductImages?.Any() == true
-                    ? Model.ProductImages.Select(img => img.DuongDan).ToList()
-                    : Model.Product.HinhAnhs ?? new List<string>();
-                    var firstImage = true;
-                }
-                @foreach (var image in images)
-                {
-                    <img src="@(Configuration["BaseAddress"] + image)" alt="Thumbnail" class="thumbnail rounded @(firstImage ? "active" : "")" onclick="changeImage(event, '@(Configuration["BaseAddress"] + image)')">
-                    firstImage = false; // Đặt active cho ảnh đầu tiên
-                }
-            </div>
-        </div>
+	<div class="row">
+		<!-- Product Images -->
+		<div class="col-md-6 mb-4">
+			@{
+				// Lấy ảnh chính (ưu tiên ảnh có IsDefault == true, nếu không thì lấy ảnh đầu tiên từ HinhAnhs)
+				var mainImage = Model.ProductImages?.FirstOrDefault(img => img.IsDefault)?.DuongDan
+				?? Model.Product.HinhAnhs?.FirstOrDefault()
+				?? "no-image.jpg";
+			}
+			<img src="@(Configuration["BaseAddress"] + mainImage)" alt="@Model.Product.TenSanPham" class="img-fluid rounded mb-3 product-image" id="mainImage">
+			<div class="d-flex justify-content-between">
+				@{
+					// Sử dụng ProductImages nếu có, nếu không thì dùng HinhAnhs
+					var images = Model.ProductImages?.Any() == true
+					? Model.ProductImages.Select(img => img.DuongDan).ToList()
+					: Model.Product.HinhAnhs ?? new List<string>();
+					var firstImage = true;
+				}
+				@foreach (var image in images)
+				{
+					<img src="@(Configuration["BaseAddress"] + image)" alt="Thumbnail" class="thumbnail rounded @(firstImage ? "active" : "")" onclick="changeImage(event, '@(Configuration["BaseAddress"] + image)')">
+					firstImage = false; // Đặt active cho ảnh đầu tiên
+				}
+			</div>
+		</div>
 
-        <!-- Product Details -->
-        <div class="col-md-6">
-            <h2 class="mb-3">@Model.Product.TenSanPham</h2>
-            <div class="mb-3">
-                <span class="h4 me-2">@Model.Product.Gia.ToString("N0") VNĐ</span>
-            </div>
-            <div class="mb-4">
-                <p><strong>Danh mục:</strong> @(Model.Product.Category != null && Model.Product.Category.Any() ? string.Join(", ", Model.Product.Category) : "Không có danh mục")</p>
-            </div>
-            <p class="mb-4">
-                @(string.IsNullOrEmpty(Model.Product.MoTa) ? "Không có mô tả" : Model.Product.MoTa)
-            </p>
-            <div class="mb-4">
-                <h5>Màu sắc:</h5>
-                <div class="btn-group" role="group" aria-label="Color selection">
-                    @{
-                        var colors = string.IsNullOrEmpty(Model.Product.MauSac) ? new List<string> { "Không có màu sắc" } : Model.Product.MauSac.Split(',').Select(c => c.Trim()).ToList();
-                        var firstColor = true;
-                    }
-                    @foreach (var color in colors)
-                    {
-                        <input type="radio" class="btn-check" name="color" id="@color.ToLower()" autocomplete="off" @(firstColor ? "checked" : "")>
-                        <label class="btn btn-outline-dark" for="@color.ToLower()">@color</label>
-                        firstColor = false;
-                    }
-                </div>
-            </div>
-            <div class="mb-4">
-                <h5>Kích thước:</h5>
-                <p>@(string.IsNullOrEmpty(Model.Product.KichThuoc) ? "Không có kích thước" : Model.Product.KichThuoc)</p>
-            </div>
-            <div class="mb-4">
-                <label for="quantity" class="form-label">Số lượng tồn: @Model.Product.SoLuongTon</label>
-                <input type="number" class="form-control" id="quantity" value="1" min="1" max="@Model.Product.SoLuongTon" style="width: 80px;">
-            </div>
-            <button class="btn btn-primary btn-lg mb-3 me-2 option2" data-id="@Model.Product.MaSanPham">
-                <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
-            </button>
-        </div>
-    </div>
+		<!-- Product Details -->
+		<div class="col-md-6">
+			<h2 class="mb-3">@Model.Product.TenSanPham</h2>
+			<div class="mb-3">
+				<span class="h4 me-2">@Model.Product.Gia.ToString("N0") VNĐ</span>
+			</div>
+			<div class="mb-4">
+				<p><strong>Danh mục:</strong> @(Model.Product.Category != null && Model.Product.Category.Any() ? string.Join(", ", Model.Product.Category) : "Không có danh mục")</p>
+			</div>
+			<p class="mb-4">
+				@(string.IsNullOrEmpty(Model.Product.MoTa) ? "Không có mô tả" : Model.Product.MoTa)
+			</p>
+			<div class="mb-4">
+				<h5>Màu sắc:</h5>
+				<div class="btn-group" role="group" aria-label="Color selection">
+					@{
+						var colors = string.IsNullOrEmpty(Model.Product.MauSac) ? new List<string> { "Không có màu sắc" } : Model.Product.MauSac.Split(',').Select(c => c.Trim()).ToList();
+						var firstColor = true;
+					}
+					@foreach (var color in colors)
+					{
+						<input type="radio" class="btn-check" name="color" id="@color.ToLower()" autocomplete="off" @(firstColor ? "checked" : "")>
+						<label class="btn btn-outline-dark" for="@color.ToLower()">@color</label>
+						firstColor = false;
+					}
+				</div>
+			</div>
+			<div class="mb-4">
+				<h5>Kích thước:</h5>
+				<p>@(string.IsNullOrEmpty(Model.Product.KichThuoc) ? "Không có kích thước" : Model.Product.KichThuoc)</p>
+			</div>
+			<div class="mb-4">
+				<label for="quantity" class="form-label">Số lượng tồn: @Model.Product.SoLuongTon</label>
+				<input type="number" class="form-control" id="quantity" value="1" min="1" max="@Model.Product.SoLuongTon" style="width: 80px;">
+			</div>
+			<button class="btn btn-primary btn-lg mb-3 me-2 option2" data-id="@Model.Product.MaSanPham">
+				<i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
+			</button>
+		</div>
+	</div>
 </div>
 
+
+<!-- Comments Section -->
+<div class="container mt-5">
+	<h4>Bình luận</h4>
+	<!-- Comment Input Form -->
+	@if (User.Identity.IsAuthenticated)
+	{
+		<div class="mb-4">
+			<form id="commentForm" asp-action="Create" asp-controller="Comment" method="post">
+				<input type="hidden" name="IdSanPham" value="@Model.Product.MaSanPham" />
+				<div class="mb-3">
+					<textarea class="form-control" name="NoiDung" rows="4" placeholder="Nhập bình luận của bạn" required></textarea>
+				</div>
+				<button type="submit" class="btn btn-primary">Gửi</button>
+			</form>
+		</div>
+	}
+	else
+	{
+		<div class="mb-4">
+			<p>Vui lòng <a asp-action="Login" asp-controller="Account">đăng nhập</a> để bình luận</p>
+		</div>
+	}
+
+	<!-- Comments List -->
+	@if (Model.Comments.Any())
+	{
+		<div class="comments-list">
+			@foreach (var comment in Model.Comments)
+			{
+				<div class="comment mb-3 p-3 border rounded">
+					<p class="mb-1"><strong>@comment.TenNguoiDanhGia</strong></p>
+					<p class="mb-1">@comment.NoiDung</p>
+					@if (User.Identity.IsAuthenticated && Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value) == comment.MaNguoiDung)
+					{
+						<div class="comment-actions">
+							<button class="btn btn-sm btn-outline-primary me-2" onclick="editComment(@comment.Id, '@comment.NoiDung.Replace("'", "\\'")')">Sửa</button>
+							<form asp-action="Delete" asp-controller="Comment" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa bình luận này?');">
+								<input type="hidden" name="Id" value="@comment.Id" />
+								<input type="hidden" name="productId" value="@Model.Product.MaSanPham" />
+								<button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
+							</form>
+						</div>
+					}
+				</div>
+			}
+		</div>
+	}
+</div>
+
+<!-- Previous scripts remain unchanged -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    function changeImage(event, src) {
-        document.getElementById('mainImage').src = src;
-        document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
-        event.target.classList.add('active');
-    }
+	function changeImage(event, src) {
+		document.getElementById('mainImage').src = src;
+		document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
+		event.target.classList.add('active');
+	}
+</script>
+<script>
+	function editComment(id, content) {
+		const textarea = document.querySelector('#commentForm textarea[name="NoiDung"]');
+		textarea.value = content;
+		const form = document.getElementById('commentForm');
+		form.action = `/Comment/Update/${id}`;
+		textarea.scrollIntoView({ behavior: 'smooth' });
+	}
 </script>

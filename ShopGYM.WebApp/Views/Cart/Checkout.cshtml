@@ -1,214 +1,119 @@
 ﻿@model CheckoutViewModel
 @{
-	ViewData["Title"] = "Checkout";
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Thanh toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 
-
 @section Scripts {
-	<script>
-		setTimeout(function () {
-			$('#msgAlert').fadeOut('slow');
-		}, 2000);
-	</script>
-}
-
-
-<section class="inner_page_head">
-	<div class="container_fuild">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="full">
-					<h3>Đặt hàng</h3>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
-<hr class="soft" />
-
-<div class="container">
-	<!-- Hiển thị thông báo ở đầu trang -->
-	@if (TempData["SuccessMsg"] != null)
-	{
-		<div id ="msgAlert" class="alert alert-success">@TempData["SuccessMsg"]</div>
-	}
-	else if (TempData["ErrorMsg"] != null)
-	{
-		<div id="msgAlert" class="alert alert-danger">@TempData["ErrorMsg"]</div>
-	}
-
-	<!-- Nội dung chính luôn được render -->
-	<table class="table table-bordered">
-		<thead>
-			<tr>
-				<th>Sản phẩm</th>
-				<th>Mô tả</th>
-				<th>Số lượng</th>
-				<th>Giá</th>
-				<th>Tổng</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Model.CartItems)
-			{
-				<tr>
-					<td><img width="60" src="@(Configuration["BaseAddress"] + item.Image)" alt="" /></td>
-					<td>@item.MoTa</td>
-					<td>@item.SoLuong</td>
-					<td>@item.Gia</td>
-					<td>@(item.SoLuong * item.Gia)</td>
-				</tr>
-			}
-			<tr>
-				<td colspan="4" style="text-align:right"><strong>TOTAL =</strong></td>
-				<td class="label label-important" style="display:block"><strong>@Model.CartItems.Sum(x => x.SoLuong * x.Gia).ToString("N0")</strong></td>
-			</tr>
-		</tbody>
-	</table>
-
-	<table class="table table-bordered">
-		<tr><th>Thông tin vận chuyển</th></tr>
-		<tr>
-			<td>
-				<form class="form-horizontal" action="/Cart/Checkout" method="post" id="checkoutForm">
-					<div class="control-group">
-						<label class="control-label" for="inputName">Tên</label>
-						<div class="controls">
-							<input type="text" id="inputName" asp-for="CheckoutModel.Name" placeholder="Tên">
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="inputAddress">Địa chỉ</label>
-						<div class="controls">
-							<input type="text" id="inputAddress" asp-for="CheckoutModel.Address" placeholder="Địa chỉ">
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="inputPhoneNumber">Số điện thoại</label>
-						<div class="controls">
-							<input type="text" id="inputPhoneNumber" asp-for="CheckoutModel.PhoneNumber" placeholder="Số điện thoại">
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-12">
-							<div class="d-flex justify-content-between align-items-center mt-3">
-								<a href="/" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Tiếp tục mua sắm</a>
-								<div class="d-flex gap-2">
-									<button type="submit" class="btn btn-primary">Thanh toán khi nhận hàng</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</form>
-				<form asp-action="CreatePaymentMomo" asp-controller="Payment" method="post" id="momoForm">
-					<input type="hidden" name="Amount" value="@Model.CartItems.Sum(x => x.SoLuong * x.Gia)" />
-					<input type="hidden" name="FullName" id="fullNameHidden" />
-					<input type="hidden" name="Address" id="addressHidden" />
-					<input type="hidden" name="PhoneNumber" id="phoneNumberHidden" />
-					<button type="submit" class="btn btn-primary" onclick="setPaymentDetails()">Thanh toán với Momo <i class="fas fa-arrow-right"></i></button>
-				</form>
-
-				<script>
-					function setPaymentDetails() {
-						var nameInput = document.getElementById("inputName").value;
-						var addressInput = document.getElementById("inputAddress").value;
-						var phoneNumberInput = document.getElementById("inputPhoneNumber").value;
-
-						document.getElementById("fullNameHidden").value = nameInput;
-						document.getElementById("addressHidden").value = addressInput;
-						document.getElementById("phoneNumberHidden").value = phoneNumberInput;
-					}
-				</script>
-			</td>
-		</tr>
-	</table>
-</div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-@* <div id="paypal-button-container" style="max-width: 1000px; margin-top: 20px;">
-                        <!-- PayPal button will be rendered here -->
-                    </div> *@
-@* @section Scripts {
-    <script src="https://www.paypal.com/sdk/js?client-id=@ViewBag.PaypalClientId&currency=USD"></script>
     <script>
-        paypal.Buttons({
-            style: {
-                disableMaxWidth: true
-            },
-            createOrder: async (data, actions) => {
-                const name = document.getElementById('inputName').value;
-                const address = document.getElementById('inputAddress').value;
-                const phoneNumber = document.getElementById('inputPhoneNumber').value;
-                const total = @Model.CartItems.Sum(x => x.SoLuong * x.Gia).ToString("0.##");
-
-                const response = await fetch('/Cart/create-paypal-order', {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        value: total,
-                        currency: 'USD',
-                        reference: 'DH' + Date.now(),
-                        name: name,
-                        address: address,
-                        phoneNumber: phoneNumber
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to create PayPal order');
-                }
-
-                const order = await response.json();
-                return order.id;
-            },
-            onApprove: async (data, actions) => {
-                const response = await fetch(`/Cart/capture-paypal-order?orderId=${data.orderID}`, {
-                    method: 'post'
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to capture PayPal order');
-                }
-
-                const result = await response.json();
-                window.location.href = '/Cart/PaymentSuccess';
-            },
-            onError: (err) => {
-                alert('An error occurred: ' + err.message);
-            }
-        }).render('#paypal-button-container');
+        setTimeout(function () {
+            $('#msgAlert').fadeOut('slow');
+        }, 2000);
     </script>
 }
 
- *@
-
-
-
-
-
-
-@*  <form asp-action="CreatePaymentMomo" asp-controller="Payment" method="post" id="momoForm">
-                        <input type="hidden" name="Amount" value="@Model.CartItems.Sum(x => x.SoLuong * x.Gia)" />
-                        <input type="hidden" name="FullName" id="fullNameHidden" />
-                        <input type="hidden" name="Address" id="addressHidden" />
-                        <input type="hidden" name="PhoneNumber" id="phoneNumberHidden" />
-                        <input type="hidden" name="OrderInfo" value="gafg" />
-                        <input type="hidden" name="OrderId" value="12412" />
-                        <button type="submit" class="btn btn-primary" onclick="setPaymentDetails()">Thanh toán với Momo <i class="fas fa-arrow-right"></i></button>
-                    </form>
-
-                    <script>
-                        function setPaymentDetails() {
-                            var nameInput = document.getElementById("inputName").value;
-                            var addressInput = document.getElementById("inputAddress").value;
-                            var phoneNumberInput = document.getElementById("inputPhoneNumber").value;
-
-                            document.getElementById("fullNameHidden").value = nameInput;
-                            document.getElementById("addressHidden").value = addressInput;
-                            document.getElementById("phoneNumberHidden").value = phoneNumberInput;
-                        }
-                    </script> *@
+<section class="inner_page_head">
+    <div class="container_fuild">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="full">
+                    <h3>Đặt hàng</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<hr class="soft" />
+<div class="container">
+    <!-- Hiển thị thông báo ở đầu trang -->
+    @if (TempData["SuccessMsg"] != null)
+    {
+        <div id="msgAlert" class="alert alert-success">@TempData["SuccessMsg"]</div>
+    }
+    else if (TempData["ErrorMsg"] != null)
+    {
+        <div id="msgAlert" class="alert alert-danger">@TempData["ErrorMsg"]</div>
+    }
+    <!-- Nội dung chính luôn được render -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Tên sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Giá</th>
+                <th>Tổng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItems)
+            {
+                <tr>
+                    <td><img width="60" src="@(Configuration["BaseAddress"] + item.Image)" alt="" /></td>
+                    <td>@item.TenSanPham</td>
+                    <td>@item.SoLuong</td>
+                    <td>@item.Gia</td>
+                    <td>@(item.SoLuong * item.Gia)</td>
+                </tr>
+            }
+            <tr>
+                <td colspan="4" style="text-align:right"><strong>TOTAL =</strong></td>
+                <td class="label nhãn quan trọng" style="display:block"><strong>@Model.CartItems.Sum(x => x.SoLuong * x.Gia).ToString("N0")</strong></td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-bordered">
+        <tr><th>Thông tin vận chuyển</th></tr>
+        <tr>
+            <td>
+                <form class="form-horizontal" action="/Cart/Checkout" method="post" id="checkoutForm">
+                    <div class="control-group">
+                        <label class="control-label" for="inputName">Tên</label>
+                        <div class="controls">
+                            <input type="text" id="inputName" asp-for="CheckoutModel.Name" placeholder="Tên">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="inputAddress">Địa chỉ</label>
+                        <div class="controls">
+                            <input type="text" id="inputAddress" asp-for="CheckoutModel.Address" placeholder="Địa chỉ">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="inputPhoneNumber">Số điện thoại</label>
+                        <div class="controls">
+                            <input type="text" id="inputPhoneNumber" asp-for="CheckoutModel.PhoneNumber" placeholder="Số điện thoại">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-end gap-2 mt-3">
+                                <a href="/" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Tiếp tục mua sắm</a>
+                                <button type="submit" class="btn btn-primary">Thanh toán khi nhận hàng</button>
+                                <button type="submit" form="momoForm" class="btn btn-primary" onclick="setPaymentDetails()">Thanh toán với Momo</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <form asp-action="CreatePaymentMomo" asp-controller="Payment" method="post" id="momoForm">
+                    <input type="hidden" name="Amount" value="@Model.CartItems.Sum(x => x.SoLuong * x.Gia)" />
+                    <input type="hidden" name="FullName" id="fullNameHidden" />
+                    <input type="hidden" name="Address" id="addressHidden" />
+                    <input type="hidden" name="PhoneNumber" id="phoneNumberHidden" />
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+<script>
+    function setPaymentDetails() {
+        var nameInput = document.getElementById("inputName").value;
+        var addressInput = document.getElementById("inputAddress").value;
+        var phoneNumberInput = document.getElementById("inputPhoneNumber").value;
+        document.getElementById("fullNameHidden").value = nameInput;
+        document.getElementById("addressHidden").value = addressInput;
+        document.getElementById("phoneNumberHidden").value = phoneNumberInput;
+    }
+</script>

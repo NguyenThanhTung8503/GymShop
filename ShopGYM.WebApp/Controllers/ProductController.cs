@@ -10,10 +10,12 @@ namespace ShopGYM.WebApp.Controllers
     {
         private readonly IProductApiClient _productApiClient;
         private readonly ICategoryApiClient _categoryApiClient;
-        public ProductController(IProductApiClient productApiClient, ICategoryApiClient categoryApiClient)
+        private readonly ICommentApiClient _commentApiClient;
+        public ProductController(IProductApiClient productApiClient, ICategoryApiClient categoryApiClient, ICommentApiClient commentApiClient)
         {
             _productApiClient = productApiClient;
             _categoryApiClient = categoryApiClient;
+            _commentApiClient = commentApiClient;
         }
         public async Task<IActionResult> Index(string keyword, int? CategoryId, int pageIndex = 1, int pageSize = 9)
         {
@@ -46,11 +48,14 @@ namespace ShopGYM.WebApp.Controllers
         public async Task<IActionResult> Detail(int id)
         {
             var product = await _productApiClient.Detail(id);
-            var images = await _productApiClient.GetListImages(id); // Lấy danh sách hình ảnh
+            var images = await _productApiClient.GetListImages(id);
+            var comments = await _commentApiClient.GetAllComments(id);
             return View(new ProductDetailViewModel
             {
                 Product = product,
-                ProductImages = images
+                ProductImages = images,
+                Comments = comments
+
             });
         }
 

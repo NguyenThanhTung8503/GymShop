@@ -472,12 +472,7 @@ namespace ShopGYM.Application.Catalog.SanPham
                 {
                     MaSanPham = x.sp.MaSanPham,
                     TenSanPham = x.sp.TenSanPham,
-                    TenDanhMuc = x.dm.TenDanhMuc,
                     Gia = x.sp.Gia,
-                    MoTa = x.sp.MoTa,
-                    KichThuoc = x.sp.KichThuoc,
-                    MauSac = x.sp.MauSac,
-                    SoLuongTon = x.sp.SoLuongTon,
                     HinhAnhChinh = x.ha.DuongDan
                 })
                 .ToListAsync();

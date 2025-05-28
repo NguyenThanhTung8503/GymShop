@@ -14,12 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 //momo api
 builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
 builder.Services.AddScoped<IMomoService, MomoService>();
-// ??ng ký PaypalClient d?ng Singleton() - ch? có 1 instance duy nh?t trong toàn ?ng d?ng
-builder.Services.AddSingleton(x => new PaypalClient(
-        builder.Configuration["PaypalOptions:AppId"],
-        builder.Configuration["PaypalOptions:AppSecret"],
-        builder.Configuration["PaypalOptions:Mode"]
-));
+
 // Add Razor runtime compilation for development environment
 #if DEBUG
 if (builder.Environment.IsDevelopment())
@@ -37,6 +32,7 @@ builder.Services.AddTransient<IProductApiClient, ProductApiClient>();
 builder.Services.AddTransient<ICategoryApiClient, CategoryApiClient>();
 builder.Services.AddTransient<IUserApiClient, UserApiClient>();
 builder.Services.AddTransient<IOrderApiClient, OrderApiClient>();
+builder.Services.AddTransient<ICommentApiClient, CommentApiClient>();
 
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

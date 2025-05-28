@@ -19,49 +19,41 @@ namespace ShopGYM.Application.Catalog.DonHang
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                try
+                // Tạo và lưu DonHang
+                var donHang = new Data.Entities.DonHang()
                 {
-                    // Tạo và lưu DonHang
-                    var donHang = new Data.Entities.DonHang()
-                    {
-                        MaNguoiDung = request.UserId,
-                        DiaChiGiaoHang = request.Address,
-                        NgayDatHang = DateTime.Now,
-                        SDT = request.PhoneNumber,
-                        TenNguoiNhan = request.Name,
-                    };
+                    MaNguoiDung = request.UserId,
+                    DiaChiGiaoHang = request.Address,
+                    NgayDatHang = DateTime.Now,
+                    SDT = request.PhoneNumber,
+                    TenNguoiNhan = request.Name,
+                };
 
-                    _context.DonHangs.Add(donHang);
-                    await _context.SaveChangesAsync();
+                _context.DonHangs.Add(donHang);
+                await _context.SaveChangesAsync();
 
-                    // Lưu ChiTietDonHang từ OrderDetails
-                    if (request.OrderDetails != null && request.OrderDetails.Any())
+                // Lưu ChiTietDonHang từ OrderDetails
+                if (request.OrderDetails != null && request.OrderDetails.Any())
+                {
+                    foreach (var orderDetail in request.OrderDetails)
                     {
-                        foreach (var orderDetail in request.OrderDetails)
+                        var chiTietDonHang = new ChiTietDonHang()
                         {
-                            var chiTietDonHang = new ChiTietDonHang()
-                            {
-                                MaSanPham = orderDetail.ProductId,
-                                SoLuong = orderDetail.Quantity,
-                                Gia = orderDetail.Total,
-                                MaDonHang = donHang.MaDonHang // Liên kết với MaDonHang vừa tạo
-                            };
+                            MaSanPham = orderDetail.ProductId,
+                            SoLuong = orderDetail.Quantity,
+                            Gia = orderDetail.Total,
+                            MaDonHang = donHang.MaDonHang // Liên kết với MaDonHang vừa tạo
+                        };
 
-                            _context.ChiTietDonHangs.Add(chiTietDonHang);
-                        }
-                        await _context.SaveChangesAsync();
+                        _context.ChiTietDonHangs.Add(chiTietDonHang);
                     }
-
-                    // Commit giao dịch
-                    await transaction.CommitAsync();
-
-                    return donHang.MaDonHang;
+                    await _context.SaveChangesAsync();
                 }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    throw; 
-                }
+
+                // Commit giao dịch
+                await transaction.CommitAsync();
+
+                return donHang.MaDonHang;
             }
         }
 
@@ -81,7 +73,7 @@ namespace ShopGYM.Application.Catalog.DonHang
             sanpham.TenNguoiNhan = request.Name;
             sanpham.DiaChiGiaoHang = request.Address;
             sanpham.SDT = request.PhoneNumber;
-            
+
             return await _context.SaveChangesAsync();
         }
 
