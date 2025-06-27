@@ -16,7 +16,7 @@ namespace ShopGYM.ApiIntegration
 
         public UserApiClient(IHttpClientFactory httpClientFactory,
             IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor) 
+            IHttpContextAccessor httpContextAccessor)
             : base(httpClientFactory, configuration, httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -34,7 +34,7 @@ namespace ShopGYM.ApiIntegration
             var response = await client.PostAsync("/api/users/authenticate", httpContent);
             if (response.IsSuccessStatusCode)
             {
-                return JsonConvert.DeserializeObject<ApiSuccessResult<string>> (await response.Content.ReadAsStringAsync());
+                return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(await response.Content.ReadAsStringAsync());
             }
 
             return JsonConvert.DeserializeObject<ApiErrorResult<string>>(await response.Content.ReadAsStringAsync());
@@ -69,7 +69,7 @@ namespace ShopGYM.ApiIntegration
             var response = await client.GetAsync($"/api/users/{id}");
             var body = await response.Content.ReadAsStringAsync();
 
-            if(response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
                 return JsonConvert.DeserializeObject<ApiSuccessResult<UserVM>>(body);
             }

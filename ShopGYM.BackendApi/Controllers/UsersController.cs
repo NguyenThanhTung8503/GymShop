@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShopGYM.Application.System.Users;
 using ShopGYM.ViewModels.Catalog.SanPham;
+using ShopGYM.ViewModels.Common;
 using ShopGYM.ViewModels.System.Users;
 
 namespace ShopGYM.BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -36,12 +37,17 @@ namespace ShopGYM.BackendApi.Controllers
             return Ok(result);
         }
 
-     
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody]UserUpdateRequest request)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UserUpdateRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (!User.IsInRole("Admin"))
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResult<bool>("Bạn không có quyền truy cập"));
+            }
 
             var result = await _userService.Update(id, request);
             if (!result.IsSuccessed)
@@ -56,6 +62,11 @@ namespace ShopGYM.BackendApi.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (!User.IsInRole("Admin"))
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResult<bool>("Bạn không có quyền truy cập"));
+            }
 
             var result = await _userService.RoleAssign(id, request);
             if (!result.IsSuccessed)
@@ -83,6 +94,11 @@ namespace ShopGYM.BackendApi.Controllers
         [HttpGet("paging")]
         public async Task<IActionResult> GetUserPaging([FromQuery] GetUserPagingRequest request)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResult<bool>("Bạn không có quyền truy cập"));
+            }
+
             var users = await _userService.GetUsersPaging(request);
             return Ok(users);
         }
@@ -90,6 +106,11 @@ namespace ShopGYM.BackendApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResult<bool>("Bạn không có quyền truy cập"));
+            }
+
             var users = await _userService.GetById(id);
             return Ok(users);
         }
@@ -97,6 +118,11 @@ namespace ShopGYM.BackendApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResult<bool>("Bạn không có quyền truy cập"));
+            }
+
             var result = await _userService.Delete(id);
             return Ok(result);
         }

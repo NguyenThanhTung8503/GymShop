@@ -67,10 +67,11 @@
 						<th>Người nhận</th>
 						<th>Địa chỉ</th>
 						<th>Số điện thoại</th>
-						<th>sản phẩm</th>
-						<th>Số lượng</th>
+						<th>Sản phẩm & Số lượng</th>
 						<th>Tổng tiền</th>
+						<th>Phương thức thanh toán</th>
 						<th>Ngày đặt</th>
+						<th>Trạng thái</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -81,10 +82,20 @@
 							<td>@order.Name</td>
 							<td>@order.Address</td>
 							<td>@order.PhoneNumber</td>
-							<td>@order.NameProduct</td>
-							<td>@order.Quantity</td>
+							<td> @foreach (var product in order.Products)
+							{
+										<div>
+									@product.TenSanPham - Số lượng: @product.SoLuongTon
+										</div>
+							}
+							@if (!order.Products.Any())
+							{
+										<div>Không có sản phẩm</div>
+							}</td>
 							<td>@order.Total.ToString("N0") VNĐ</td>
+							<td>@order.PhuongThucThanhToan</td>
 							<td>@order.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+							<td>@order.TrangThai</td>
 						</tr>
 					}
 				</tbody>

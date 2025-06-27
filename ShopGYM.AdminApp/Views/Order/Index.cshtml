@@ -1,0 +1,103 @@
+﻿@using ShopGYM.ViewModels.Common
+@model PagedResult<ShopGYM.ViewModels.Catalog.Checkout.OrderVm>
+@{
+    ViewBag.Title = "Đơn hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1>Danh sách đơn hàng</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <li class="breadcrumb-item active">Danh sách đơn hàng</li>
+    </ol>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Mã đơn hàng</th>
+                <th scope="col">Người nhận</th>
+                <th scope="col">Địa chỉ</th>
+                <th scope="col">Số điện thoại</th>
+                <th scope="col">Sản phẩm & Số lượng</th>
+                <th scope="col">Tổng tiền</th>
+                <th scope="col">Thanh toán</th>
+                <th scope="col">Ngày đặt</th>
+                <th scope="col">Trạng thái</th>
+            </tr>
+        </thead>
+    <tbody>
+            @foreach (var order in Model.Items)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.Name</td>
+                    <td>@order.Address</td>
+                    <td>@order.PhoneNumber</td>
+                    <td>
+                        @foreach (var product in order.Products)
+                    {
+                            <div>
+                                @product.TenSanPham - Số lượng: @product.SoLuongTon
+                            </div>
+                        }
+                        @if (!order.Products.Any())
+                        {
+                            <div>Không có sản phẩm</div>
+                        }
+                    </td>
+                    <td>@order.Total.ToString("N0") VNĐ</td>
+                    <td>@order.PhuongThucThanhToan</td>
+                    <td>@order.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="statusDropdown_@order.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                @(string.IsNullOrEmpty(order.TrangThai) ? "--Chọn trạng thái--" : order.TrangThai)
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="statusDropdown_@order.Id">
+                                <li><a class="dropdown-item" href="#" data-order-id="@order.Id" data-status="Đang xử lý">Đang xử lý</a></li>
+                                <li><a class="dropdown-item" href="#" data-order-id="@order.Id" data-status="Đang giao">Đang giao</a></li>
+                                <li><a class="dropdown-item" href="#" data-order-id="@order.Id" data-status="Đã giao">Đã giao</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @await Component.InvokeAsync("Pager", Model)
+</div>
+
+<script>
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const orderId = this.getAttribute('data-order-id');
+            const status = this.getAttribute('data-status');
+            const dropdownButton = document.getElementById(`statusDropdown_${orderId}`);
+            
+            fetch('/Order/UpdateStatus', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({ orderId: parseInt(orderId), status: status })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    dropdownButton.textContent = status;
+                    alert('Cập nhật trạng thái thành công!');
+                } else if (data.redirectToLogin) {
+                    window.location.href = '/Login'; // Redirect to login page
+                } else {
+                    alert('Cập nhật trạng thái thất bại: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Đã xảy ra lỗi khi cập nhật trạng thái.');
+            });
+        });
+    });
+</script>

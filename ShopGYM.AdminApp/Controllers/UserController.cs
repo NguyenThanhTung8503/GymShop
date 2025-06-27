@@ -31,6 +31,15 @@ namespace ShopGYM.AdminApp.Controllers
             };
             var data = await _userApiClient.GetUsersPagings(request);
             ViewBag.Keyword = keyword;
+
+            if (data == null || !data.IsSuccessed)
+            {
+
+                TempData["ErrorMsg"] = data?.Message ?? "Không có quyền truy cập";
+
+                return RedirectToAction("index", "product");
+            }
+
             if (TempData["result"] != null)
             {
                 ViewBag.SuccessMsg = TempData["result"];
@@ -41,6 +50,16 @@ namespace ShopGYM.AdminApp.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+
+            if (User.Identity.IsAuthenticated)
+            {
+                if (!User.IsInRole("Admin"))
+                {
+                    TempData["ErrorMsg"] = "Bạn không có quyền truy cập.";
+                    return RedirectToAction("index", "product");
+                }
+            }
+
             return View();
         }
 
@@ -49,6 +68,7 @@ namespace ShopGYM.AdminApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
+
 
             var result = await _userApiClient.RegisterUser(request);
             if (result.IsSuccessed)

@@ -11,6 +11,5 @@ namespace ShopGYM.ViewModels.Catalog.DanhGia
         public int Id { get; set; }
         public int IdSanPham { get; set; }
         public string? NoiDung { get; set; }
-        public Guid IdUser { get; set; }
     }
 }

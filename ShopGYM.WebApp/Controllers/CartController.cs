@@ -58,6 +58,7 @@ namespace ShopGYM.WebApp.Controllers
                 Address = request.CheckoutModel.Address,
                 Name = request.CheckoutModel.Name,
                 PhoneNumber = request.CheckoutModel.PhoneNumber,
+                PhuongThucThanhToan = "COD",
                 UserId = Guid.Parse(userId),
                 OrderDetails = orderDetails
             };

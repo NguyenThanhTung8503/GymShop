@@ -11,11 +11,13 @@
     .form-group {
         margin-bottom: 0.5rem;
     }
-    .form-group label {
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
     .form-control-static {
         border: 1px solid #ced4da;
         border-radius: 0.25rem;
@@ -24,6 +26,7 @@
         min-height: 38px;
         line-height: 1.5;
     }
+
     .btn-secondary {
         background-color: #007bff;
         border-color: #007bff;
@@ -31,10 +34,12 @@
         border-radius: 0.25rem;
         padding: 0.375rem 0.75rem;
     }
-    .btn-secondary:hover {
-        background-color: #0056b3;
-        border-color: #004085;
-    }
+
+        .btn-secondary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
     .btn-warning {
         background-color: #ffc107;
         border-color: #ffc107;
@@ -42,56 +47,64 @@
         border-radius: 0.25rem;
         padding: 0.375rem 0.75rem;
     }
-    .btn-warning:hover {
-        background-color: #e0a800;
-        border-color: #d39e00;
-    }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+        }
 </style>
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div class="container-fluid px-4">
-                <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item"><a asp-controller="User" asp-action="Index">Trang chủ</a></li>
-                    <li class="breadcrumb-item active">Chi tiết</li>
-                </ol>
-                <p>
-                    <a asp-controller="User" asp-action="Index" class="btn btn-primary">Về danh sách</a>
-                </p>
-                <div class="card mb-">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label asp-for="FirstName">Họ</label>
-                            <p class="form-control-static">@Model.FirstName</p>
+        <div class="container-fluid px-4">
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="User" asp-action="Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Chi tiết</li>
+            </ol>
+            <p>
+                <a asp-controller="User" asp-action="Index" class="btn btn-primary">Về danh sách</a>
+            </p>
+            <div class="card mb-4">
+                <div class="card-body">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <p>@error.ErrorMessage</p>
+                            }
                         </div>
-                        <div class="form-group">
-                            <label asp-for="LastName">Tên</label>
-                            <p class="form-control-static">@Model.LastName</p>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Email">Email</label>
-                            <p class="form-control-static">@Model.Email</p>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="UserName">Tên người dùng</label>
-                            <p class="form-control-static">@Model.UserName</p>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="PhoneNumber">Số điện thoại</label>
-                            <p class="form-control-static">@Model.PhoneNumber</p>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Dob">Ngày sinh</label>
-                            <p class="form-control-static">@Model.Dob.ToString("dd/MM/yyyy")</p>
-                        </div>
-                        <div class="form-group">
-                            <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-warning">Chỉnh sửa</a>
-                            <a asp-controller="User" asp-action="Index" class="btn btn-secondarybtn btn-success">Quay lại</a>
-                        </div>
+                    }
+                    <div class="form-group">
+                        <label asp-for="FirstName">Họ</label>
+                        <p class="form-control-static">@Model.FirstName</p>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName">Tên</label>
+                        <p class="form-control-static">@Model.LastName</p>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email">Email</label>
+                        <p class="form-control-static">@Model.Email</p>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="UserName">Tên người dùng</label>
+                        <p class="form-control-static">@Model.UserName</p>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber">Số điện thoại</label>
+                        <p class="form-control-static">@Model.PhoneNumber</p>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Dob">Ngày sinh</label>
+                        <p class="form-control-static">@Model.Dob.ToString("dd/MM/yyyy")</p>
+                    </div>
+                    <div class="form-group">
+                        <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-warning">Chỉnh sửa</a>
+                        <a asp-controller="User" asp-action="Index" class="btn btn-secondary">Quay lại</a>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>

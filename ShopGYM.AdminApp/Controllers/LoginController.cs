@@ -53,7 +53,7 @@ namespace ShopGYM.AdminApp.Controllers
                         userPrincipal,
                         authProperties);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Product");
         }
 
         private ClaimsPrincipal ValidateToken(string jwtToken)

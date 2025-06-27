@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using ShopGYM.Application.Catalog.DonHang;
 using ShopGYM.ViewModels.Catalog.Checkout;
 using ShopGYM.ViewModels.Catalog.SanPham;
+using ShopGYM.ViewModels.Common;
+using ShopGYM.ViewModels.System.Users;
 
 namespace ShopGYM.BackendApi.Controllers
 {
@@ -21,6 +23,13 @@ namespace ShopGYM.BackendApi.Controllers
         public async Task<IActionResult> GetAll(Guid userId)
         {
             var order = await _orderService.GetAll(userId);
+            return Ok(order);
+        }
+
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllAdmin([FromQuery] PagingRequestBase request)
+        {
+            var order = await _orderService.GetAllAdmin(request);
             return Ok(order);
         }
 
@@ -76,5 +85,20 @@ namespace ShopGYM.BackendApi.Controllers
             return Ok();
         }
 
+        [HttpPut("{id}/status")]
+        [Authorize]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateOrderStatusRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var affectedRows = await _orderService.UpdateStatus(id, request.Status);
+            if (affectedRows == 0)
+                return BadRequest("Không thể cập nhật trạng thái đơn hàng");
+
+            return Ok();
+        }
     }
 }

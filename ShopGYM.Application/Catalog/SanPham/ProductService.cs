@@ -126,25 +126,24 @@ namespace ShopGYM.Application.Catalog.SanPham
                                         x.sp.MoTa != null && x.sp.MoTa.Contains(request.Keyword));
             }
 
-            // Sắp xếp theo sản phẩm mới nhất
             query = query.OrderByDescending(x => x.sp.NgayTao);
-            // Tính tổng số bản ghi (TotalRecords)
+            
             int totalRecords = await query.CountAsync();
 
             var items = await query
                 .Skip((request.PageIndex - 1) * request.PageSize) // Bỏ qua (PageIndex - 1) * PageSize bản ghi
-                .Take(request.PageSize) // Lấy số bản ghi bằng PageSize
+                .Take(request.PageSize) 
                 .Select(x => new ProductVM
                 {
                     MaSanPham = x.sp.MaSanPham,
                     TenSanPham = x.sp.TenSanPham,
                     TenDanhMuc = x.dm.TenDanhMuc,
                     Gia = x.sp.Gia,
-                    HinhAnhChinh = x.ha.DuongDan
+                    HinhAnhChinh = x.ha.DuongDan,
+                    SoLuongTon = x.sp.SoLuongTon
                 })
                 .ToListAsync(); 
 
-            // Trả về kết quả phân trang
             return new PagedResult<ProductVM>
             {
                 Items = items,

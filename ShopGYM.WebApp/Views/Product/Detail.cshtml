@@ -101,14 +101,7 @@
 					}
 				</div>
 			</div>
-			<div class="mb-4">
-				<h5>Kích thước:</h5>
-				<p>@(string.IsNullOrEmpty(Model.Product.KichThuoc) ? "Không có kích thước" : Model.Product.KichThuoc)</p>
-			</div>
-			<div class="mb-4">
-				<label for="quantity" class="form-label">Số lượng tồn: @Model.Product.SoLuongTon</label>
-				<input type="number" class="form-control" id="quantity" value="1" min="1" max="@Model.Product.SoLuongTon" style="width: 80px;">
-			</div>
+				<div><label for="quantity" class="form-label">Số lượng tồn: @Model.Product.SoLuongTon</label></div>
 			<button class="btn btn-primary btn-lg mb-3 me-2 option2" data-id="@Model.Product.MaSanPham">
 				<i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
 			</button>
@@ -119,7 +112,7 @@
 
 <!-- Comments Section -->
 <div class="container mt-5">
-	<h4>Bình luận</h4>
+	<h4>Đánh giá</h4>
 	<!-- Comment Input Form -->
 	@if (User.Identity.IsAuthenticated)
 	{

@@ -1,22 +1,30 @@
 ﻿@model ShopGYM.ViewModels.System.Users.RoleAssignRequets
 
 @{
-	ViewData["Title"] = "Role Assign";
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Gán quyền";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container-fluid">
     <h1 class="mt-4">Gán quyền</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a asp-controller="User" asp-action="Index">Trang chủ</a></li>
         <li class="breadcrumb-item active">Gán quyền</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header">
             <a class="btn btn-success" asp-action="Index" asp-controller="User">Về danh sách</a>
         </div>
-
         <div class="card-body">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <p>@error.ErrorMessage</p>
+                    }
+                </div>
+            }
             <form asp-action="RoleAssign">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />

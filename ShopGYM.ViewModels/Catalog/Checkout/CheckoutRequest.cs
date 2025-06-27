@@ -14,7 +14,8 @@ namespace ShopGYM.ViewModels.Catalog.Checkout
 
         public Guid UserId { get; set; }
 
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? PhuongThucThanhToan { get; set; }
 
         public List<OrderDetailVm> OrderDetails { set; get; } = new List<OrderDetailVm>();
     }

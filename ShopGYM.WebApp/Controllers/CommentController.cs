@@ -47,26 +47,13 @@ namespace ShopGYM.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(int id, UpdateCommentRequest request)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
             if (!ModelState.IsValid)
             {
                 TempData["Error"] = "Dữ liệu cập nhật không hợp lệ";
                 return RedirectToAction("Detail", "Product", new { id = request.IdSanPham });
             }
 
-            var userId = HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            request.IdUser = Guid.Parse(userId);
             var comment = await _commentApiClient.GetById(id);
-
-            if (comment == null || comment.MaNguoiDung != Guid.Parse(userId))
-            {
-                TempData["Error"] = "Bạn không có quyền chỉnh sửa bình luận này";
-                return RedirectToAction("Detail", "Product", new { id = request.IdSanPham });
-            }
 
             request.Id = id;
             var result = await _commentApiClient.UpdateComment(id, request);
@@ -83,11 +70,6 @@ namespace ShopGYM.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id, int productId)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var comment = await _commentApiClient.GetById(id);
 

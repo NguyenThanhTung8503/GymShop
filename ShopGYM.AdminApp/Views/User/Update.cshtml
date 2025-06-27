@@ -1,60 +1,66 @@
 ﻿@model ShopGYM.ViewModels.System.Users.UserUpdateRequest
 
 @{
-	ViewData["Title"] = "Cập nhật người dùng";
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Cập nhật người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1 class="mt-4">Cập nhật người dùng</h1>
 
-
 <div class="row">
-	<div class="col-md-4">
-		<form asp-action="Update">
-			<div class="container-fluid px-4">
-				<ol class="breadcrumb mb-4">
-					<li class="breadcrumb-item"><a asp-controller="User" asp-action="Index">Trang chủ</a></li>
-					<li class="breadcrumb-item active">Cập nhật</li>
-				</ol>
-				<p>
-					<a asp-controller="User" asp-action="Index" class="btn btn-primary">Về danh sách</a>
-				</p>
-				<div class="card mb-">
-					<div class="card-body">
-						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-						<div class="form-group">
-							<label asp-for="FirstName"></label>
-							<input asp-for="FirstName" class="form-control" />
-							<span asp-validation-for="FirstName" class="text-danger"></span>
-						</div>
-						<div class="form-group">
-							<label asp-for="LastName"></label>
-							<input asp-for="LastName" class="form-control" />
-							<span asp-validation-for="LastName" class="text-danger"></span>
-						</div>
-						<div class="form-group">
-							<label asp-for="Email"></label>
-							<input asp-for="Email" class="form-control" />
-							<span asp-validation-for="Email" class="text-danger"></span>
-						</div>
-						<div class="form-group">
-							<label asp-for="PhoneNumber"></label>
-							<input asp-for="PhoneNumber" class="form-control" />
-							<span asp-validation-for="PhoneNumber" class="text-danger"></span>
-						</div>
-						<div class="form-group">
-							<label asp-for="Dob"></label>
-							<input asp-for="Dob" type="date" class="form-control" />
-							<span asp-validation-for="Dob" class="text-danger"></span>
-						</div>
-						<div class="form-group">
-							<input type="submit" value="Lưu lại" class="btn btn-success" />
-						</div>
-					</div>
-				</div>
-			</div>
-
-		</form>
-
-	</div>
+    <div class="col-md-4">
+        <div class="container-fluid px-4">
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="User" asp-action="Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Cập nhật</li>
+            </ol>
+            <p>
+                <a asp-controller="User" asp-action="Index" class="btn btn-primary">Về danh sách</a>
+            </p>
+            <div class="card mb-4">
+                <div class="card-body">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <p>@error.ErrorMessage</p>
+                            }
+                        </div>
+                    }
+                    <form asp-action="Update">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="FirstName"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LastName"></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber"></label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Dob"></label>
+                            <input asp-for="Dob" type="date" class="form-control" />
+                            <span asp-validation-for="Dob" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Lưu lại" class="btn btn-success" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

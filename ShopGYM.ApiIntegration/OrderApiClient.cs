@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 using ShopGYM.Data.Entities;
 using ShopGYM.Utilities.Constants;
 using ShopGYM.ViewModels.Catalog.Checkout;
+using ShopGYM.ViewModels.Catalog.SanPham;
+using ShopGYM.ViewModels.Common;
+using ShopGYM.ViewModels.System.Users;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -44,7 +47,8 @@ namespace ShopGYM.ApiIntegration
         { new StringContent(request.UserId.ToString()), "UserId" },
         { new StringContent(request.Address ?? ""), "Address" },
         { new StringContent(request.Name ?? ""), "Name" },
-        { new StringContent(request.PhoneNumber ?? ""), "PhoneNumber" }
+        { new StringContent(request.PhoneNumber ?? ""), "PhoneNumber" },
+        { new StringContent(request.PhuongThucThanhToan ?? ""), "PhuongThucThanhToan" }
     };
 
             // Xử lý OrderDetails (nếu có)
@@ -88,10 +92,43 @@ namespace ShopGYM.ApiIntegration
             return data;
         }
 
+        public async Task<PagedResult<OrderVm>> GetAllAdmin(PagingRequestBase request)
+        {
+            var data = await GetAsync<PagedResult<OrderVm>>("/api/orders/paging?pageindex=" +
+                $"{request.PageIndex}&pageSize={request.PageSize}");
+            return data;
+
+        }
         public async Task<OrderVm> GetById(int id)
         {
             var data = await GetAsync<OrderVm>($"/api/orders/{id}");
             return data;
+        }
+
+        public async Task<bool> UpdateStatus(int orderId, string status)
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            if (string.IsNullOrEmpty(sessions))
+            {
+                throw new UnauthorizedAccessException("Token không tồn tại trong Session.");
+            }
+
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+
+            var content = new StringContent(JsonConvert.SerializeObject(new { Status = status }),
+                Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync($"/api/orders/{orderId}/status", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Không thể cập nhật trạng thái: {response.ReasonPhrase} - {errorContent}");
+            }
+
+            return true;
         }
     }
 }

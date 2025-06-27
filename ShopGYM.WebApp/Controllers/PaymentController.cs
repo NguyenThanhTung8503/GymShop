@@ -38,6 +38,10 @@ namespace ShopGYM.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePaymentMomo(OrderInfoModel model)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             model.OrderId = DateTime.UtcNow.Ticks.ToString();
             model.OrderInfo = $"Nội dung: Thanh toán qua Momo cho đơn hàng {model.OrderId}";
 
@@ -99,7 +103,8 @@ namespace ShopGYM.WebApp.Controllers
                     {
                         Name = checkoutInfo.FullName,
                         Address = checkoutInfo.Address,
-                        PhoneNumber = checkoutInfo.PhoneNumber
+                        PhoneNumber = checkoutInfo.PhoneNumber,
+                        PhuongThucThanhToan = "Momo"
                     };
 
                     // Lấy CartItems từ session
