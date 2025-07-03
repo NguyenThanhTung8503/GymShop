@@ -7,10 +7,6 @@
         "Action": "Start"
       },
       {
-        "Path": "ShopGYM.AdminApp\\ShopGYM.AdminApp.csproj",
-        "Action": "Start"
-      },
-      {
         "Path": "ShopGYM.WebApp\\ShopGYM.WebApp.csproj",
         "Action": "Start"
       }

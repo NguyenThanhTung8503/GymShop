@@ -30,6 +30,7 @@ namespace ShopGYM.Application.Catalog.DonHang
                     SDT = request.PhoneNumber,
                     TenNguoiNhan = request.Name,
                     PhuongThucThanhToan = request.PhuongThucThanhToan,
+                    TrangThai = "Đang xử lý"
                 };
 
                 _context.DonHangs.Add(donHang);
