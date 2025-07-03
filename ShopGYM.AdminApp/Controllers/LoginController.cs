@@ -21,6 +21,7 @@ namespace ShopGYM.AdminApp.Controllers
             _userApiClient = userApiClient;
             _configuration = configuration;
         }
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -35,12 +36,22 @@ namespace ShopGYM.AdminApp.Controllers
                 return View(ModelState);
 
             var result = await _userApiClient.Authenticate(request);
-            if(result.ResultObj == null)
+            if (result.ResultObj == null)
             {
                 ModelState.AddModelError("", result.Message);
                 return View();
             }
+
             var userPrincipal = this.ValidateToken(result.ResultObj);
+
+            // Check if user has "KhachHang" role
+            var userRole = userPrincipal.FindFirst(ClaimTypes.Role)?.Value;
+            if (userRole == "KhachHang")
+            {
+                ModelState.AddModelError("", "Access denied: Customers are not allowed to log in.");
+                return View();
+            }
+
             var authProperties = new AuthenticationProperties()
             {
                 ExpiresUtc = DateTimeOffset.UtcNow.AddHours(5),
@@ -73,6 +84,5 @@ namespace ShopGYM.AdminApp.Controllers
 
             return principal;
         }
-
     }
 }

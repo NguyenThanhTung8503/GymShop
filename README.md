@@ -1,4 +1,4 @@
-# ASP.NET Core 8.0 project 
+﻿# ASP.NET Core 8.0 project 
 ## Technologies
 - ASP.NET Core 8.0
 - Entity Framework Core 8.0
@@ -7,14 +7,19 @@
 - Visual Studio 2022
 - SQL Server 2019
 ## How to configure and run
-- Clone code from Github: git clone https://github.com/NguyenThanhTung8503/GymShop
-- Open solution ShopGYM.sln in Visual Studio 2019
-- Set startup project is ShopGYM.Data
-- Change connection string in Appsetting.json in ShopGYM.Data project
-- Open Tools --> Nuget Package Manager -->  Package Manager Console in Visual Studio
-- Run Update-database and Enter.
-- After migrate database successful, set Startup Project is ShopGYM.WebApp
-- Change database connection in appsettings.Development.json in ShopGYM.WebApp project.
-- You need to change 3 projects to self-host profile.
-- Set multiple run project: Right click to Solution and choose Properties and set Multiple Project, choose Start for 3 Projects: BackendApi, WebApp and AdminApp.
-- Choose profile to run or press F5
+- Tải dự án về từ githib: https://github.com/NguyenThanhTung8503/GymShop
+- Mở solution ShopGYM.sln trên Visual Studio 2019
+- cài startup project là ShopGYM.Data
+- Đổi chuỗi kết nối trong Appsetting.json tại ShopGYM.Data 
+- Mở Tools --> Nuget Package Manager -->  Package Manager Console trên Visual Studio
+- Chạy lệnh Update-database và nhấn Enter.
+- Sau khi migrate database thành công, cài Startup Project là ShopGYM.WebApp
+- Đổi chuỗi kết nối trong appsettings.Development.json tại ShopGYM.WebApp 
+- Thanh toán qua Momo: 
+	- Bạn cần tải Ngrok tại link: https://ngrok.com/downloads/windows?tab=download 
+	- Truy cập vào https://dashboard.ngrok.com/get-started/setup/windows để xem hướng dẫn setup 
+	- Mở ngrok lên chạy lệnh: ngrok http https://localhost:5003
+	- Ngrok sẽ hiện link thay thế https://localhost:5003, lấy link đó dán vào Appsetting.json tại ShopGYM.WebApp thay thế ReturnUrl và NotifyUrl (Giữ nguyên /Payment/...trong đường dẫn).
+- Thiết lập nhiều dự án chạy: Nhấp chuột phải vào Solution và chọn Properties và thiết lập Multiple Project, chọn Start cho 3 Project: BackendApi, WebApp and AdminApp
+- Chạy dự án
+- Đăng nhập Admin: tài khoản: admin, mật khẩu: Tung1234,
